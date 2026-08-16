@@ -139,11 +139,93 @@
         </div>
       </section>
 
-      <!-- ================= Доказательства продуктом ================= -->
+      <!-- ================= Голосом или текстом ================= -->
+      <section class="section">
+        <div class="wrap">
+          <div class="card narrow card-wide">
+            <p class="kicker">Голосом или текстом</p>
+            <h3>Расскажите про поездку —<br />черновик соберётся сам</h3>
+            <p class="lines lede">
+              <span>Опишите поездку своими словами — текстом или голосом.</span>
+              <span
+                >Черновик соберётся только из ваших слов и ваших документов:
+                чего вы не сказали, в нём не появится, а всё примерное
+                помечено.</span
+              >
+              <span
+                >Вы правите черновик и подтверждаете — после этого в приложении появится новая поездка.</span
+              >
+            </p>
+            <div class="crop">
+              <a class="crop-link" href="https://dphnll.github.io/Backpacker_demo/" aria-label="Открыть Backpacker и собрать черновик с ИИ">
+              <img
+                src="./assets/crop-ai.png"
+                width="800"
+                height="437"
+                alt="Фрагмент экрана AI-черновика: поле для описания поездки своими словами и кнопка «Надиктовать»."
+                loading="lazy"
+              />
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= Расширение ================= -->
+      <section class="section">
+        <div class="wrap">
+          <div class="card narrow ext-card">
+            <div class="ext-text">
+              <p class="kicker">Идеи из браузера</p>
+              <h3>Поймали классную идею при поиске в браузере? Припаркуйте в приложении!</h3>
+              <p class="lines lede">
+                <span
+                  >Отель, смотровая площадка, предложение по билетам — сохраните
+                  прямо из браузера,<br />вместе со ссылкой, картинкой и ценой.</span
+                >
+                <span>Идея будет ждать вас в разделе «Идеи» в Backpacker.</span>
+                <span
+                  >Оттуда её можно перенести в поездку — и она станет карточкой.
+                  А можно оставить ждать своего часа.</span
+                >
+              </p>
+
+              <p class="ext-status">Расширение для Chrome — скоро</p>
+              <p class="ext-now">
+                Идеи можно собирать уже сейчас — прямо в приложении.
+              </p>
+
+              <!-- БУДУЩИЙ СЛОТ · Chrome Web Store.
+                   Когда появится реальный публичный store URL:
+                   удалить <p class="ext-status"> выше и раскомментировать ссылку.
+                   Класс .btn-secondary уже описан в styles.css.
+
+              <p style="margin-top: 18px">
+                <a class="btn btn-secondary" href="ЗАМЕНИТЬ_НА_CHROME_WEB_STORE_URL"
+                   rel="noopener">Установить расширение</a>
+              </p>
+              -->
+            </div>
+
+            <div class="crop crop-panel">
+              <a class="crop-link" href="https://dphnll.github.io/Backpacker_demo/" aria-label="Открыть Backpacker и посмотреть раздел «Идеи»">
+                <img
+                  src="./assets/crop-extension.png"
+                  width="419"
+                  height="1073"
+                  alt="Боковая панель расширения Backpacker Travel Capture: пойманная идея с фотографией, названием экскурсии, ценой 460 EUR, адресом источника и кнопкой «Сохранить в Идеи»."
+                  loading="lazy"
+                />
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= День и карточка ================= -->
       <section class="section">
         <div class="wrap">
           <div class="proof-grid">
-            <!-- По дням -->
             <article class="card proof">
               <p class="kicker">По дням</p>
               <h3>День — это лента карточек</h3>
@@ -167,7 +249,6 @@
               </div>
             </article>
 
-            <!-- Карточка -->
             <article class="card proof">
               <p class="kicker">Карточка</p>
               <h3>Всё нужное — внутри</h3>
@@ -195,106 +276,35 @@
                 </a>
               </div>
             </article>
-
-            <!-- Бюджет -->
-            <article class="card proof">
-              <p class="kicker">Бюджет</p>
-              <h3>Сумма считается сама</h3>
-              <p class="lines lede">
-                <span
-                  >Пока вы редактируете и двигаете карточки, итог по дню и по
-                  всей поездке пересчитывается.</span
-                >
-                <span
-                  >Не знаете стоимость? Не указывайте или укажите примерный
-                  ориентир.</span
-                >
-              </p>
-              <div class="crop">
-                <a class="crop-link" href="https://dphnll.github.io/Backpacker_demo/" aria-label="Открыть Backpacker и посмотреть бюджет поездки">
-                <img
-                  src="./assets/crop-budget.png"
-                  width="800"
-                  height="535"
-                  alt="Фрагмент экрана бюджета: «Бюджет поездки 45 000 ₽», «Оплачено 16 500 ₽», «Бронь 13 000 ₽», «Свободно 15 500 ₽»."
-                  loading="lazy"
-                />
-                </a>
-              </div>
-            </article>
-
-            <!-- AI-черновик -->
-            <article class="card proof">
-              <p class="kicker">AI-черновик</p>
-              <h3>Начните с описания —<br />ИИ соберёт черновик</h3>
-              <p class="lines lede">
-                <span>Опишите поездку своими словами — текстом или голосом.</span>
-                <span
-                  >Черновик покажет всё целиком: что уточнить, где цена примерная, чего не хватает.</span
-                >
-                <span
-                  >После вашего подтверждения в приложении появится новая
-                  поездка.</span
-                >
-              </p>
-              <div class="crop">
-                <a class="crop-link" href="https://dphnll.github.io/Backpacker_demo/" aria-label="Открыть Backpacker и собрать черновик с ИИ">
-                <img
-                  src="./assets/crop-ai.png"
-                  width="800"
-                  height="437"
-                  alt="Фрагмент экрана AI-черновика: поле для описания поездки своими словами и кнопка «Надиктовать»."
-                  loading="lazy"
-                />
-                </a>
-              </div>
-            </article>
           </div>
         </div>
       </section>
 
-      <!-- ================= Расширение ================= -->
+      <!-- ================= Бюджет ================= -->
       <section class="section">
         <div class="wrap">
-          <div class="card narrow ext-card">
-            <div class="ext-text">
-              <p class="kicker">Идеи из браузера</p>
-              <h3>Поймали классную идею при поиске в браузере? Припаркуйте в приложении!</h3>
-              <p class="lines lede">
-                <span
-                  >Отель, смотровая площадка, предложение по билетам — сохраните
-                  прямо из браузера,<br />вместе со ссылкой, картинкой и ценой.</span
-                >
-                <span>Идея будет ждать вас в разделе «Идеи» в Backpacker.</span>
-                <span
-                  >Оттуда её можно перенести в поездку — и она станет карточкой.
-                  А можно оставить ждать своего часа.</span
-                >
-              </p>
-
-              <p class="ext-status">Расширение для Chrome — скоро</p>
-
-              <!-- БУДУЩИЙ СЛОТ · Chrome Web Store.
-                   Когда появится реальный публичный store URL:
-                   удалить <p class="ext-status"> выше и раскомментировать ссылку.
-                   Класс .btn-secondary уже описан в styles.css.
-
-              <p style="margin-top: 18px">
-                <a class="btn btn-secondary" href="ЗАМЕНИТЬ_НА_CHROME_WEB_STORE_URL"
-                   rel="noopener">Установить расширение</a>
-              </p>
-              -->
-            </div>
-
-            <div class="crop crop-panel">
-              <a class="crop-link" href="https://dphnll.github.io/Backpacker_demo/" aria-label="Открыть Backpacker и посмотреть раздел «Идеи»">
-                <img
-                  src="./assets/crop-extension.png"
-                  width="419"
-                  height="1073"
-                  alt="Боковая панель расширения Backpacker Travel Capture: пойманная идея с фотографией, названием экскурсии, ценой 460 EUR, адресом источника и кнопкой «Сохранить в Идеи»."
-                  loading="lazy"
-                />
+          <div class="card narrow card-wide">
+            <p class="kicker">Бюджет</p>
+            <h3>Сумма считается сама</h3>
+            <p class="lines lede">
+              <span
+                >Пока вы редактируете и двигаете карточки, итог по дню и по
+                всей поездке пересчитывается.</span
+              >
+              <span
+                >Не знаете стоимость? Не указывайте или укажите примерный
+                ориентир.</span
+              >
+            </p>
+            <div class="crop">
+              <a class="crop-link" href="https://dphnll.github.io/Backpacker_demo/" aria-label="Открыть Backpacker и посмотреть бюджет поездки">
+              <img
+                src="./assets/crop-budget.png"
+                width="800"
+                height="535"
+                alt="Фрагмент экрана бюджета: «Бюджет поездки 45 000 ₽», «Оплачено 16 500 ₽», «Бронь 13 000 ₽», «Свободно 15 500 ₽»."
+                loading="lazy"
+              />
               </a>
             </div>
           </div>
