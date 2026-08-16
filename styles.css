@@ -142,11 +142,15 @@ body > * {
    проглядывают только в промежутках между ними, на широких —
    целиком живут в правом поле. Ни касаний, ни ширины документа
    она не трогает: position: fixed из потока выведен. */
+/* Полоса выходит за экран сверху и снизу: путь плитки становится длиннее
+   видимой высоты, поэтому восемь плиток разъезжаются шире и не наезжают
+   друг на друга даже в невысоком окне. Заодно они не возникают и не
+   исчезают на кромке кадра, а приходят и уходят за неё. */
 .edge-strip {
   position: fixed;
-  top: 0;
+  top: -6vh;
   right: 0;
-  bottom: 0;
+  bottom: -6vh;
   z-index: 0;
   width: clamp(112px, 14vw, 184px);
   overflow: hidden;
@@ -157,8 +161,10 @@ body > * {
   position: absolute;
   top: 0;
   display: grid;
-  width: clamp(88px, 10.4vw, 132px);
-  height: clamp(88px, 10.4vw, 132px);
+  /* Размер ограничен и по высоте экрана: на широком, но низком окне
+     плитка в 132px съедала весь промежуток между соседями. */
+  width: clamp(88px, min(10.4vw, 12vh), 132px);
+  height: clamp(88px, min(10.4vw, 12vh), 132px);
   place-items: center;
   padding: clamp(14px, 1.6vw, 20px);
   border-radius: 12px;
@@ -179,53 +185,63 @@ body > * {
   stroke-linejoin: round;
 }
 
-/* Палитра корешков карточек события — те же значения, что в приложении. */
+/* Палитра корешков карточек события — те же значения, что в приложении.
+
+   Задержки разложены строго через 1.625s — это 13s цикла, делённые на
+   восемь плиток. Раньше шаг гулял от 2s до 1s, и плитки то расходились,
+   то наезжали друг на друга. При равном шаге вертикальный промежуток
+   между ними тоже равный: путь за цикл — высота экрана плюс 280px, то
+   есть на телефоне около 136px между плитками при высоте плитки 88px.
+
+   Горизонтальные позиции чередуются широко: соседние по времени плитки
+   разведены по краям полосы, поэтому даже в самом тесном месте они не
+   перекрывают друг друга. */
 .tile-ticket {
-  left: 4%;
+  left: 2%;
   background: #44637e;
-  animation-delay: -1s;
+  animation-delay: 0s;
 }
 
 .tile-food {
-  left: 22%;
+  left: 20%;
   background: #a2503a;
-  animation-delay: -3s;
+  animation-delay: -1.625s;
 }
 
 .tile-place {
-  left: 10%;
+  left: 8%;
   background: #6e675c;
-  animation-delay: -5s;
+  animation-delay: -3.25s;
 }
 
 .tile-spa {
-  left: 26%;
+  left: 22%;
   background: #7a5568;
-  animation-delay: -7s;
+  animation-delay: -4.875s;
 }
 
 .tile-excursion {
-  left: 15%;
+  left: 0%;
   background: #2e6b5e;
-  animation-delay: -8.5s;
+  animation-delay: -6.5s;
 }
 
 .tile-stay {
-  left: 2%;
+  left: 16%;
   background: #8a6d2e;
-  animation-delay: -10s;
+  animation-delay: -8.125s;
 }
 
 .tile-idea {
-  left: 24%;
+  left: 10%;
   background: #6e675c;
-  animation-delay: -11.5s;
+  animation-delay: -9.75s;
 }
 
 .tile-shopping {
-  left: 11%;
+  left: 18%;
   background: #2e6b5e;
-  animation-delay: -12.5s;
+  animation-delay: -11.375s;
 }
 
 @keyframes edge-fall {
@@ -234,7 +250,8 @@ body > * {
   }
 
   to {
-    transform: translateY(calc(100vh + 140px)) rotate(2deg);
+    /* 112vh — высота полосы вместе с вылетами за кромки экрана. */
+    transform: translateY(calc(112vh + 140px)) rotate(2deg);
   }
 }
 
@@ -420,8 +437,11 @@ main {
   background: var(--brand);
 }
 
+/* Пояснение после тире раньше уводилось в серый. В перечислении, которое
+   работает как удар, это гасило вторую половину каждой строки — держим
+   весь список одним цветом. */
 .bullets li span {
-  color: var(--ink-soft);
+  color: inherit;
 }
 
 /* ---------- Шапка ---------- */
@@ -643,10 +663,15 @@ main {
   margin-top: 16px;
 }
 
+/* Строка под чертой — вывод из списка, а не примечание к нему. Серый и
+   обычное начертание делали её тише перечисления, хотя мысль блока
+   держится именно на ней. */
 .problem .lede {
   margin-top: 16px;
   padding-top: 14px;
   border-top: 1px solid var(--line);
+  color: var(--ink);
+  font-weight: 600;
 }
 
 /* ---------- Доказательства продуктом ---------- */
