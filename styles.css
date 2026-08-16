@@ -1,0 +1,969 @@
+/* ============================================================
+   Backpacker Landing v0
+   Визуальный источник истины — композиционный слой главной
+   в 01_app/styles.css (токены --a-*, строки 5361+).
+
+   Устройство страницы повторяет главную приложения:
+   карта лежит под всем документом и не едет со скроллом,
+   а содержимое живёт в непрозрачных бумажных плашках.
+   Поэтому текст никогда не оказывается на карте.
+   ============================================================ */
+
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("./fonts/inter-cyrillic.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("./fonts/inter-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+2000-206F,
+    U+2122, U+2191, U+2193, U+2212, U+2215;
+}
+
+:root {
+  /* Бумага и чернила — ровно как в приложении */
+  --paper: #f6f1e7;
+  --card: #fffdf9;
+  --ink: #1c1a17;
+  --ink-soft: #6f675c;
+  --line: rgba(28, 26, 23, 0.1);
+  --brand: #2f5d55;
+  --kraft: #ede0c6;
+
+  --gap: 14px;
+  /* Поля от краёв экрана. Вдвое шире внутреннего ритма приложения:
+     карта должна дышать вокруг плашек, а не выглядывать полоской. */
+  --pad: 36px;
+  /* Единственный вертикальный шаг между плашками. Одно значение на все
+     ширины: между снимком героя, разделами и карточками доказательств
+     расстояние обязано быть одинаковым, иначе страница читается как
+     набор групп, а не как ровная лента. */
+  --block: 100px;
+  --maxw: 1040px;
+
+  --card-shadow: 0 1px 2px rgba(28, 26, 23, 0.04);
+  --shot-shadow: 0 20px 40px rgba(28, 26, 23, 0.14);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  /* Фон объявлен на html, чтобы фон body не уезжал на канву и
+     карта в body::before имела что перекрывать. */
+  background: var(--paper);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  position: relative;
+  margin: 0;
+  min-width: 320px;
+  background: transparent;
+  color: var(--ink);
+  font-family: Inter, "Segoe UI", Roboto, system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.55;
+  overflow-wrap: break-word;
+}
+
+/* Карта — среда, а не текстура. position: fixed, а не
+   background-attachment: fixed — второй игнорируется на iOS,
+   и карта поехала бы вместе с содержимым. Маска повторяет
+   главную приложения: плотно у кромок кадра, тише в середине. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  background-image: url("./assets/map-home.jpg");
+  background-size: cover;
+  background-position: center;
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    #000 0%,
+    rgba(0, 0, 0, 0.18) 26%,
+    rgba(0, 0, 0, 0.18) 74%,
+    #000 100%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    #000 0%,
+    rgba(0, 0, 0, 0.18) 26%,
+    rgba(0, 0, 0, 0.18) 74%,
+    #000 100%
+  );
+}
+
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ПРАВИЛО КОНТРАСТА НАД КАРТОЙ.
+   Замерено по самому файлу карты: средняя светлота 194, минимальная 50,
+   3,3% пикселей темнее 120. Под слоем 0,4 это даёт фон от 222 в среднем
+   до 165 в худшем месте. На таком фоне --ink-soft даёт 4,16 в среднем и
+   2,25 в худшем — ниже AA. --ink держит 7,02 даже в худшем.
+   Отсюда правило: --ink-soft живёт только на плашках, а текст, лежащий
+   прямо на карте, всегда --ink. Иерархию здесь держит кегль, не цвет. */
+.hero .kicker,
+.cta-note {
+  color: var(--ink);
+}
+
+/* ---------- Полоса падающих плиток по правому краю ----------
+   Мотив взят с экрана приветствия приложения: те же восемь типов
+   событий, та же приглушённая палитра корешков, тот же радиус 12,
+   та же мягкая тень и тот же цикл 13 секунд с отрицательными
+   задержками — за счёт них лента с первого кадра выглядит идущей,
+   а не начинающейся.
+
+   Полоса зафиксирована у правого края и лежит СЛОЙ В СЛОЙ с картой,
+   ниже содержимого. На узких экранах плитки уходят за плашки и
+   проглядывают только в промежутках между ними, на широких —
+   целиком живут в правом поле. Ни касаний, ни ширины документа
+   она не трогает: position: fixed из потока выведен. */
+.edge-strip {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  width: clamp(112px, 14vw, 184px);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.edge-tile {
+  position: absolute;
+  top: 0;
+  display: grid;
+  width: clamp(88px, 10.4vw, 132px);
+  height: clamp(88px, 10.4vw, 132px);
+  place-items: center;
+  padding: clamp(14px, 1.6vw, 20px);
+  border-radius: 12px;
+  color: #fff;
+  opacity: 0.3;
+  box-shadow: 0 4px 12px rgba(28, 26, 23, 0.1);
+  animation: edge-fall 13s linear infinite;
+  will-change: transform;
+}
+
+.edge-tile svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Палитра корешков карточек события — те же значения, что в приложении. */
+.tile-ticket {
+  left: 4%;
+  background: #44637e;
+  animation-delay: -1s;
+}
+
+.tile-food {
+  left: 22%;
+  background: #a2503a;
+  animation-delay: -3s;
+}
+
+.tile-place {
+  left: 10%;
+  background: #6e675c;
+  animation-delay: -5s;
+}
+
+.tile-spa {
+  left: 26%;
+  background: #7a5568;
+  animation-delay: -7s;
+}
+
+.tile-excursion {
+  left: 15%;
+  background: #2e6b5e;
+  animation-delay: -8.5s;
+}
+
+.tile-stay {
+  left: 2%;
+  background: #8a6d2e;
+  animation-delay: -10s;
+}
+
+.tile-idea {
+  left: 24%;
+  background: #6e675c;
+  animation-delay: -11.5s;
+}
+
+.tile-shopping {
+  left: 11%;
+  background: #2e6b5e;
+  animation-delay: -12.5s;
+}
+
+@keyframes edge-fall {
+  from {
+    transform: translateY(-140px) rotate(-2deg);
+  }
+
+  to {
+    transform: translateY(calc(100vh + 140px)) rotate(2deg);
+  }
+}
+
+/* Движение — украшение, а не смысл: кому оно мешает, тот его не видит. */
+@media (prefers-reduced-motion: reduce) {
+  .edge-strip {
+    display: none;
+  }
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.16;
+  letter-spacing: -0.02em;
+}
+
+p,
+ul {
+  margin: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -60px;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 10px;
+  background: var(--brand);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 120ms ease;
+}
+
+.skip-link:focus-visible {
+  top: 12px;
+  outline-color: var(--ink);
+}
+
+/* ---------- Общая раскладка ---------- */
+
+.wrap {
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--pad);
+}
+
+/* ЕДИНЫЙ ШАГ МЕЖДУ ПЛАШКАМИ.
+   Раньше ритм складывался из собственных полей секций, и расстояния
+   выходили разными: между снимком героя и первой плашкой — два шага,
+   между секциями — один, внутри сетки доказательств — свой gap.
+   Теперь шаг задаётся в одном месте: main раздаёт его между блоками,
+   сетка доказательств берёт то же значение. Ни одна секция не носит
+   вертикальных полей, поэтому новый раздел встаёт в общий ритм сам. */
+main {
+  display: grid;
+  gap: var(--block);
+}
+
+.section {
+  padding: 0;
+}
+
+/* Плашка. Одни и те же значения, что у карточек на главной
+   приложения: своя рамка, бумажный фон, один мягкий тень-намёк. */
+.card {
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--card);
+  box-shadow: var(--card-shadow);
+}
+
+/* Одиночная плашка не должна разъезжаться на всю ширину десктопа. */
+.narrow {
+  max-width: 640px;
+  margin-inline: auto;
+}
+
+.kicker {
+  margin: 0 0 8px;
+  color: var(--ink-soft);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+/* Мысль с новой строки остаётся с новой строки. Тот же приём,
+   что на экране приветствия приложения: каждая строка — свой span.
+   Внутри строки перенос по-прежнему свободный, поэтому длинная
+   строка на 320 px просто занимает две. */
+.lines span {
+  display: block;
+}
+
+.lines span + span {
+  margin-top: 5px;
+}
+
+.lede {
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+/* Эмодзи чуть крупнее строки и не отрывается от последнего слова. */
+.emoji {
+  display: inline-block;
+  font-size: 1.25em;
+  line-height: 1;
+  vertical-align: -0.12em;
+  white-space: nowrap;
+}
+
+.card h3 + .lines,
+.card h2 + .lines,
+.card h3 + .lede,
+.card h2 + .lede {
+  margin-top: 12px;
+}
+
+/* ---------- Список-перечисление ---------- */
+
+/* Список выключен влево и отбит от края плашки заметным отступом.
+   Отступ задан явно, а не получается сам из центрирования: при
+   центрировании его величина зависела от длины самого длинного пункта,
+   и в двух блоках он выходил разным (155 px против 99 px на десктопе).
+   Явное значение делает оба списка одинаковыми на любой ширине. */
+.bullets {
+  display: grid;
+  gap: 9px;
+  margin: 0;
+  padding: 0 0 0 clamp(28px, 7vw, 72px);
+  list-style: none;
+}
+
+/* Пункт — обычный текстовый блок с маркером в отступе, а не сетка.
+   При сетке пояснение после тире оказывалось отдельной ячейкой и
+   уезжало на свою строку: «Участники» и «— компания друзей» вставали
+   друг под другом и разваливали два столбца. */
+.bullets li {
+  position: relative;
+  padding-left: 15px;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.bullets li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 5px;
+  height: 5px;
+  border-radius: 2px;
+  background: var(--brand);
+}
+
+.bullets li span {
+  color: var(--ink-soft);
+}
+
+/* ---------- Шапка ---------- */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid var(--line);
+  background: rgba(246, 241, 231, 0.92);
+  backdrop-filter: saturate(1.1) blur(8px);
+  -webkit-backdrop-filter: saturate(1.1) blur(8px);
+}
+
+.site-header .wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 56px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  /* Логотип 26px высотой, но это ссылка: цель нажатия не опускаем
+     ниже 44px даже там, где сама графика меньше. */
+  min-height: 44px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.brand img {
+  width: 22px;
+  height: 26px;
+  object-fit: contain;
+}
+
+.brand span {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.055em;
+}
+
+/* ---------- Кнопки ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 54px;
+  padding: 12px 24px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: none;
+  /* Подпись задаёт ширину: две строки перевода не ломают кнопку. */
+  overflow-wrap: normal;
+}
+
+.btn-primary {
+  background: var(--brand);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(28, 26, 23, 0.18);
+}
+
+.btn-primary:focus-visible {
+  outline-color: var(--ink);
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+}
+
+/* Вторичная кнопка сейчас не используется. Стиль задан заранее для
+   будущего CTA расширения и store-бейджей, чтобы подстановка ссылки
+   не требовала правки CSS. */
+.btn-secondary {
+  min-height: 48px;
+  padding: 10px 20px;
+  border-color: var(--line);
+  background: var(--card);
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.btn-block {
+  display: flex;
+  width: 100%;
+}
+
+/* Лежит прямо на карте — см. правило контраста над картой выше. */
+.cta-note {
+  margin-top: 10px;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* ---------- Снимки ---------- */
+
+/* Целый экран — только в герое: он один сообщает «продукт мобильный».
+   Рамка тонкая и нейтральная, устройство не изображается. */
+.phone {
+  width: 100%;
+  max-width: 250px;
+  margin: 0 auto;
+  padding: 8px;
+  border-radius: 34px;
+  background: rgba(28, 26, 23, 0.07);
+  box-shadow: var(--shot-shadow);
+}
+
+.phone img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 375 / 812;
+  border-radius: 26px;
+  background: var(--paper);
+  object-fit: cover;
+}
+
+/* Во всех остальных блоках — фрагмент интерфейса, вклеенный в плашку.
+   Размеры кадра приходят из атрибутов width/height самой картинки,
+   поэтому место под неё резервируется до загрузки. */
+/* Ни рамки, ни подложки: у самих кадров уже есть свои края — рамка дня,
+   корешок карточки, плашки сумм. Ещё один контур поверх делал коробку
+   внутри коробки. Фрагмент просто лежит на плашке раздела. */
+.crop {
+  margin-top: 18px;
+}
+
+/* Снимок — ссылка в приложение: клик по фрагменту, в том числе по кнопке
+   внутри него, открывает Backpacker. Ссылкой сделан весь кадр, а не
+   отдельная область: обещать интерактив только одной кнопке на картинке
+   было бы обманом — работать должно всё, на что человек нажмёт. */
+.crop-link {
+  display: block;
+  border-radius: 8px;
+}
+
+.crop-link:focus-visible {
+  outline-offset: 4px;
+}
+
+.crop img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  transition: transform 160ms ease;
+}
+
+@media (hover: hover) {
+  .crop-link:hover img {
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crop img {
+    transition: none;
+  }
+}
+
+/* ---------- Герой ---------- */
+
+/* Собственных вертикальных полей у героя нет — только отбивка от шапки.
+   Расстояние до следующей плашки раздаёт main. */
+.hero {
+  padding: 24px 0 0;
+}
+
+.hero h1 {
+  font-size: clamp(29px, 7.4vw, 42px);
+  line-height: 1.14;
+}
+
+.hero-lead {
+  margin-top: 14px;
+  max-width: 30em;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.hero-card {
+  margin-top: 18px;
+  padding: 16px 18px;
+}
+
+.hero-card-foot {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.hero-actions {
+  margin-top: 22px;
+}
+
+.hero .phone {
+  margin-top: 30px;
+}
+
+/* ---------- Проблема ---------- */
+
+.problem h2 {
+  font-size: clamp(22px, 5.4vw, 28px);
+}
+
+.problem .bullets {
+  margin-top: 16px;
+}
+
+.problem .lede {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+/* ---------- Доказательства продуктом ---------- */
+
+.proof-grid {
+  display: grid;
+  gap: var(--block);
+}
+
+/* Размер задан всем заголовкам внутри плашек, а не только внутри .proof:
+   у блока расширения нет класса .proof, и его заголовок оставался
+   в браузерном кегле h3 — на странице он выбивался из ряда. */
+.card h3 {
+  font-size: clamp(19px, 4.8vw, 24px);
+}
+
+/* ---------- Расширение ---------- */
+
+.ext-status {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+/* ---------- Закрывающий блок ---------- */
+
+.closing {
+  padding: 0 0 var(--block);
+  text-align: center;
+}
+
+.closing h2 {
+  font-size: clamp(22px, 5.4vw, 30px);
+}
+
+.closing .btn {
+  margin-top: 20px;
+}
+
+/* Будущий ряд store-бейджей. Разметка закомментирована в index.html,
+   стиль лежит здесь, чтобы включение было одним движением. */
+.store-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+/* ---------- Подвал ---------- */
+
+.site-footer {
+  border-top: 1px solid var(--line);
+  background: var(--card);
+}
+
+.site-footer .wrap {
+  display: grid;
+  gap: 12px;
+  padding-top: 26px;
+  padding-bottom: calc(26px + env(safe-area-inset-bottom));
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  padding: 0;
+  list-style: none;
+}
+
+.footer-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--ink-soft);
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.copyright {
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+/* ============================================================
+   Широкие экраны. Не отдельный layout, а та же лента плашек:
+   плашки-доказательства встают в два столбца, герой
+   раскладывается на текст и снимок.
+   ============================================================ */
+
+@media (min-width: 600px) {
+  :root {
+    --pad: 56px;
+  }
+
+  body {
+    font-size: 16px;
+  }
+
+  .lede,
+  .bullets li,
+  .hero-card-foot {
+    font-size: 16px;
+  }
+
+  .btn-block {
+    display: inline-flex;
+    width: auto;
+  }
+
+  .card {
+    padding: 26px;
+  }
+
+  .hero-card {
+    padding: 22px 24px;
+  }
+
+  .phone {
+    max-width: 270px;
+  }
+}
+
+@media (min-width: 760px) {
+  /* Плашки в ряду тянутся до общей высоты, иначе низ ряда рвётся:
+     тексты и снимки везде разной длины. Снимок при этом прижимается
+     к низу плашки (margin-top: auto ниже), поэтому лишняя высота
+     уходит в промежуток между текстом и кадром, а не под кадр. */
+  .proof-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    gap: var(--block);
+  }
+
+  .proof {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .proof .crop {
+    margin-top: auto;
+    padding-top: 18px;
+  }
+
+  /* Одиночные плашки занимают всю ширину, как ряд из двух: колонка в
+     640 px посреди пустого поля читалась как недоделанная сетка.
+     Строка при этом не растягивается — её меру держит текст внутри. */
+  .narrow {
+    max-width: none;
+  }
+
+  .narrow > h2,
+  .narrow > h3,
+  .narrow > .lede,
+  .narrow > .lines,
+  .narrow > .bullets,
+  .narrow > .ext-status {
+    max-width: 46em;
+  }
+}
+
+@media (min-width: 900px) {
+  :root {
+    --pad: 80px;
+  }
+
+  .hero {
+    padding-top: 44px;
+  }
+
+  .hero .wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 290px;
+    align-items: center;
+    gap: 52px;
+  }
+
+  .hero .phone {
+    margin-top: 0;
+    max-width: none;
+  }
+
+  .site-footer .wrap {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+
+  .footer-links {
+    justify-content: flex-end;
+  }
+
+  .copyright {
+    grid-row: 2;
+    grid-column: 1;
+  }
+}
+
+/* ============================================================
+   Документы: политика конфиденциальности и служебные страницы.
+   Никакого JS, читаемая мера строки, крупный интерлиньяж.
+   Текст лежит на плашке — по той же причине, что и везде:
+   под ним карта.
+   ============================================================ */
+
+.doc {
+  padding: 24px 0 52px;
+}
+
+.doc .wrap {
+  max-width: 760px;
+}
+
+.doc-sheet {
+  padding: 24px 20px 32px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--card);
+  box-shadow: var(--card-shadow);
+}
+
+/* Единственная ссылка документа, лежащая вне листа, — значит на карте.
+   См. правило контраста над картой. */
+.doc-back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--ink);
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.doc h1 {
+  margin-top: 6px;
+  font-size: clamp(25px, 5.8vw, 32px);
+}
+
+.doc h2 {
+  margin-top: 40px;
+  font-size: clamp(20px, 4.6vw, 24px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.doc h3 {
+  margin-top: 28px;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.doc p,
+.doc li {
+  margin-top: 12px;
+  line-height: 1.62;
+}
+
+.doc ul {
+  padding-left: 22px;
+}
+
+.doc hr {
+  margin: 44px 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+
+.doc code {
+  /* Здесь живут длинные URL и плейсхолдеры. На 320 px они шире
+     колонки, поэтому им явно разрешено рваться в любом месте. */
+  overflow-wrap: anywhere;
+  padding: 1px 5px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--paper);
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.doc-meta {
+  margin-top: 14px;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+.doc-langs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 0;
+  list-style: none;
+}
+
+.doc-langs a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+@media (min-width: 600px) {
+  .doc-sheet {
+    padding: 34px 34px 40px;
+  }
+}

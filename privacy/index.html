@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#2f5d55" />
+    <title>Privacy Policy — Backpacker Travel Capture</title>
+    <meta
+      name="description"
+      content="Privacy policy for the Backpacker Travel Capture browser extension. English and Russian."
+    />
+    <link rel="canonical" href="https://dphnll.github.io/backpacker-site/privacy/" />
+    <link rel="icon" href="../assets/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="../">
+          <img src="../assets/logo.svg" alt="" width="22" height="26" />
+          <span>BACKPACKER</span>
+        </a>
+      </div>
+    </header>
+
+    <main class="doc" id="main">
+      <div class="wrap">
+        <a class="doc-back" href="../">← Backpacker</a>
+
+        <div class="doc-sheet">
+        <h1>Privacy Policy — Backpacker Travel Capture</h1>
+        <p class="doc-meta">
+          Effective date: <code>[EFFECTIVE_DATE]</code><br />
+          This page: <code>https://dphnll.github.io/backpacker-site/privacy/</code>
+        </p>
+
+        <ul class="doc-langs">
+          <li><a href="#english">English</a></li>
+          <li><a href="#russian">Русский</a></li>
+        </ul>
+
+        <!-- ================= ENGLISH ================= -->
+        <section id="english" lang="en">
+          <h2>English</h2>
+
+          <p>
+            Backpacker Travel Capture is a browser extension that saves travel
+            ideas you find on the web — a place, a hotel, a flight offer, a page
+            worth remembering — first into your own browser, and then into your
+            Backpacker account if you choose to connect one.
+          </p>
+          <p>
+            This policy describes exactly what the Extension handles. It is
+            deliberately specific: where we do not collect something, we say so.
+          </p>
+
+          <h3>What the Extension reads, and when</h3>
+          <p>
+            The Extension reads a web page only when you ask it to — by clicking
+            its toolbar icon, or by right-clicking a selection or a link and
+            choosing "Save to Backpacker". It does not read pages in the
+            background, on a timer, or as you browse.
+          </p>
+          <p>When you trigger a capture, it reads from that page:</p>
+          <ul>
+            <li>the page address, title and domain;</li>
+            <li>
+              structured data the page publishes about itself (JSON-LD blocks and
+              <code>meta</code> tags), its first heading and its canonical link;
+            </li>
+            <li>candidate images and candidate prices found on the page;</li>
+            <li>the text you selected, if you captured a selection;</li>
+            <li>
+              the address of the link you right-clicked, if you captured a link.
+              The linked page itself is never opened, fetched or read.
+            </li>
+          </ul>
+          <p>
+            The Extension never reads the full HTML of a page and never transmits
+            page markup anywhere. It never downloads images: if a picture is part
+            of a saved idea, only its address is kept.
+          </p>
+
+          <h3>What is stored in your browser</h3>
+          <p>
+            Saved ideas are stored in your Chrome profile, on your device, using
+            the browser's extension storage. Each idea holds what was captured
+            plus any note you typed. Your manual ordering of the list is stored
+            alongside them.
+          </p>
+          <p>
+            The Extension also stores a random identifier for this browser,
+            generated locally. It is not an account, is not derived from anything
+            about you or your device, and exists so that sending the same idea
+            twice cannot create a duplicate.
+          </p>
+          <p>Nothing in this section leaves your device unless you send an idea.</p>
+
+          <h3>What is sent to Backpacker, and when</h3>
+          <p>
+            Nothing is sent automatically. An idea travels to Backpacker only
+            when you press Send on that idea, and only after you have connected a
+            Backpacker account.
+          </p>
+          <p>
+            What is sent is one idea at a time, over HTTPS, containing: a title;
+            and, where they exist, the source address, your note, an excerpt or
+            the text you selected, a location text, a price and its currency, a
+            category, an image address and where that image came from. Nothing
+            else.
+          </p>
+          <p>
+            Your email address is not part of that payload. The Extension shows it
+            in the panel so you can see which account your ideas go to, and that
+            is all it does with it.
+          </p>
+
+          <h3>Connecting and disconnecting</h3>
+          <p>
+            Connecting is started by you, from the Extension. Backpacker issues a
+            credential for this browser, which the Extension stores locally and
+            sends as a header when it delivers an idea, so Backpacker knows whose
+            idea it is. The Extension never holds your Backpacker login session,
+            and it cannot choose which account an idea lands in — that is decided
+            by Backpacker from the credential.
+          </p>
+          <p>
+            Disconnect removes the credential and any unfinished connection
+            attempt from this browser. To be precise about what it does not do:
+            <strong>
+              it does not delete your saved local ideas, and it does not delete
+              ideas you already sent to Backpacker.
+            </strong>
+            Your Backpacker account is untouched, and you can reconnect at any
+            time.
+          </p>
+          <p>
+            The connection record on Backpacker's side remains until it expires.
+            Removing it there is done in Backpacker, not in the Extension.
+          </p>
+
+          <h3>Who else is involved</h3>
+          <p>
+            Backpacker's backend runs on Supabase, so an idea you send is
+            processed and stored by Backpacker's Supabase project as its hosting
+            provider. That is the only third party in the path, and it acts for
+            Backpacker, not on its own account.
+          </p>
+          <p>
+            The Extension contains no analytics, no crash reporting, no
+            advertising and no tracking of any kind. Your data is not sold and not
+            shared with anyone else.
+          </p>
+
+          <h3>Limited use of data</h3>
+          <p>
+            Everything the Extension obtains from you or from the pages you
+            capture is used for one thing only: saving your travel ideas into your
+            browser and, when you choose to send one, into your Backpacker
+            account. It is used for that purpose and for the operations that
+            directly support it, and for nothing else.
+          </p>
+          <p>
+            Specifically, this data is never used or transferred for advertising,
+            ad targeting or personalisation, never used to assess
+            creditworthiness or for lending purposes, and never sold. It is not
+            transferred to anyone other than Backpacker's own hosting provider
+            acting on Backpacker's behalf, except where the law requires it. No
+            person reads it, unless you explicitly ask for support that cannot be
+            given without it, or the law requires it.
+          </p>
+
+          <h3>What we never collect</h3>
+          <p>
+            No passwords, no payment details, no health or financial records, no
+            contacts, no device location, no keystrokes or form contents, no
+            clipboard reading, no cookies from the pages you visit, and no
+            browsing history. The Extension requests no permission that would let
+            it observe your browsing.
+          </p>
+
+          <h3>How long things are kept</h3>
+          <p>
+            Saved ideas stay in your browser until you delete them, or until you
+            remove the Extension, which clears its storage. The connection
+            credential is kept until it expires or until you disconnect. Ideas you
+            sent to Backpacker are kept by Backpacker under its own terms, and are
+            removed there.
+          </p>
+
+          <h3>Your choices</h3>
+          <ul>
+            <li>
+              Delete a single idea in the Extension — it is removed immediately
+              and permanently, with no undo.
+            </li>
+            <li>Disconnect at any time, and reconnect whenever you like.</li>
+            <li>
+              Withdraw the Extension's access to sites at any time in Chrome,
+              under Extensions → Backpacker Travel Capture → Site access. The
+              Extension notices this straight away and asks again before its next
+              capture.
+            </li>
+            <li>
+              Remove the Extension to clear everything it stored in this browser.
+            </li>
+          </ul>
+
+          <h3>Site access</h3>
+          <p>
+            To read the page you are capturing, the Extension needs permission to
+            access sites. It asks for this permission at runtime, with an
+            explanation, and only after you have used a capture action — it is not
+            requested at install time. You can grant it, refuse it, or revoke it
+            later.
+          </p>
+
+          <h3>Children</h3>
+          <p>
+            The Extension is not directed at children and is not designed for use
+            by them.
+          </p>
+
+          <h3>Changes</h3>
+          <p>
+            If this policy changes, the new version is published at the same
+            address with a new effective date.
+          </p>
+
+          <h3>Contact</h3>
+          <p>
+            Questions about this policy or about your data:
+            <code>[CONTACT_EMAIL]</code>.
+          </p>
+        </section>
+
+        <hr />
+
+        <!-- ================= РУССКИЙ ================= -->
+        <section id="russian" lang="ru">
+          <h2>Русский</h2>
+
+          <p class="doc-meta">
+            Дата вступления в силу: <code>[EFFECTIVE_DATE]</code>
+          </p>
+
+          <p>
+            Backpacker Travel Capture — расширение браузера, которое сохраняет
+            найденные в интернете идеи для поездок: место, отель, предложение по авиабилетам, страницу, которую жалко потерять. Сначала — в ваш
+            браузер, а затем, если вы подключите аккаунт, в ваш Backpacker.
+          </p>
+          <p>
+            Здесь описано ровно то, с чем расширение имеет дело. Там, где мы
+            чего-то не собираем, так и написано.
+          </p>
+
+          <h3>Что расширение читает и когда</h3>
+          <p>
+            Расширение читает страницу только тогда, когда вы его об этом
+            просите: нажатием на иконку в панели браузера или через правый клик
+            по выделенному тексту или ссылке с выбором «Сохранить в Backpacker».
+            Оно не читает страницы фоном, по таймеру или просто пока вы бродите
+            по сайтам.
+          </p>
+          <p>Когда вы запускаете захват, со страницы читаются:</p>
+          <ul>
+            <li>адрес страницы, её заголовок и домен;</li>
+            <li>
+              структурные данные, которые страница публикует о себе (блоки
+              JSON-LD и теги <code>meta</code>), её первый заголовок и канонический адрес;
+            </li>
+            <li>изображения-кандидаты и цены-кандидаты, найденные на странице;</li>
+            <li>выделенный вами текст, если вы сохраняли выделение;</li>
+            <li>
+              адрес ссылки, по которой вы кликнули правой кнопкой, если вы
+              сохраняли ссылку. Сама страница по этой ссылке не открывается, не запрашивается и не читается.
+            </li>
+          </ul>
+          <p>
+            Расширение никогда не читает HTML страницы целиком и никуда его не передаёт. Картинки оно не скачивает: если изображение стало частью
+            сохранённой идеи, хранится только его адрес.
+          </p>
+
+          <h3>Что хранится в вашем браузере</h3>
+          <p>
+            Сохранённые идеи лежат в вашем профиле Chrome, на вашем устройстве, в хранилище расширения. В каждой идее — то, что было захвачено, и заметка, если вы её написали. Рядом хранится порядок, в котором вы
+            расставили список.
+          </p>
+          <p>
+            Ещё расширение хранит случайный идентификатор этого браузера,
+            созданный локально. Это не аккаунт, он ни из чего о вас или вашем
+            устройстве не выводится и нужен только для того, чтобы повторная
+            отправка одной и той же идеи не создала дубль.
+          </p>
+          <p>
+            Ничто из перечисленного не покидает устройство, пока вы не отправите
+            идею.
+          </p>
+
+          <h3>Что уходит в Backpacker и когда</h3>
+          <p>
+            Автоматически не уходит ничего. Идея попадает в Backpacker только
+            когда вы нажимаете «Отправить» именно на ней, и только если вы
+            подключили аккаунт Backpacker.
+          </p>
+          <p>
+            Уходит одна идея за раз, по HTTPS, и в ней: заголовок, а также — если
+            они есть — адрес источника, ваша заметка, отрывок или выделенный вами
+            текст, текст локации, цена и её валюта, категория, адрес изображения
+            и указание, откуда оно взято. Больше ничего.
+          </p>
+          <p>
+            Вашего адреса электронной почты в этой отправке нет. Расширение
+            показывает его в панели, чтобы вы видели, в какой аккаунт уходят
+            идеи, и этим его использование исчерпывается.
+          </p>
+
+          <h3>Подключение и отключение</h3>
+          <p>
+            Подключение начинаете вы, из расширения. Backpacker выдаёт для этого
+            браузера ключ доступа; расширение хранит его локально и отправляет
+            заголовком вместе с идеей, чтобы Backpacker понимал, чья она. Сессию
+            входа в Backpacker расширение не держит и выбрать, в какой аккаунт
+            попадёт идея, не может — это определяет Backpacker по ключу.
+          </p>
+          <p>
+            Отключение убирает ключ доступа и незавершённую попытку подключения
+            из этого браузера. И чтобы не было недопонимания:
+            <strong>
+              сохранённые локальные идеи оно не удаляет, и уже отправленные в Backpacker идеи оно не удаляет тоже.
+            </strong>
+            Аккаунт Backpacker не затрагивается, подключиться заново можно в любой момент.
+          </p>
+          <p>
+            Запись о подключении на стороне Backpacker живёт до истечения срока.
+            Убрать её можно в Backpacker, не в расширении.
+          </p>
+
+          <h3>Кто ещё участвует</h3>
+          <p>
+            Бэкенд Backpacker работает на Supabase, поэтому отправленную идею
+            обрабатывает и хранит проект Backpacker в Supabase как его
+            хостинг-провайдер. Это единственная третья сторона на пути, и она
+            действует для Backpacker, а не сама по себе.
+          </p>
+          <p>
+            В расширении нет аналитики, нет отправки отчётов о сбоях, нет рекламы
+            и нет никакого отслеживания. Ваши данные не продаются и никому не передаются.
+          </p>
+
+          <h3>Ограниченное использование данных</h3>
+          <p>
+            Всё, что расширение получает от вас или со страниц, которые вы
+            сохраняете, используется ровно для одного: чтобы сохранить ваши идеи
+            для поездок в браузере и, когда вы сами отправляете идею, в ваш
+            аккаунт Backpacker. Для этой цели и для операций, которые её напрямую
+            обеспечивают, — и больше ни для чего.
+          </p>
+          <p>
+            В частности, эти данные никогда не используются и не передаются для рекламы, таргетинга или персонализации, никогда не применяются для оценки кредитоспособности или в целях кредитования и никогда не продаются. Они не передаются никому, кроме хостинг-провайдера,
+            действующего для Backpacker, — за исключением случаев, когда этого
+            требует закон. Их не читает человек, если только вы сами не обратитесь за поддержкой, которую без этого не оказать, или этого не потребует закон.
+          </p>
+
+          <h3>Чего мы не собираем никогда</h3>
+          <p>
+            Ни паролей, ни платёжных данных, ни медицинских или финансовых
+            сведений, ни контактов, ни местоположения устройства, ни нажатий
+            клавиш или содержимого форм, ни чтения буфера обмена, ни cookies с посещаемых вами страниц, ни истории посещений. Расширение не запрашивает разрешений, которые позволили бы наблюдать за вашим
+            сёрфингом.
+          </p>
+
+          <h3>Сколько всё хранится</h3>
+          <p>
+            Сохранённые идеи остаются в браузере, пока вы их не удалите или пока
+            не удалите само расширение — тогда его хранилище очищается. Ключ
+            доступа хранится до истечения срока или до отключения. Отправленные в Backpacker идеи хранятся в Backpacker по его правилам и удаляются там же.
+          </p>
+
+          <h3>Что вы можете сделать</h3>
+          <ul>
+            <li>
+              Удалить отдельную идею в расширении — она исчезает сразу и насовсем,
+              без отмены.
+            </li>
+            <li>Отключиться в любой момент и подключиться заново когда захотите.</li>
+            <li>
+              Отозвать доступ расширения к сайтам в Chrome: «Расширения» →
+              Backpacker Travel Capture → «Доступ к сайтам». Расширение замечает
+              это сразу и перед следующим захватом спросит снова.
+            </li>
+            <li>
+              Удалить расширение, чтобы стереть всё, что оно хранило в этом
+              браузере.
+            </li>
+          </ul>
+
+          <h3>Доступ к сайтам</h3>
+          <p>
+            Чтобы прочитать страницу, которую вы сохраняете, расширению нужен
+            доступ к сайтам. Он запрашивается во время работы, с объяснением, и только после того как вы воспользовались захватом, — при установке он
+            не запрашивается. Доступ можно дать, не дать или отозвать позже.
+          </p>
+
+          <h3>Дети</h3>
+          <p>
+            Расширение не предназначено для детей и не рассчитано на использование ими.
+          </p>
+
+          <h3>Изменения</h3>
+          <p>
+            Если политика изменится, новая версия будет опубликована по тому же
+            адресу с новой датой вступления в силу.
+          </p>
+
+          <h3>Контакт</h3>
+          <p>
+            Вопросы о политике или о ваших данных: <code>[CONTACT_EMAIL]</code>.
+          </p>
+        </section>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <a class="brand" href="../">
+          <img src="../assets/logo.svg" alt="" width="22" height="26" />
+          <span>BACKPACKER</span>
+        </a>
+        <p class="copyright">© 2026 Backpacker</p>
+      </div>
+    </footer>
+  </body>
+</html>

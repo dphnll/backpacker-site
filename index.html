@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#2f5d55" />
+    <title>Backpacker — удобный рюкзак для вашего путешествия</title>
+    <meta
+      name="description"
+      content="Пошаговый план поездки в одном месте: билеты, жильё, места, идеи, участники и бюджет. Каждое событие — понятная карточка."
+    />
+    <link rel="canonical" href="https://dphnll.github.io/backpacker-site/" />
+    <link rel="icon" href="./assets/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Backpacker" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:title" content="Backpacker — удобный рюкзак для вашего путешествия" />
+    <meta
+      property="og:description"
+      content="Пошаговый план поездки в одном месте — вместо десятка вкладок, файлов и чатов."
+    />
+    <meta property="og:url" content="https://dphnll.github.io/backpacker-site/" />
+    <meta property="og:image" content="https://dphnll.github.io/backpacker-site/assets/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Перейти к содержанию</a>
+
+    <!-- Полоса падающих плиток по правому краю. Мотив, палитра, радиус,
+         тень и тайминг взяты из экрана приветствия приложения
+         (01_app: .intro-floater, @keyframes intro-float) без изменений.
+         Только декорация: aria-hidden, не ловит касания, гаснет при
+         prefers-reduced-motion. -->
+    <div class="edge-strip" aria-hidden="true">
+      <span class="edge-tile tile-ticket">
+        <svg viewBox="0 0 24 24"><path d="M3 12h18M4 12l6-6M4 12l6 6M14 6l6 6-6 6"></path></svg>
+      </span>
+      <span class="edge-tile tile-food">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="5"></circle><path d="M4 4v7M6 4v7M8 4v7M6 11v9"></path><path d="M19 4v16M16.5 4c0 4 2.5 4 2.5 7"></path></svg>
+      </span>
+      <span class="edge-tile tile-place">
+        <svg viewBox="0 0 24 24"><path d="M12 21s6-5.4 6-11a6 6 0 1 0-12 0c0 5.6 6 11 6 11z"></path><circle cx="12" cy="10" r="2"></circle></svg>
+      </span>
+      <span class="edge-tile tile-spa">
+        <svg viewBox="0 0 24 24"><path d="M7 14c-1.5-1.4-1.5-3.1 0-4.5M12 14c-1.5-1.4-1.5-3.1 0-4.5M17 14c-1.5-1.4-1.5-3.1 0-4.5"></path><path d="M5 17h14l-1.4 3H6.4L5 17z"></path></svg>
+      </span>
+      <span class="edge-tile tile-excursion">
+        <svg viewBox="0 0 24 24"><circle cx="13" cy="4.5" r="2"></circle><path d="M12 7.5 9.5 12l3 2.2"></path><path d="M10 12l-3 2M12.5 14.2 10 20M13.5 14.2 18 20M14 9.5l3 2.5"></path></svg>
+      </span>
+      <span class="edge-tile tile-stay">
+        <svg viewBox="0 0 24 24"><path d="M4 11.5 12 5l8 6.5"></path><path d="M6.5 10.5V20h11V10.5"></path><path d="M10 20v-5h4v5"></path></svg>
+      </span>
+      <span class="edge-tile tile-idea">
+        <svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M8.2 14.2a6 6 0 1 1 7.6 0c-.8.6-1.3 1.4-1.5 2.3H9.7c-.2-.9-.7-1.7-1.5-2.3z"></path></svg>
+      </span>
+      <span class="edge-tile tile-shopping">
+        <svg viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7L6 8z"></path><path d="M9 8a3 3 0 0 1 6 0"></path></svg>
+      </span>
+    </div>
+
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="./">
+          <img src="./assets/logo.svg" alt="" width="22" height="26" />
+          <span>BACKPACKER</span>
+        </a>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- ================= Герой ================= -->
+      <section class="hero">
+        <div class="wrap">
+          <div>
+            <p class="kicker">Планировщик поездок</p>
+            <h1>Удобный «рюкзак» для вашего путешествия</h1>
+            <p class="hero-lead">
+              Пошаговый план поездки в одном месте —<br />вместо десятка вкладок,
+              файлов и чатов.
+            </p>
+
+            <div class="card hero-card">
+              <ul class="bullets">
+                <li>Билеты</li>
+                <li>Жильё</li>
+                <li>Места</li>
+                <li>Идеи и хотелки</li>
+                <li>
+                  Участники
+                  <span>— компания друзей<br />или организованная группа</span>
+                </li>
+                <li>Бюджет <span>— единый или вскладчину</span></li>
+              </ul>
+              <p class="hero-card-foot">Каждое событие = понятная карточка</p>
+            </div>
+
+            <div class="hero-actions">
+              <a class="btn btn-primary btn-block" href="https://dphnll.github.io/Backpacker_demo/">
+                Открыть Backpacker
+              </a>
+              <p class="cta-note">Работает в браузере или лёгком приложении</p>
+            </div>
+          </div>
+
+          <div class="phone">
+            <img
+              src="./assets/shot-home.jpg"
+              width="750"
+              height="1624"
+              alt="Главный экран Backpacker: карточка поездки с обложкой, датами и суммой, кнопки «Создать новую поездку» и «Идеи»."
+              fetchpriority="high"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= Проблема ================= -->
+      <section class="section problem">
+        <div class="wrap">
+          <div class="card narrow">
+            <h2>Поездка сейчас лежит в десятке мест сразу?</h2>
+            <ul class="bullets">
+              <li>Билеты в почте</li>
+              <li>Жильё в сторонних приложениях</li>
+              <li>Места в заметках</li>
+              <li>Цены в скриншотах</li>
+              <li>Участники — в чатах</li>
+              <li>Ссылки в открытых вкладках</li>
+            </ul>
+            <p class="lede">
+              Собрать общую картину поездки получается только в голове — и только пока помнишь. <span class="emoji">🤯</span>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= Доказательства продуктом ================= -->
+      <section class="section">
+        <div class="wrap">
+          <div class="proof-grid">
+            <!-- По дням -->
+            <article class="card proof">
+              <p class="kicker">По дням</p>
+              <h3>День — это лента карточек</h3>
+              <p class="lines lede">
+                <span>Каждое событие — отдельная карточка.</span>
+                <span>День показывает события лентой, которую можно листать.</span>
+                <span
+                  >Поменялись планы? Перетащите карточку в другой день или припаркуйте в «идеи на потом».</span
+                >
+              </p>
+              <div class="crop">
+                <a class="crop-link" href="https://dphnll.github.io/Backpacker_demo/" aria-label="Открыть Backpacker и разложить поездку по дням">
+                <img
+                  src="./assets/crop-day.jpg"
+                  width="800"
+                  height="1360"
+                  alt="Два дня плана подряд: «День 1 · 25 500 ₽» с карточками «Билет» и «Жильё» и «День 2 · 7 500 ₽» с карточками «Экскурсия» и «Баня/спа»; ленты прокручиваются вбок."
+                  loading="lazy"
+                />
+                </a>
+              </div>
+            </article>
+
+            <!-- Карточка -->
+            <article class="card proof">
+              <p class="kicker">Карточка</p>
+              <h3>Всё нужное — внутри</h3>
+              <p class="lines lede">
+                <span
+                  >Время, цена в нужной валюте, ссылка на бронь, статус и пометки на полях лежат в одной карточке.</span
+                >
+                <span
+                  >Туда же кладутся файлы: PDF билета или брони, посадочный, скан ваучера, нужное фото.</span
+                >
+                <span
+                  >Не нужно листать переписку, чтобы вспомнить, за что уже
+                  заплачено, а что пока только идея.</span
+                >
+              </p>
+              <div class="crop">
+                <a class="crop-link" href="https://dphnll.github.io/Backpacker_demo/" aria-label="Открыть Backpacker и заполнить карточку события">
+                <img
+                  src="./assets/crop-card.jpg"
+                  width="752"
+                  height="1499"
+                  alt="Карточка события изнутри: поля «Название», «Тип», «Статус», «Расход берёт на себя», дата, время, длительность, цена, «Оплачено», приоритет, ссылка на бронь и локация."
+                  loading="lazy"
+                />
+                </a>
+              </div>
+            </article>
+
+            <!-- Бюджет -->
+            <article class="card proof">
+              <p class="kicker">Бюджет</p>
+              <h3>Сумма считается сама</h3>
+              <p class="lines lede">
+                <span
+                  >Пока вы редактируете и двигаете карточки, итог по дню и по
+                  всей поездке пересчитывается.</span
+                >
+                <span
+                  >Не знаете стоимость? Не указывайте или укажите примерный
+                  ориентир.</span
+                >
+              </p>
+              <div class="crop">
+                <a class="crop-link" href="https://dphnll.github.io/Backpacker_demo/" aria-label="Открыть Backpacker и посмотреть бюджет поездки">
+                <img
+                  src="./assets/crop-budget.png"
+                  width="800"
+                  height="535"
+                  alt="Фрагмент экрана бюджета: «Бюджет поездки 45 000 ₽», «Оплачено 16 500 ₽», «Бронь 13 000 ₽», «Свободно 15 500 ₽»."
+                  loading="lazy"
+                />
+                </a>
+              </div>
+            </article>
+
+            <!-- AI-черновик -->
+            <article class="card proof">
+              <p class="kicker">AI-черновик</p>
+              <h3>Начните с описания —<br />ИИ соберёт черновик</h3>
+              <p class="lines lede">
+                <span>Опишите поездку своими словами — текстом или голосом.</span>
+                <span
+                  >Черновик покажет всё целиком: что уточнить, где цена примерная, чего не хватает.</span
+                >
+                <span
+                  >После вашего подтверждения в приложении появится новая
+                  поездка.</span
+                >
+              </p>
+              <div class="crop">
+                <a class="crop-link" href="https://dphnll.github.io/Backpacker_demo/" aria-label="Открыть Backpacker и собрать черновик с ИИ">
+                <img
+                  src="./assets/crop-ai.png"
+                  width="800"
+                  height="437"
+                  alt="Фрагмент экрана AI-черновика: поле для описания поездки своими словами и кнопка «Надиктовать»."
+                  loading="lazy"
+                />
+                </a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= Расширение ================= -->
+      <section class="section">
+        <div class="wrap">
+          <div class="card narrow">
+            <p class="kicker">Идеи из браузера</p>
+            <h3>Поймали классную идею при поиске в браузере? Припаркуйте в приложении!</h3>
+            <p class="lines lede">
+              <span
+                >Отель, смотровая площадка, предложение по билетам — сохраните
+                прямо из браузера,<br />вместе со ссылкой, картинкой и ценой.</span
+              >
+              <span>Идея будет ждать вас в разделе «Идеи» в Backpacker.</span>
+            </p>
+
+            <p class="ext-status">Расширение для Chrome — скоро</p>
+
+            <!-- БУДУЩИЙ СЛОТ · Chrome Web Store.
+                 Когда появится реальный публичный store URL:
+                 удалить <p class="ext-status"> выше и раскомментировать ссылку.
+                 Класс .btn-secondary уже описан в styles.css.
+
+            <p style="margin-top: 18px">
+              <a class="btn btn-secondary" href="ЗАМЕНИТЬ_НА_CHROME_WEB_STORE_URL"
+                 rel="noopener">Установить расширение</a>
+            </p>
+            -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= Закрытие ================= -->
+      <section class="closing">
+        <div class="wrap">
+          <h2>Соберите поездку<br />в одном месте</h2>
+          <a class="btn btn-primary" href="https://dphnll.github.io/Backpacker_demo/">
+            Открыть Backpacker
+          </a>
+
+          <!-- БУДУЩИЙ СЛОТ · каналы дистрибуции: Google Play, App Store,
+               TestFlight, прямой Android APK. Появляются только когда есть
+               реальные публичные ссылки. Стиль .store-row задан в styles.css.
+
+          <div class="store-row">
+            <a class="btn btn-secondary" href="ЗАМЕНИТЬ" rel="noopener">Google Play</a>
+            <a class="btn btn-secondary" href="ЗАМЕНИТЬ" rel="noopener">App Store</a>
+          </div>
+          -->
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <a class="brand" href="./">
+          <img src="./assets/logo.svg" alt="" width="22" height="26" />
+          <span>BACKPACKER</span>
+        </a>
+
+        <ul class="footer-links">
+          <li><a href="./privacy/">Политика конфиденциальности</a></li>
+          <!-- Ссылка на /terms/ появляется здесь только после того,
+               как будет согласован текст условий. Маршрут уже существует. -->
+          <!-- Контакт появляется здесь после того, как будет задан
+               публичный адрес: <li><a href="mailto:…">Контакт</a></li> -->
+        </ul>
+
+        <p class="copyright">© 2026 Backpacker</p>
+      </div>
+    </footer>
+  </body>
+</html>

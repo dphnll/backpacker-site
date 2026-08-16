@@ -1,0 +1,10 @@
+# Служебное
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Локальные заметки и черновики кадров
+/tmp/
+/scratch/
+*.psd
+*.xcf
