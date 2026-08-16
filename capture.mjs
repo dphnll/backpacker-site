@@ -1,13 +1,40 @@
 // Снимает кадры Backpacker для лендинга.
 // Ноль зависимостей: headless Chrome + CDP через встроенный в Node WebSocket.
+//
+//   node capture.mjs
+//
+// Переменные окружения:
+//   APP_URL   — какую сборку снимать (по умолчанию публичное демо)
+//   OUT_DIR   — куда класть кадры (по умолчанию ./assets рядом со скриптом)
+//   CHROME    — путь к Chrome, если он лежит не в стандартном месте
+//
 import { spawn } from "node:child_process";
-import { writeFileSync, mkdirSync, rmSync } from "node:fs";
-import { join } from "node:path";
+import { writeFileSync, mkdirSync, rmSync, existsSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { tmpdir } from "node:os";
 
-const CHROME = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
+const HERE = dirname(fileURLToPath(import.meta.url));
+
+// Путь к Chrome не зашит: сначала переменная окружения, потом обычные места.
+const CHROME =
+  process.env.CHROME ||
+  [
+    "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "/usr/bin/google-chrome",
+    "/usr/bin/chromium",
+  ].find((p) => existsSync(p));
+
+if (!CHROME) {
+  console.log("Chrome не найден. Укажите путь: CHROME=... node capture.mjs");
+  process.exit(1);
+}
+
 const APP = process.env.APP_URL || "https://dphnll.github.io/Backpacker_demo/";
-const OUT = process.env.OUT_DIR || "C:\\IRINA\\1_DPHNLL\\000_VIBE\\Backpacker\\07_site\\assets";
-const PROFILE = join(process.env.TEMP, "bp-capture-profile");
+const OUT = process.env.OUT_DIR || join(HERE, "assets");
+const PROFILE = join(tmpdir(), "bp-capture-profile");
 const PORT = 9333;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

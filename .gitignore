@@ -8,3 +8,6 @@ Desktop.ini
 /scratch/
 *.psd
 *.xcf
+
+# Автономные сборки для показа. Пересобираются: node bundle.mjs
+/preview/
