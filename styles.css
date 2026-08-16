@@ -665,6 +665,13 @@ main {
 
 /* ---------- Расширение ---------- */
 
+/* Снимок панели снят в один физический пиксель на CSS-пиксель, поэтому
+   растягивать его нельзя — только уменьшать. Отсюда потолок по ширине. */
+.crop-panel img {
+  max-width: 419px;
+  margin-inline: auto;
+}
+
 .ext-status {
   margin-top: 16px;
   padding-top: 14px;
@@ -813,6 +820,20 @@ main {
   .narrow > .bullets,
   .narrow > .ext-status {
     max-width: 46em;
+  }
+
+  /* Плашка расширения — единственная с вертикальным снимком: боковая
+     панель браузера высокая и узкая. Во всю ширину она бы вытянула
+     плашку в столб, поэтому текст и панель встают рядом. */
+  .ext-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    align-items: center;
+    gap: 40px;
+  }
+
+  .ext-card .crop-panel {
+    margin-top: 0;
   }
 }
 
