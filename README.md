@@ -1,7 +1,7 @@
 # Backpacker Landing v0
 
-Публичная точка входа Backpacker. Статические HTML и CSS, без сборки, без
-зависимостей, без JavaScript.
+Публичная точка входа Backpacker. Статические HTML, CSS и один локальный
+JavaScript-файл для переключения языка; без сборки и зависимостей.
 
 Задача страницы — три вещи и ни одной больше:
 
@@ -14,10 +14,11 @@
 
 | Что | Адрес |
 | --- | --- |
-| Landing | `https://dphnll.github.io/backpacker-site/` |
-| Privacy Policy | `https://dphnll.github.io/backpacker-site/privacy/` |
-| Terms (маршрут занят, текста нет) | `https://dphnll.github.io/backpacker-site/terms/` |
-| Приложение (не в этом репозитории) | `https://dphnll.github.io/Backpacker_demo/` |
+| Landing (публикационный target) | `https://backpackerapp.cc/` |
+| Privacy Policy · EN/RU | `https://backpackerapp.cc/privacy/` |
+| Terms (маршрут занят, текста нет) | `https://backpackerapp.cc/terms/` |
+| Приложение (не в этом репозитории) | `https://app.backpackerapp.cc/` |
+| Chrome extension | `https://chromewebstore.google.com/detail/backpacker-travel-capture/okpfmpplfciccfddgibkcoliemfimifc` |
 
 ## Границы
 
@@ -28,22 +29,19 @@
 - `03_extension` — Chrome Extension;
 - `05_native` — Capacitor-оболочка.
 
-Причина не стилистическая, а техническая. В манифесте расширения объявлено
-`externally_connectable: https://dphnll.github.io/*`, а приложение живёт по пути
-`/Backpacker_demo/`. Смена пути или origin приложения ломает handshake
-расширения, scope service worker и уже установленные PWA. Landing поэтому —
-отдельный project repo, а приложение остаётся ровно там, где было.
-
-**Про будущий собственный домен.** Домен, привязанный к *пользовательскому*
-сайту `dphnll.github.io`, переносит на себя все project pages аккаунта, включая
-приложение, — и ломает то, что описано выше. Домен, привязанный к этому
-project-репозиторию, затрагивает только его. Подключать домен нужно здесь.
+Landing остаётся отдельным репозиторием и не меняет PWA, Extension или их
+production-конфигурацию. Публикационный target — отдельный Git-backed
+Cloudflare Pages project для `backpacker-site` с custom domain
+`backpackerapp.cc`. Существующий `backpacker-app` / `app.backpackerapp.cc`
+к этому deployment не относится.
 
 ## Структура
 
 ```
 index.html          вся страница
 styles.css          токены + блоки + три брейкпоинта + стили документов
+i18n.js             RU/EN/FR/KA/DE/HY, URL + storage + browser detection
+landing-i18n.test.mjs  locale/link/legal contract checks without dependencies
 privacy/index.html  политика конфиденциальности, EN + RU
 terms/index.html    заглушка маршрута, noindex, без юридического текста
 404.html            страница ошибки
@@ -74,6 +72,8 @@ BACKPACKER_DESIGN_HANDOFF.md   принятый визуальный язык п
 ```
 
 Шрифт — Inter 400/600, те же два `woff2`, что в приложении, локально, без CDN.
+Для грузинского и армянского добавлен системный sans-serif fallback
+(`Noto Sans Georgian`, `Noto Sans Armenian`, `Segoe UI`, затем системный UI).
 Kicker капсом с `letter-spacing: .1em`, радиус карточки 18, радиус кнопки 14,
 основная кнопка `min-height: 54px`.
 
@@ -148,7 +148,8 @@ Roboto. Всё это либо не реализовано в продукте, 
 рамку даёт сам интерфейс, а на странице у `.crop` нет ни границы, ни фона —
 иначе получается коробка внутри коробки.
 
-Каждый фрагмент обёрнут в ссылку на приложение. Причина: на снимках видны
+Каждый фрагмент обёрнут в ссылку на `https://app.backpackerapp.cc/` с
+whitelist-параметром `?lang=<locale>`. Причина: на снимках видны
 кнопки, и человек по ним нажимает. Ссылкой сделан весь кадр, а не отдельная
 область — обещать интерактив одной кнопке на картинке было бы обманом.
 Отдельных адресов для конкретных экранов у приложения нет, поэтому все четыре
@@ -203,16 +204,22 @@ node capture.mjs
 
 Это описание, а не задача к реализации.
 
+## Локализация
+
+Одна разметка обслуживает шесть языков: `ru`, `en`, `fr`, `ka`, `de`, `hy`.
+Приоритет: whitelist-параметр `?lang=`, сохранённый ручной выбор, первый
+поддерживаемый язык браузера, затем English. Ошибка `localStorage` не блокирует
+страницу. Выбранная локаль попадает в URL и во все ссылки на приложение.
+
+Маркетинговый лендинг локализован на шесть языков. Privacy Policy сохраняет
+только утверждённые English / Русский тексты; переводы legal-документов в этот
+слайс не входят. Интерфейс приложения на лендинге заявлен только для RU/EN.
+
 ## Точки расширения
 
-В разметке уже заготовлены и закомментированы два слота:
-
-- CTA Chrome Web Store в блоке расширения — включается заменой строки-статуса
-  на ссылку, класс `.btn-secondary` уже описан;
-- ряд бейджей Google Play / App Store / TestFlight в закрывающем блоке — класс
-  `.store-row` уже описан.
-
-Ни один из них не включается, пока нет реального публичного URL.
+CTA Chrome Web Store опубликован по действующему URL. В закрывающем блоке
+остаётся только закомментированный будущий слот Google Play / App Store /
+TestFlight; он не включается без реальных публичных ссылок.
 
 ## Автономная копия для показа
 
@@ -232,18 +239,22 @@ node verify.mjs preview/Backpacker-лендинг.html
 
 ## Локальный просмотр
 
-Файлы статические, специальный сервер не нужен — `index.html` открывается прямо
-в браузере. Единственное отличие от продакшена: `404.html` использует абсолютные
-пути от `/backpacker-site/`, поэтому локально по `file://` его стили не
-подхватятся. Все остальные страницы связаны относительными ссылками и локально
-выглядят как на сервере.
+Файлы статические. Для полной проверки URL-параметра и `404.html` используйте
+локальный HTTP-сервер из корня репозитория; например:
+
+```bash
+python -m http.server 4173 --bind 127.0.0.1
+```
+
+Preview: `http://127.0.0.1:4173/?lang=en`.
 
 ## Перед первым деплоем
 
 1. Подставить `[EFFECTIVE_DATE]` в `privacy/index.html` (два места: EN и RU).
 2. Подставить `[CONTACT_EMAIL]` в `privacy/index.html` (два места: EN и RU).
 3. Решить, появляется ли контакт в подвале `index.html` — слот закомментирован.
-4. Создать репозиторий `backpacker-site`, включить Pages из ветки `main`, папка
-   `/`.
+4. Создать отдельный Git-backed Cloudflare Pages project для репозитория
+   `dphnll/backpacker-site`, ветка `main`, output directory `/`, и только после
+   отдельного разрешения подключить custom domain `backpackerapp.cc`.
 5. Внести адрес `/privacy/` в поле политики конфиденциальности листинга Chrome
    Web Store и в `[POLICY_URL]` исходного `03_extension/docs/PRIVACY_POLICY.md`.

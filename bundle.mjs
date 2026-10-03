@@ -1,5 +1,5 @@
 // Собирает самодостаточные HTML-файлы для показа без сервера:
-// стили, шрифты и картинки вшиваются как data:-строки.
+// стили, шрифты, картинки и локализация вшиваются в сам файл.
 // Исходники сайта не меняются — читаем их и пишем результат в ./preview.
 //
 //   node bundle.mjs [папка-назначения]
@@ -31,6 +31,7 @@ let css = readFileSync(join(SITE, "styles.css"), "utf8");
 css = css.replace(/url\("\.\/(fonts|assets)\/([^"]+)"\)/g, (m, dir, file) =>
   `url("${dataUri(`${dir}/${file}`)}")`,
 );
+const i18n = readFileSync(join(SITE, "i18n.js"), "utf8");
 
 function bundle(srcRel, outName, opts = {}) {
   let html = readFileSync(join(SITE, srcRel), "utf8");
@@ -41,6 +42,12 @@ function bundle(srcRel, outName, opts = {}) {
   );
   html = html.replace(/href="([^"]*assets\/[^"]+)"/g, (m, p) => `href="${dataUri(p)}"`);
   html = html.replace(/src="([^"]*assets\/[^"]+)"/g, (m, p) => `src="${dataUri(p)}"`);
+  if (opts.inlineI18n) {
+    html = html.replace(
+      /<script src="\.\/i18n\.js" defer><\/script>/,
+      `<script>\n${i18n}\n</script>`,
+    );
+  }
 
   // Ссылки между страницами внутри пакета
   for (const [from, to] of Object.entries(opts.links || {})) {
@@ -60,6 +67,7 @@ function bundle(srcRel, outName, opts = {}) {
 }
 
 bundle("index.html", "Backpacker-лендинг.html", {
+  inlineI18n: true,
   links: {
     "./privacy/": "./Backpacker-политика-конфиденциальности.html",
     // Логотип в шапке и подвале ведёт на корень сайта; в автономной

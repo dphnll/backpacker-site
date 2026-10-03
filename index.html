@@ -1,35 +1,36 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#2f5d55" />
-    <title>Backpacker — удобный рюкзак для вашего путешествия</title>
+    <title>Backpacker — your trip, all in one place</title>
     <meta
       name="description"
-      content="Пошаговый план поездки в одном месте: билеты, жильё, места, идеи, участники и бюджет. Каждое событие — понятная карточка."
+      content="Plan your trip in one place: tickets, stays, places, ideas, participants and budget."
     />
-    <link rel="canonical" href="https://dphnll.github.io/backpacker-site/" />
+    <link rel="canonical" href="https://backpackerapp.cc/" />
     <link rel="icon" href="./assets/logo.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="./styles.css" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Backpacker" />
-    <meta property="og:locale" content="ru_RU" />
-    <meta property="og:title" content="Backpacker — удобный рюкзак для вашего путешествия" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="Backpacker — your trip, all in one place" />
     <meta
       property="og:description"
-      content="Пошаговый план поездки в одном месте — вместо десятка вкладок, файлов и чатов."
+      content="A step-by-step trip plan in one place, instead of scattered tabs, files and chats."
     />
-    <meta property="og:url" content="https://dphnll.github.io/backpacker-site/" />
-    <meta property="og:image" content="https://dphnll.github.io/backpacker-site/assets/og-image.jpg" />
+    <meta property="og:url" content="https://backpackerapp.cc/" />
+    <meta property="og:image" content="https://backpackerapp.cc/assets/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
+    <script src="./i18n.js" defer></script>
   </head>
 
   <body>
-    <a class="skip-link" href="#main">Перейти к содержанию</a>
+    <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
 
     <!-- Полоса падающих плиток по правому краю. Мотив, палитра, радиус,
          тень и тайминг взяты из экрана приветствия приложения
@@ -69,6 +70,17 @@
           <img src="./assets/logo.svg" alt="" width="22" height="26" />
           <span>BACKPACKER</span>
         </a>
+        <label class="language-control">
+          <span class="sr-only" data-i18n="language.label">Language</span>
+          <select id="languageSelect" class="language-select" aria-label="Language">
+            <option value="ru">Русский</option>
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+            <option value="ka">ქართული</option>
+            <option value="de">Deutsch</option>
+            <option value="hy">Հայերեն</option>
+          </select>
+        </label>
       </div>
     </header>
 
@@ -77,31 +89,29 @@
       <section class="hero">
         <div class="wrap">
           <div>
-            <p class="kicker">Планировщик поездок</p>
-            <h1>Удобный «рюкзак» для вашего путешествия</h1>
-            <p class="hero-lead">
-              Пошаговый план поездки в одном месте —<br />вместо десятка вкладок,
-              файлов и чатов.
+            <p class="kicker" data-i18n="hero.kicker">Trip planner</p>
+            <h1 data-i18n="hero.title">Your trip, packed into one convenient place</h1>
+            <p class="hero-lead" data-i18n="hero.lead">
+              A step-by-step trip plan in one place, instead of scattered tabs, files and chats.
             </p>
 
             <div class="card hero-card">
               <ul class="bullets">
-                <li>Билеты</li>
-                <li>Жильё</li>
-                <li>Места</li>
-                <li>Идеи и хотелки</li>
-                <li>Участники <span>(компания друзей<br />или организованная группа)</span>
-                </li>
-                <li>Бюджет <span>(единый или вскладчину)</span></li>
+                <li data-i18n="hero.bullet.tickets">Tickets</li>
+                <li data-i18n="hero.bullet.stays">Stays</li>
+                <li data-i18n="hero.bullet.places">Places</li>
+                <li data-i18n="hero.bullet.ideas">Ideas and wish list</li>
+                <li data-i18n="hero.bullet.people">Friends or an organized group</li>
+                <li data-i18n="hero.bullet.budget">One budget or shared expenses</li>
               </ul>
-              <p class="hero-card-foot">Каждое событие = понятная карточка</p>
+              <p class="hero-card-foot" data-i18n="hero.foot">Every event is a clear card</p>
             </div>
 
             <div class="hero-actions">
-              <a class="btn btn-primary btn-block" href="https://dphnll.github.io/Backpacker_demo/">
-                Открыть Backpacker
+              <a class="btn btn-primary btn-block" data-app-link href="https://app.backpackerapp.cc/?lang=en" data-i18n="action.open">
+                Open Backpacker
               </a>
-              <p class="cta-note">Работает в браузере или лёгком приложении</p>
+              <p class="cta-note" data-i18n="hero.note">Works in a browser. The app interface is currently available in Russian and English.</p>
             </div>
           </div>
 
@@ -110,7 +120,8 @@
               src="./assets/shot-home.jpg"
               width="750"
               height="1624"
-              alt="Главный экран Backpacker: карточка поездки с обложкой, датами и суммой, кнопки «Создать новую поездку» и «Идеи»."
+              alt="Backpacker home screen with a trip card, dates, total, new-trip action and Ideas."
+              data-i18n-alt="hero.imageAlt"
               fetchpriority="high"
             />
           </div>
@@ -121,17 +132,17 @@
       <section class="section problem">
         <div class="wrap">
           <div class="card narrow">
-            <h2>Поездка сейчас лежит в десятке мест сразу?</h2>
+            <h2 data-i18n="problem.title">Is your trip scattered across a dozen places?</h2>
             <ul class="bullets">
-              <li>Билеты — в почте</li>
-              <li>Жильё — в сторонних приложениях</li>
-              <li>Места — в заметках</li>
-              <li>Цены — в скриншотах</li>
-              <li>Участники — в чатах</li>
-              <li>Ссылки — в открытых вкладках</li>
+              <li data-i18n="problem.tickets">Tickets in email</li>
+              <li data-i18n="problem.stays">Stays in booking apps</li>
+              <li data-i18n="problem.places">Places in notes</li>
+              <li data-i18n="problem.prices">Prices in screenshots</li>
+              <li data-i18n="problem.people">Participants in chats</li>
+              <li data-i18n="problem.links">Links in open tabs</li>
             </ul>
-            <p class="lede">
-              Собрать общую картину поездки получается только в голове — и только пока помнишь. <span class="emoji">🤯</span>
+            <p class="lede" data-i18n="problem.conclusion">
+              The full picture exists only in your head — and only while you remember it. 🤯
             </p>
           </div>
         </div>
@@ -141,26 +152,21 @@
       <section class="section">
         <div class="wrap">
           <div class="card narrow card-wide">
-            <p class="kicker">Голосом или текстом</p>
-            <h3>Расскажите про поездку —<br />черновик соберётся сам</h3>
+            <p class="kicker" data-i18n="ai.kicker">Voice or text</p>
+            <h3 data-i18n="ai.title">Describe the trip and get a draft</h3>
             <p class="lines lede">
-              <span>Опишите поездку своими словами — текстом или голосом.</span>
-              <span
-                >Черновик соберётся только из ваших слов и ваших документов:
-                чего вы не сказали, в нём не появится, а всё примерное
-                помечено.</span
-              >
-              <span
-                >Вы правите черновик и подтверждаете — после этого в приложении появится новая поездка.</span
-              >
+              <span data-i18n="ai.body1">Describe the trip in your own words, by text or voice.</span>
+              <span data-i18n="ai.body2">The draft uses only your words and documents. Anything approximate is marked.</span>
+              <span data-i18n="ai.body3">Review and confirm the draft to create the trip in Backpacker.</span>
             </p>
             <div class="crop">
-              <a class="crop-link" href="https://dphnll.github.io/Backpacker_demo/" aria-label="Открыть Backpacker и собрать черновик с ИИ">
+              <a class="crop-link" data-app-link href="https://app.backpackerapp.cc/?lang=en" aria-label="Open Backpacker and create a trip draft" data-i18n-aria-label="ai.linkAria">
               <img
                 src="./assets/crop-ai.png"
                 width="800"
                 height="437"
-                alt="Фрагмент экрана AI-черновика: поле для описания поездки своими словами и кнопка «Надиктовать»."
+                alt="Trip draft screen with a text field and voice input action."
+                data-i18n-alt="ai.imageAlt"
                 loading="lazy"
               />
               </a>
@@ -174,44 +180,26 @@
         <div class="wrap">
           <div class="card narrow ext-card">
             <div class="ext-text">
-              <p class="kicker">Идеи из браузера</p>
-              <h3>Поймали классную идею при поиске в браузере? Припаркуйте в приложении!</h3>
+              <p class="kicker" data-i18n="extension.kicker">Ideas from the browser</p>
+              <h3 data-i18n="extension.title">Save a travel find to Backpacker</h3>
               <p class="lines lede">
-                <span
-                  >Отель, смотровая площадка, предложение по билетам — сохраните
-                  прямо из браузера,<br />вместе со ссылкой, картинкой и ценой.</span
-                >
-                <span>Идея будет ждать вас в разделе «Идеи» в Backpacker.</span>
-                <span
-                  >Оттуда её можно перенести в поездку — и она станет карточкой.
-                  А можно оставить ждать своего часа.</span
-                >
+                <span data-i18n="extension.body1">The Chrome extension for desktop saves information available on the current page and sends the find to Ideas.</span>
+                <span data-i18n="extension.body2">Some sites may not make every detail available; the source link is kept with the idea.</span>
+                <span data-i18n="extension.body3">Move the idea into a trip when you are ready, or keep it for later.</span>
               </p>
-
-              <p class="ext-status">Расширение для Chrome — скоро</p>
-              <p class="ext-now">
-                Идеи можно собирать уже сейчас — прямо в приложении.
+              <p class="extension-action">
+                <a class="btn btn-secondary" href="https://chromewebstore.google.com/detail/backpacker-travel-capture/okpfmpplfciccfddgibkcoliemfimifc" rel="noopener" data-i18n="extension.cta">Install for Chrome</a>
               </p>
-
-              <!-- БУДУЩИЙ СЛОТ · Chrome Web Store.
-                   Когда появится реальный публичный store URL:
-                   удалить <p class="ext-status"> выше и раскомментировать ссылку.
-                   Класс .btn-secondary уже описан в styles.css.
-
-              <p style="margin-top: 18px">
-                <a class="btn btn-secondary" href="ЗАМЕНИТЬ_НА_CHROME_WEB_STORE_URL"
-                   rel="noopener">Установить расширение</a>
-              </p>
-              -->
             </div>
 
             <div class="crop crop-panel">
-              <a class="crop-link" href="https://dphnll.github.io/Backpacker_demo/" aria-label="Открыть Backpacker и посмотреть раздел «Идеи»">
+              <a class="crop-link" data-app-link href="https://app.backpackerapp.cc/?lang=en" aria-label="Open Backpacker Ideas" data-i18n-aria-label="extension.linkAria">
                 <img
                   src="./assets/crop-extension.png"
                   width="419"
                   height="1073"
-                  alt="Боковая панель расширения Backpacker Travel Capture: пойманная идея с фотографией, названием экскурсии, ценой 460 EUR, адресом источника и кнопкой «Сохранить в Идеи»."
+                  alt="Backpacker Travel Capture side panel with a travel idea and its source."
+                  data-i18n-alt="extension.imageAlt"
                   loading="lazy"
                 />
               </a>
@@ -225,22 +213,21 @@
         <div class="wrap">
           <div class="proof-grid">
             <article class="card proof">
-              <p class="kicker">По дням</p>
-              <h3>День — это лента карточек</h3>
+              <p class="kicker" data-i18n="day.kicker">Day by day</p>
+              <h3 data-i18n="day.title">A day is a stream of cards</h3>
               <p class="lines lede">
-                <span>Каждое событие — отдельная карточка.</span>
-                <span>День показывает события лентой, которую можно листать.</span>
-                <span
-                  >Поменялись планы? Перетащите карточку в другой день или припаркуйте в «идеи на потом».</span
-                >
+                <span data-i18n="day.body1">Every event has its own card.</span>
+                <span data-i18n="day.body2">Browse the day as a clear sequence of events.</span>
+                <span data-i18n="day.body3">Plans changed? Move a card to another day or keep it in Ideas for later.</span>
               </p>
               <div class="crop">
-                <a class="crop-link" href="https://dphnll.github.io/Backpacker_demo/" aria-label="Открыть Backpacker и разложить поездку по дням">
+                <a class="crop-link" data-app-link href="https://app.backpackerapp.cc/?lang=en" aria-label="Open Backpacker and plan the trip by day" data-i18n-aria-label="day.linkAria">
                 <img
                   src="./assets/crop-day.jpg"
                   width="800"
                   height="1360"
-                  alt="Два дня плана подряд: «День 1 · 25 500 ₽» с карточками «Билет» и «Жильё» и «День 2 · 7 500 ₽» с карточками «Экскурсия» и «Баня/спа»; ленты прокручиваются вбок."
+                  alt="Two days of a trip plan shown as event cards."
+                  data-i18n-alt="day.imageAlt"
                   loading="lazy"
                 />
                 </a>
@@ -248,27 +235,21 @@
             </article>
 
             <article class="card proof">
-              <p class="kicker">Карточка</p>
-              <h3>Всё нужное — внутри</h3>
+              <p class="kicker" data-i18n="card.kicker">Event card</p>
+              <h3 data-i18n="card.title">Everything you need, together</h3>
               <p class="lines lede">
-                <span
-                  >Время, цена в нужной валюте, ссылка на бронь, статус и пометки на полях лежат в одной карточке.</span
-                >
-                <span
-                  >Туда же кладутся файлы: PDF билета или брони, посадочный, скан ваучера, нужное фото.</span
-                >
-                <span
-                  >Не нужно листать переписку, чтобы вспомнить, за что уже
-                  заплачено, а что пока только идея.</span
-                >
+                <span data-i18n="card.body1">Time, price, booking link, status and notes stay in one card.</span>
+                <span data-i18n="card.body2">Add useful files: a ticket or booking PDF, boarding pass, voucher scan or photo.</span>
+                <span data-i18n="card.body3">See what is paid and what is still only an idea without searching through chats.</span>
               </p>
               <div class="crop">
-                <a class="crop-link" href="https://dphnll.github.io/Backpacker_demo/" aria-label="Открыть Backpacker и заполнить карточку события">
+                <a class="crop-link" data-app-link href="https://app.backpackerapp.cc/?lang=en" aria-label="Open Backpacker and fill in an event card" data-i18n-aria-label="card.linkAria">
                 <img
                   src="./assets/crop-card.jpg"
                   width="752"
                   height="1499"
-                  alt="Карточка события изнутри: поля «Название», «Тип», «Статус», «Расход берёт на себя», дата, время, длительность, цена, «Оплачено», приоритет, ссылка на бронь и локация."
+                  alt="Event card with its details, price, status, booking link and location."
+                  data-i18n-alt="card.imageAlt"
                   loading="lazy"
                 />
                 </a>
@@ -282,25 +263,20 @@
       <section class="section">
         <div class="wrap">
           <div class="card narrow card-wide">
-            <p class="kicker">Бюджет</p>
-            <h3>Сумма считается сама</h3>
+            <p class="kicker" data-i18n="budget.kicker">Budget</p>
+            <h3 data-i18n="budget.title">Totals update automatically</h3>
             <p class="lines lede">
-              <span
-                >Пока вы редактируете и двигаете карточки, итог по дню и по
-                всей поездке пересчитывается.</span
-              >
-              <span
-                >Не знаете стоимость? Не указывайте или укажите примерный
-                ориентир.</span
-              >
+              <span data-i18n="budget.body1">As you edit and move cards, Backpacker recalculates totals for each day and the whole trip.</span>
+              <span data-i18n="budget.body2">If the cost is unknown, leave it empty or add an estimate.</span>
             </p>
             <div class="crop">
-              <a class="crop-link" href="https://dphnll.github.io/Backpacker_demo/" aria-label="Открыть Backpacker и посмотреть бюджет поездки">
+              <a class="crop-link" data-app-link href="https://app.backpackerapp.cc/?lang=en" aria-label="Open Backpacker and view the trip budget" data-i18n-aria-label="budget.linkAria">
               <img
                 src="./assets/crop-budget.png"
                 width="800"
                 height="535"
-                alt="Фрагмент экрана бюджета: «Бюджет поездки 45 000 ₽», «Оплачено 16 500 ₽», «Бронь 13 000 ₽», «Свободно 15 500 ₽»."
+                alt="Trip budget summary with totals for paid, reserved and available amounts."
+                data-i18n-alt="budget.imageAlt"
                 loading="lazy"
               />
               </a>
@@ -309,12 +285,27 @@
         </div>
       </section>
 
+      <!-- ================= Organizer Mode ================= -->
+      <section class="section">
+        <div class="wrap">
+          <div class="card narrow organizer-card">
+            <p class="kicker" data-i18n="organizer.kicker">Organizer Mode</p>
+            <h3 data-i18n="organizer.title">One current program for the whole group</h3>
+            <p class="lines lede">
+              <span data-i18n="organizer.body1">The organizer manages the trip program.</span>
+              <span data-i18n="organizer.body2">Participants open the current program, its price and conditions, and materials added by the organizer.</span>
+              <span data-i18n="organizer.body3">The organizer’s internal budget is not shared with participants.</span>
+            </p>
+          </div>
+        </div>
+      </section>
+
       <!-- ================= Закрытие ================= -->
       <section class="closing">
         <div class="wrap">
-          <h2>Соберите всю поездку<br />в одном месте</h2>
-          <a class="btn btn-primary" href="https://dphnll.github.io/Backpacker_demo/">
-            Открыть Backpacker
+          <h2 data-i18n="closing.title">Bring the whole trip together</h2>
+          <a class="btn btn-primary" data-app-link href="https://app.backpackerapp.cc/?lang=en" data-i18n="action.open">
+            Open Backpacker
           </a>
 
           <!-- БУДУЩИЙ СЛОТ · каналы дистрибуции: Google Play, App Store,
@@ -338,7 +329,7 @@
         </a>
 
         <ul class="footer-links">
-          <li><a href="./privacy/">Политика конфиденциальности</a></li>
+          <li><a href="./privacy/" data-i18n="footer.privacy">Privacy Policy · English / Русский</a></li>
           <!-- Ссылка на /terms/ появляется здесь только после того,
                как будет согласован текст условий. Маршрут уже существует. -->
           <!-- Контакт появляется здесь после того, как будет задан

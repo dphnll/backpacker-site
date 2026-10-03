@@ -73,10 +73,11 @@ html {
 body {
   position: relative;
   margin: 0;
-  min-width: 320px;
+  min-width: 0;
   background: transparent;
   color: var(--ink);
-  font-family: Inter, "Segoe UI", Roboto, system-ui, sans-serif;
+  font-family: Inter, "Noto Sans Georgian", "Noto Sans Armenian", "Segoe UI",
+    Arial, Roboto, system-ui, sans-serif;
   font-size: 15px;
   font-weight: 400;
   line-height: 1.55;
@@ -384,6 +385,13 @@ main {
   line-height: 1.55;
 }
 
+/* Длинные слова в грузинском и армянском не должны задавать min-content
+   шире 320 px. Перенос включается только когда слово иначе не помещается. */
+html:lang(ka) body,
+html:lang(hy) body {
+  overflow-wrap: anywhere;
+}
+
 /* Эмодзи чуть крупнее строки и не отрывается от последнего слова. */
 .emoji {
   display: inline-block;
@@ -459,8 +467,46 @@ main {
 .site-header .wrap {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
   min-height: 56px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.language-control {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  margin-left: auto;
+}
+
+.language-select {
+  width: min(146px, 46vw);
+  min-height: 40px;
+  padding: 7px 30px 7px 11px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.language-select:focus-visible {
+  outline: 3px solid rgba(47, 93, 85, 0.34);
+  outline-offset: 2px;
 }
 
 .brand {
@@ -504,6 +550,7 @@ main {
   text-decoration: none;
   /* Подпись задаёт ширину: две строки перевода не ломают кнопку. */
   overflow-wrap: normal;
+  hyphens: auto;
 }
 
 .btn-primary {
@@ -726,6 +773,14 @@ main {
   text-transform: uppercase;
 }
 
+.extension-action {
+  margin-top: 18px;
+}
+
+.extension-action .btn {
+  width: 100%;
+}
+
 /* ---------- Закрывающий блок ---------- */
 
 .closing {
@@ -814,6 +869,10 @@ main {
     width: auto;
   }
 
+  .extension-action .btn {
+    width: auto;
+  }
+
   .card {
     padding: 26px;
   }
@@ -824,6 +883,21 @@ main {
 
   .phone {
     max-width: 270px;
+  }
+}
+
+@media (max-width: 379px) {
+  .site-header .brand span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .language-select {
+    width: 142px;
   }
 }
 
