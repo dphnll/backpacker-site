@@ -72,13 +72,14 @@
         </a>
         <label class="language-control">
           <span class="sr-only" data-i18n="language.label">Language</span>
-          <select id="languageSelect" class="language-select" aria-label="Language">
+          <select id="languageSelect" class="language-select" aria-label="Language" data-i18n-aria-label="language.label">
             <option value="ru">Русский</option>
             <option value="en">English</option>
             <option value="fr">Français</option>
             <option value="ka">ქართული</option>
             <option value="de">Deutsch</option>
             <option value="hy">Հայերեն</option>
+            <option value="zh">简体中文</option>
           </select>
         </label>
       </div>
@@ -111,13 +112,14 @@
               <a class="btn btn-primary btn-block" data-app-link href="https://app.backpackerapp.cc/?lang=en" data-i18n="action.open">
                 Open Backpacker
               </a>
-              <p class="cta-note" data-i18n="hero.note">Works in a browser. The app interface is available in Russian, English, French, Georgian, German and Armenian.</p>
+              <p class="cta-note" data-i18n="hero.note">Works in a browser. The app interface is available in Russian, English, French, Georgian, German, Armenian and Simplified Chinese.</p>
             </div>
           </div>
 
           <div class="phone">
             <img
-              src="./assets/shot-home.jpg"
+              src="./assets/screenshots/en/shot-home.png"
+              data-localized-screenshot="shot-home.png"
               width="750"
               height="1624"
               alt="Backpacker home screen with a trip card, dates, total, new-trip action and Ideas."
@@ -162,7 +164,8 @@
             <div class="crop">
               <a class="crop-link" data-app-link href="https://app.backpackerapp.cc/?lang=en" aria-label="Open Backpacker and create a trip draft" data-i18n-aria-label="ai.linkAria">
               <img
-                src="./assets/crop-ai.png"
+                src="./assets/screenshots/en/crop-ai.png"
+                data-localized-screenshot="crop-ai.png"
                 width="800"
                 height="437"
                 alt="Trip draft screen with a text field and voice input action."
@@ -195,7 +198,8 @@
             <div class="crop crop-panel">
               <a class="crop-link" data-app-link href="https://app.backpackerapp.cc/?lang=en" aria-label="Open Backpacker Ideas" data-i18n-aria-label="extension.linkAria">
                 <img
-                  src="./assets/crop-extension.png"
+                  src="./assets/screenshots/en/crop-extension.png"
+                  data-localized-screenshot="crop-extension.png"
                   width="419"
                   height="1073"
                   alt="Backpacker Travel Capture side panel with a travel idea and its source."
@@ -223,7 +227,8 @@
               <div class="crop">
                 <a class="crop-link" data-app-link href="https://app.backpackerapp.cc/?lang=en" aria-label="Open Backpacker and plan the trip by day" data-i18n-aria-label="day.linkAria">
                 <img
-                  src="./assets/crop-day.jpg"
+                  src="./assets/screenshots/en/crop-day.png"
+                  data-localized-screenshot="crop-day.png"
                   width="800"
                   height="1360"
                   alt="Two days of a trip plan shown as event cards."
@@ -245,7 +250,8 @@
               <div class="crop">
                 <a class="crop-link" data-app-link href="https://app.backpackerapp.cc/?lang=en" aria-label="Open Backpacker and fill in an event card" data-i18n-aria-label="card.linkAria">
                 <img
-                  src="./assets/crop-card.jpg"
+                  src="./assets/screenshots/en/crop-card.png"
+                  data-localized-screenshot="crop-card.png"
                   width="752"
                   height="1499"
                   alt="Event card with its details, price, status, booking link and location."
@@ -272,7 +278,8 @@
             <div class="crop">
               <a class="crop-link" data-app-link href="https://app.backpackerapp.cc/?lang=en" aria-label="Open Backpacker and view the trip budget" data-i18n-aria-label="budget.linkAria">
               <img
-                src="./assets/crop-budget.png"
+                src="./assets/screenshots/en/crop-budget.png"
+                data-localized-screenshot="crop-budget.png"
                 width="800"
                 height="535"
                 alt="Trip budget summary with totals for paid, reserved and available amounts."
@@ -329,7 +336,7 @@
         </a>
 
         <ul class="footer-links">
-          <li><a href="./privacy/" data-i18n="footer.privacy">Privacy Policy · English / Русский</a></li>
+          <li><a href="./privacy/" data-i18n="footer.privacy">Privacy Policy</a></li>
           <!-- Ссылка на /terms/ появляется здесь только после того,
                как будет согласован текст условий. Маршрут уже существует. -->
           <!-- Контакт появляется здесь после того, как будет задан

@@ -84,6 +84,11 @@ body {
   overflow-wrap: break-word;
 }
 
+html[lang="zh-Hans"] body {
+  font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", "Segoe UI",
+    Arial, system-ui, sans-serif;
+}
+
 /* Карта — среда, а не текстура. position: fixed, а не
    background-attachment: fixed — второй игнорируется на iOS,
    и карта поехала бы вместе с содержимым. Маска повторяет

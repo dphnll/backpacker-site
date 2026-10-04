@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import vm from "node:vm";
 
 const index = readFileSync(new URL("./index.html", import.meta.url), "utf8");
@@ -11,7 +11,7 @@ vm.runInNewContext(source, context, { filename: "i18n.js" });
 const api = context.BackpackerLandingI18n;
 
 assert.ok(api, "i18n.js must expose its testable locale contract");
-assert.deepEqual([...api.SUPPORTED_LOCALES], ["ru", "en", "fr", "ka", "de", "hy"]);
+assert.deepEqual([...api.SUPPORTED_LOCALES], ["ru", "en", "fr", "ka", "de", "hy", "zh"]);
 
 const referenceKeys = Object.keys(api.TRANSLATIONS.en).sort();
 for (const locale of api.SUPPORTED_LOCALES) {
@@ -19,6 +19,10 @@ for (const locale of api.SUPPORTED_LOCALES) {
   for (const [key, value] of Object.entries(api.TRANSLATIONS[locale])) {
     assert.equal(typeof value, "string", `${locale}.${key} must be text`);
     assert.ok(value.trim(), `${locale}.${key} must not be empty`);
+  }
+  assert.doesNotMatch(api.TRANSLATIONS[locale]["footer.privacy"], /English\s*\/\s*Русский/);
+  for (const asset of ["shot-home.png", "crop-ai.png", "crop-extension.png", "crop-day.png", "crop-card.png", "crop-budget.png"]) {
+    assert.ok(existsSync(new URL(`./assets/screenshots/${locale}/${asset}`, import.meta.url)), `${locale} missing ${asset}`);
   }
 }
 
@@ -30,34 +34,48 @@ for (const key of referencedKeys) {
 }
 
 const optionLocales = [...index.matchAll(/<option value="([^"]+)"/g)].map((match) => match[1]);
-assert.deepEqual(optionLocales, ["ru", "en", "fr", "ka", "de", "hy"]);
+assert.deepEqual(optionLocales, ["ru", "en", "fr", "ka", "de", "hy", "zh"]);
 assert.equal((index.match(/data-app-link/g) || []).length, 7, "all seven app CTAs/captures are marked");
 assert.doesNotMatch(index, /dphnll\.github\.io\/Backpacker_demo/i);
 assert.match(index, /https:\/\/backpackerapp\.cc\//);
 assert.match(index, /https:\/\/app\.backpackerapp\.cc\/\?lang=en/);
 assert.match(index, /okpfmpplfciccfddgibkcoliemfimifc/);
+assert.equal((index.match(/data-localized-screenshot=/g) || []).length, 6);
+assert.match(source, /assets\/screenshots\/\$\{normalized\}\/\$\{name\}/);
 
 assert.equal(JSON.stringify(api.resolveInitialLocale({ search: "?lang=fr", saved: "ru", languages: ["de-DE"] })), JSON.stringify({
-  locale: "fr",
-  explicit: true,
+  locale: "ru",
+  source: "manual",
 }));
 assert.equal(JSON.stringify(api.resolveInitialLocale({ saved: "hy", languages: ["de-DE"] })), JSON.stringify({
   locale: "hy",
-  explicit: true,
+  source: "manual",
 }));
 assert.equal(JSON.stringify(api.resolveInitialLocale({ languages: ["it-IT", "ka-GE", "en-US"] })), JSON.stringify({
   locale: "ka",
-  explicit: false,
+  source: "browser",
 }));
 assert.equal(JSON.stringify(api.resolveInitialLocale({ search: "?lang=xx", languages: ["it-IT"] })), JSON.stringify({
   locale: "en",
-  explicit: false,
+  source: "fallback",
 }));
+assert.equal(JSON.stringify(api.resolveInitialLocale({ search: "?lang=zh-Hans", languages: ["en-US"] })), JSON.stringify({
+  locale: "zh",
+  source: "url",
+}));
+assert.equal(JSON.stringify(api.resolveInitialLocale({ languages: ["zh-Hant", "zh-TW", "fr-FR"] })), JSON.stringify({
+  locale: "fr",
+  source: "browser",
+}));
+assert.equal(api.normalizeLocale("zh-Hans-TW"), "zh");
+assert.equal(api.normalizeLocale("zh-Hant-CN"), null);
 
 assert.match(api.TRANSLATIONS.fr["meta.description"], /é|è|ê|à|î|ç/);
 assert.match(api.TRANSLATIONS.de["hero.foot"], /ü|ä|ö|ß/);
 assert.match(api.TRANSLATIONS.ka["hero.title"], /[\u10A0-\u10FF]/);
 assert.match(api.TRANSLATIONS.hy["hero.title"], /[\u0530-\u058F]/);
+assert.match(api.TRANSLATIONS.zh["hero.title"], /[\u3400-\u9FFF]/);
+assert.match(source, /HTML_LANGUAGE_TAGS = \{ zh: "zh-Hans" \}/);
 
 assert.match(privacy, /https:\/\/backpackerapp\.cc\/privacy\//);
 assert.match(privacy, /<section id="english" lang="en">/);

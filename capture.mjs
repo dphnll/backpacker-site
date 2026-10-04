@@ -5,7 +5,8 @@
 //
 // Переменные окружения:
 //   APP_URL   — какую сборку снимать (по умолчанию публичное демо)
-//   OUT_DIR   — куда класть кадры (по умолчанию ./assets рядом со скриптом)
+//   LOCALE    — локаль кадра: ru/en/fr/ka/de/hy/zh (по умолчанию en)
+//   OUT_DIR   — куда класть кадры (по умолчанию ./assets/screenshots/<locale>)
 //   CHROME    — путь к Chrome, если он лежит не в стандартном месте
 //
 import { spawn } from "node:child_process";
@@ -32,9 +33,14 @@ if (!CHROME) {
   process.exit(1);
 }
 
-const APP = process.env.APP_URL || "https://dphnll.github.io/Backpacker_demo/";
-const OUT = process.env.OUT_DIR || join(HERE, "assets");
-const PROFILE = join(tmpdir(), "bp-capture-profile");
+const SUPPORTED_LOCALES = new Set(["ru", "en", "fr", "ka", "de", "hy", "zh"]);
+const LOCALE = String(process.env.LOCALE || "en").trim().toLowerCase();
+if (!SUPPORTED_LOCALES.has(LOCALE)) throw new Error(`Неподдерживаемая локаль: ${LOCALE}`);
+
+const APP = new URL(process.env.APP_URL || "https://dphnll.github.io/Backpacker_demo/");
+APP.searchParams.set("lang", LOCALE);
+const OUT = process.env.OUT_DIR || join(HERE, "assets", "screenshots", LOCALE);
+const PROFILE = join(tmpdir(), `bp-capture-profile-${LOCALE}`);
 const PORT = 9333;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -109,6 +115,7 @@ await S("Page.addScriptToEvaluateOnNewDocument", {
   source: `try{
     localStorage.setItem("backpacker.onboarding.v1","seen");
     localStorage.setItem("backpacker.home.trainer.hidden.v1","false");
+    localStorage.setItem("backpacker.locale.v1","auto");
   }catch(e){}`,
 });
 
@@ -118,7 +125,7 @@ const evalJs = async (expr) => {
   return r.result.value;
 };
 
-await S("Page.navigate", { url: APP });
+await S("Page.navigate", { url: APP.toString() });
 await sleep(4000);
 // Сплэш уходит по таймеру; добиваем принудительно, чтобы не ловить его в кадр.
 await evalJs(`document.querySelector("#appSplash")?.classList.add("hidden");
@@ -254,36 +261,7 @@ await S("Emulation.setDeviceMetricsOverride", {
 });
 await sleep(1000);
 
-// 3. Две карточки разного типа, вплотную по краям.
-//    Окно временно расширяем: карточка имеет фиксированную ширину, поэтому
-//    на 375 px вторая обрезается лентой. Ширина окна на саму карточку не
-//    влияет — меняется только то, сколько их помещается в кадр.
-await S("Emulation.setDeviceMetricsOverride", {
-  width: 760,
-  height: 812,
-  deviceScaleFactor: 2,
-  mobile: true,
-});
-await sleep(1200);
-await capture("crop-cards-pair", {
-  wait: 1200,
-  rect: `(() => {
-    const cards = [...document.querySelectorAll(".day-items .item-card")].slice(0, 2);
-    if (cards.length < 2) return null;
-    const a = cards[0].getBoundingClientRect();
-    const b = cards[1].getBoundingClientRect();
-    return { x: a.left, y: a.top, w: b.right - a.left, h: Math.max(a.height, b.height) };
-  })()`,
-});
-await S("Emulation.setDeviceMetricsOverride", {
-  width: 375,
-  height: 812,
-  deviceScaleFactor: 2,
-  mobile: true,
-});
-await sleep(1000);
-
-// 3b. Изнанка карточки: форма редактирования со всеми полями.
+// 3. Изнанка карточки: форма редактирования со всеми полями.
 //     Снаружи карточку уже показал блок «По дням», здесь важно, что внутри.
 await evalJs(`document.querySelector(".day-items .item-card")?.click(); true`);
 await sleep(1600);
@@ -332,7 +310,7 @@ await capture("crop-ai", {
   wait: 800,
 });
 
-console.log(JSON.stringify(shots, null, 2));
+console.log(JSON.stringify({ locale: LOCALE, output: OUT, shots }, null, 2));
 
 ws.close();
 chrome.kill();

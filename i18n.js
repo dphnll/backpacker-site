@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const SUPPORTED_LOCALES = ["ru", "en", "fr", "ka", "de", "hy"];
+  const SUPPORTED_LOCALES = ["ru", "en", "fr", "ka", "de", "hy", "zh"];
   const STORAGE_KEY = "backpacker.landing.locale";
   const APP_URL = "https://app.backpackerapp.cc/";
 
@@ -24,7 +24,7 @@
       "hero.bullet.people": "Friends or an organized group",
       "hero.bullet.budget": "One budget or shared expenses",
       "hero.foot": "Every event is a clear card",
-      "hero.note": "Works in a browser. The app interface is available in Russian, English, French, Georgian, German and Armenian.",
+      "hero.note": "Works in a browser. The app interface is available in Russian, English, French, Georgian, German, Armenian and Simplified Chinese.",
       "hero.imageAlt": "Backpacker home screen with a trip card, dates, total, new-trip action and Ideas.",
       "problem.title": "Is your trip scattered across a dozen places?",
       "problem.tickets": "Tickets in email",
@@ -75,7 +75,7 @@
       "organizer.body2": "Participants open the current program, its price and conditions, and materials added by the organizer.",
       "organizer.body3": "The organizer’s internal budget is not shared with participants.",
       "closing.title": "Bring the whole trip together",
-      "footer.privacy": "Privacy Policy · English / Русский",
+      "footer.privacy": "Privacy Policy",
     },
     ru: {
       "meta.title": "Backpacker — удобный рюкзак для вашего путешествия",
@@ -95,7 +95,7 @@
       "hero.bullet.people": "Участники — компания друзей или организованная группа",
       "hero.bullet.budget": "Бюджет — единый или вскладчину",
       "hero.foot": "Каждое событие — понятная карточка",
-      "hero.note": "Работает в браузере. Интерфейс приложения доступен на русском, английском, французском, грузинском, немецком и армянском языках.",
+      "hero.note": "Работает в браузере. Интерфейс приложения доступен на русском, английском, французском, грузинском, немецком, армянском и упрощённом китайском языках.",
       "hero.imageAlt": "Главный экран Backpacker: карточка поездки с обложкой, датами и суммой, кнопки «Создать новую поездку» и «Идеи».",
       "problem.title": "Поездка сейчас лежит в десятке мест сразу?",
       "problem.tickets": "Билеты — в почте",
@@ -146,7 +146,7 @@
       "organizer.body2": "Участники открывают актуальную программу, цену и условия, а также добавленные организатором материалы.",
       "organizer.body3": "Внутренняя смета организатора участникам не раскрывается.",
       "closing.title": "Соберите всю поездку в одном месте",
-      "footer.privacy": "Политика конфиденциальности · English / Русский",
+      "footer.privacy": "Политика конфиденциальности",
     },
     fr: {
       "meta.title": "Backpacker — tout votre voyage au même endroit",
@@ -166,7 +166,7 @@
       "hero.bullet.people": "Amis ou groupe organisé",
       "hero.bullet.budget": "Budget commun ou dépenses partagées",
       "hero.foot": "Chaque événement devient une carte claire",
-      "hero.note": "Fonctionne dans le navigateur. L’interface de l’application est disponible en russe, anglais, français, géorgien, allemand et arménien.",
+      "hero.note": "Fonctionne dans le navigateur. L’interface de l’application est disponible en russe, anglais, français, géorgien, allemand, arménien et chinois simplifié.",
       "hero.imageAlt": "Écran d’accueil de Backpacker avec une carte de voyage, les dates, le total, la création d’un voyage et les Idées.",
       "problem.title": "Votre voyage est éparpillé dans une dizaine d’endroits ?",
       "problem.tickets": "Les billets dans les e-mails",
@@ -217,7 +217,7 @@
       "organizer.body2": "Les participants consultent le programme à jour, son prix et ses conditions, ainsi que les documents ajoutés par l’organisateur.",
       "organizer.body3": "Le budget interne de l’organisateur n’est pas communiqué aux participants.",
       "closing.title": "Réunissez tout votre voyage au même endroit",
-      "footer.privacy": "Politique de confidentialité · English / Русский",
+      "footer.privacy": "Politique de confidentialité",
     },
     de: {
       "meta.title": "Backpacker — deine ganze Reise an einem Ort",
@@ -237,7 +237,7 @@
       "hero.bullet.people": "Freunde oder organisierte Gruppe",
       "hero.bullet.budget": "Gemeinsames Budget oder geteilte Ausgaben",
       "hero.foot": "Jedes Ereignis ist eine übersichtliche Karte",
-      "hero.note": "Funktioniert im Browser. Die App-Oberfläche ist auf Russisch, Englisch, Französisch, Georgisch, Deutsch und Armenisch verfügbar.",
+      "hero.note": "Funktioniert im Browser. Die App-Oberfläche ist auf Russisch, Englisch, Französisch, Georgisch, Deutsch, Armenisch und vereinfachtem Chinesisch verfügbar.",
       "hero.imageAlt": "Backpacker-Startseite mit Reisekarte, Daten, Summe, neuer Reise und Ideen.",
       "problem.title": "Ist deine Reise über ein Dutzend Orte verteilt?",
       "problem.tickets": "Tickets in E-Mails",
@@ -288,7 +288,7 @@
       "organizer.body2": "Teilnehmende sehen das aktuelle Programm, Preis und Bedingungen sowie Materialien des Organisators.",
       "organizer.body3": "Die interne Kalkulation des Organisators wird den Teilnehmenden nicht angezeigt.",
       "closing.title": "Bring die ganze Reise an einem Ort zusammen",
-      "footer.privacy": "Datenschutzrichtlinie · English / Русский",
+      "footer.privacy": "Datenschutzerklärung",
     },
     ka: {
       "meta.title": "Backpacker — მთელი მოგზაურობა ერთ სივრცეში",
@@ -308,7 +308,7 @@
       "hero.bullet.people": "მეგობრები ან ორგანიზებული ჯგუფი",
       "hero.bullet.budget": "საერთო ბიუჯეტი ან გაზიარებული ხარჯები",
       "hero.foot": "ყოველი მოვლენა გასაგები ბარათია",
-      "hero.note": "მუშაობს ბრაუზერში. აპის ინტერფეისი ხელმისაწვდომია რუსულ, ინგლისურ, ფრანგულ, ქართულ, გერმანულ და სომხურ ენებზე.",
+      "hero.note": "მუშაობს ბრაუზერში. აპის ინტერფეისი ხელმისაწვდომია რუსულ, ინგლისურ, ფრანგულ, ქართულ, გერმანულ, სომხურ და გამარტივებულ ჩინურ ენებზე.",
       "hero.imageAlt": "Backpacker-ის მთავარი ეკრანი მოგზაურობის ბარათით, თარიღებით, ჯამით, ახალი მოგზაურობითა და იდეებით.",
       "problem.title": "თქვენი მოგზაურობა ათეულობით ადგილასაა გაფანტული?",
       "problem.tickets": "ბილეთები — ელფოსტაში",
@@ -359,7 +359,7 @@
       "organizer.body2": "მონაწილეები ხსნიან აქტუალურ პროგრამას, მის ფასსა და პირობებს და ორგანიზატორის დამატებულ მასალებს.",
       "organizer.body3": "ორგანიზატორის შიდა ხარჯთაღრიცხვა მონაწილეებს არ ეჩვენებათ.",
       "closing.title": "მოაწყვეთ მთელი მოგზაურობა ერთ სივრცეში",
-      "footer.privacy": "კონფიდენციალურობის პოლიტიკა · English / Русский",
+      "footer.privacy": "კონფიდენციალურობის პოლიტიკა",
     },
     hy: {
       "meta.title": "Backpacker — ամբողջ ճանապարհորդությունը մեկ տեղում",
@@ -379,7 +379,7 @@
       "hero.bullet.people": "Ընկերներ կամ կազմակերպված խումբ",
       "hero.bullet.budget": "Ընդհանուր բյուջե կամ համատեղ ծախսեր",
       "hero.foot": "Յուրաքանչյուր իրադարձություն հստակ քարտ է",
-      "hero.note": "Աշխատում է դիտարկիչում։ Հավելվածի միջերեսը հասանելի է ռուսերեն, անգլերեն, ֆրանսերեն, վրացերեն, գերմաներեն և հայերեն։",
+      "hero.note": "Աշխատում է դիտարկիչում։ Հավելվածի միջերեսը հասանելի է ռուսերեն, անգլերեն, ֆրանսերեն, վրացերեն, գերմաներեն, հայերեն և պարզեցված չինարեն։",
       "hero.imageAlt": "Backpacker-ի գլխավոր էկրանը՝ ճանապարհորդության քարտով, ամսաթվերով, ընդհանուր գումարով, նոր ճանապարհորդությամբ և գաղափարներով։",
       "problem.title": "Ձեր ճանապարհորդությունը ցրվա՞ծ է տասնյակ տեղերում։",
       "problem.tickets": "Տոմսերը՝ էլփոստում",
@@ -430,7 +430,78 @@
       "organizer.body2": "Մասնակիցները բացում են արդիական ծրագիրը, դրա գինն ու պայմանները և կազմակերպչի ավելացրած նյութերը։",
       "organizer.body3": "Կազմակերպչի ներքին նախահաշիվը մասնակիցներին չի ցուցադրվում։",
       "closing.title": "Հավաքեք ամբողջ ճանապարհորդությունը մեկ տեղում",
-      "footer.privacy": "Գաղտնիության քաղաքականություն · English / Русский",
+      "footer.privacy": "Գաղտնիության քաղաքականություն",
+    },
+    zh: {
+      "meta.title": "Backpacker — 让整个行程井然有序",
+      "meta.description": "在一个地方规划行程：机票、住宿、地点、灵感、参与者和预算。",
+      "meta.ogTitle": "Backpacker — 让整个行程井然有序",
+      "meta.ogDescription": "把逐步行程计划集中在一处，不再散落于标签页、文件和聊天中。",
+      skip: "跳到主要内容",
+      "language.label": "语言",
+      "action.open": "打开 Backpacker",
+      "hero.kicker": "行程规划工具",
+      "hero.title": "把整个行程装进一个方便的“背包”",
+      "hero.lead": "把逐步行程计划集中在一处，不再散落于标签页、文件和聊天中。",
+      "hero.bullet.tickets": "机票",
+      "hero.bullet.stays": "住宿",
+      "hero.bullet.places": "地点",
+      "hero.bullet.ideas": "灵感和愿望清单",
+      "hero.bullet.people": "朋友或有组织的团队",
+      "hero.bullet.budget": "统一预算或费用分摊",
+      "hero.foot": "每项活动都是清晰的卡片",
+      "hero.note": "可在浏览器中使用。应用界面支持俄语、英语、法语、格鲁吉亚语、德语、亚美尼亚语和简体中文。",
+      "hero.imageAlt": "Backpacker 首页：行程卡片、日期、总额、“创建新行程”和“灵感”入口。",
+      "problem.title": "你的行程是否散落在十几个地方？",
+      "problem.tickets": "机票在邮件里",
+      "problem.stays": "住宿在预订应用里",
+      "problem.places": "地点在笔记里",
+      "problem.prices": "价格在截图里",
+      "problem.people": "参与者在聊天里",
+      "problem.links": "链接在打开的标签页里",
+      "problem.conclusion": "完整行程只存在脑海中——而且只在你还记得的时候。🤯",
+      "ai.kicker": "语音或文字",
+      "ai.title": "描述行程，自动生成草稿",
+      "ai.body1": "用自己的话，通过文字或语音描述行程。",
+      "ai.body2": "草稿只会使用你的描述和文档，所有大致信息都会标明。",
+      "ai.body3": "检查并确认草稿，即可在 Backpacker 中创建行程。",
+      "ai.linkAria": "打开 Backpacker 并创建行程草稿",
+      "ai.imageAlt": "行程草稿界面，包含文字输入框和语音输入按钮。",
+      "extension.kicker": "来自浏览器的灵感",
+      "extension.title": "把旅行发现保存到 Backpacker",
+      "extension.body1": "桌面版 Chrome 扩展程序会保存当前页面可用的信息，并将发现发送到“灵感”。",
+      "extension.body2": "某些网站可能不会提供全部详情；来源链接仍会与灵感一起保存。",
+      "extension.body3": "准备好后把灵感加入行程，也可以留待以后使用。",
+      "extension.cta": "安装 Chrome 扩展程序",
+      "extension.linkAria": "打开 Backpacker 的“灵感”",
+      "extension.imageAlt": "Backpacker Travel Capture 侧边栏，显示旅行灵感及其来源。",
+      "day.kicker": "按天规划",
+      "day.title": "一天就是一列卡片",
+      "day.body1": "每项活动都有自己的卡片。",
+      "day.body2": "以清晰的活动顺序浏览每一天。",
+      "day.body3": "计划变了？把卡片移到其他日期，或留在“灵感”中以后再安排。",
+      "day.linkAria": "打开 Backpacker 并按天规划行程",
+      "day.imageAlt": "两天的行程计划，以活动卡片形式呈现。",
+      "card.kicker": "活动卡片",
+      "card.title": "所需信息尽在一处",
+      "card.body1": "时间、价格、预订链接、状态和备注都保存在同一张卡片中。",
+      "card.body2": "添加有用的文件：机票或预订 PDF、登机牌、凭证扫描件或照片。",
+      "card.body3": "无需翻找聊天记录，也能看清哪些已付款、哪些仍只是灵感。",
+      "card.linkAria": "打开 Backpacker 并填写活动卡片",
+      "card.imageAlt": "活动卡片，显示详情、价格、状态、预订链接和地点。",
+      "budget.kicker": "预算",
+      "budget.title": "总额自动更新",
+      "budget.body1": "编辑或移动卡片时，Backpacker 会重新计算每天及整个行程的总额。",
+      "budget.body2": "费用未知？可以留空或填写估算金额。",
+      "budget.linkAria": "打开 Backpacker 并查看行程预算",
+      "budget.imageAlt": "行程预算摘要，显示已付款、已预订和可用金额。",
+      "organizer.kicker": "组织者模式",
+      "organizer.title": "为整个团队提供一份最新行程",
+      "organizer.body1": "组织者负责管理行程安排。",
+      "organizer.body2": "参与者可以查看最新安排、价格和条件，以及组织者添加的资料。",
+      "organizer.body3": "组织者的内部费用明细不会向参与者公开。",
+      "closing.title": "把整个行程集中在一处",
+      "footer.privacy": "隐私政策",
     },
   };
 
@@ -441,26 +512,37 @@
     ka: "ka_GE",
     de: "de_DE",
     hy: "hy_AM",
+    zh: "zh_CN",
   };
 
+  const HTML_LANGUAGE_TAGS = { zh: "zh-Hans" };
+
   function normalizeLocale(value) {
-    const locale = String(value || "").trim().toLowerCase().split(/[-_]/)[0];
-    return SUPPORTED_LOCALES.includes(locale) ? locale : null;
+    const parts = String(value || "").trim().toLowerCase().replaceAll("_", "-").split("-").filter(Boolean);
+    const language = parts[0] || "";
+    if (language !== "zh") return SUPPORTED_LOCALES.includes(language) ? language : null;
+
+    const script = parts.find((part) => part === "hans" || part === "hant");
+    if (script) return script === "hans" ? "zh" : null;
+
+    const region = parts.find((part, index) => index > 0 && /^[a-z]{2}$/.test(part));
+    if (!region || region === "cn" || region === "sg") return "zh";
+    return null;
   }
 
   function resolveInitialLocale({ search = "", saved = null, languages = [] } = {}) {
-    const queryLocale = normalizeLocale(new URLSearchParams(search).get("lang"));
-    if (queryLocale) return { locale: queryLocale, explicit: true };
-
     const savedLocale = normalizeLocale(saved);
-    if (savedLocale) return { locale: savedLocale, explicit: true };
+    if (savedLocale) return { locale: savedLocale, source: "manual" };
+
+    const queryLocale = normalizeLocale(new URLSearchParams(search).get("lang"));
+    if (queryLocale) return { locale: queryLocale, source: "url" };
 
     for (const language of languages) {
       const browserLocale = normalizeLocale(language);
-      if (browserLocale) return { locale: browserLocale, explicit: false };
+      if (browserLocale) return { locale: browserLocale, source: "browser" };
     }
 
-    return { locale: "en", explicit: false };
+    return { locale: "en", source: "fallback" };
   }
 
   const api = { SUPPORTED_LOCALES, STORAGE_KEY, APP_URL, TRANSLATIONS, normalizeLocale, resolveInitialLocale };
@@ -504,7 +586,7 @@
     const normalized = normalizeLocale(locale) || "en";
     const messages = TRANSLATIONS[normalized];
 
-    document.documentElement.lang = normalized;
+    document.documentElement.lang = HTML_LANGUAGE_TAGS[normalized] || normalized;
     document.title = messages["meta.title"];
     setMeta('meta[name="description"]', messages["meta.description"]);
     setMeta('meta[property="og:title"]', messages["meta.ogTitle"]);
@@ -522,6 +604,10 @@
     for (const element of document.querySelectorAll("[data-i18n-alt]")) {
       const value = messages[element.dataset.i18nAlt];
       if (value) element.setAttribute("alt", value);
+    }
+    for (const image of document.querySelectorAll("[data-localized-screenshot]")) {
+      const name = image.dataset.localizedScreenshot;
+      if (name) image.setAttribute("src", `./assets/screenshots/${normalized}/${name}`);
     }
 
     const languageSelect = document.querySelector("#languageSelect");
@@ -546,7 +632,7 @@
     languages: navigator.languages?.length ? navigator.languages : [navigator.language],
   });
 
-  applyLocale(initial.locale, { persist: initial.explicit });
+  applyLocale(initial.locale);
 
   document.querySelector("#languageSelect")?.addEventListener("change", (event) => {
     applyLocale(event.currentTarget.value, { persist: true });
