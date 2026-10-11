@@ -4,6 +4,8 @@ import vm from "node:vm";
 
 const index = readFileSync(new URL("./index.html", import.meta.url), "utf8");
 const privacy = readFileSync(new URL("./privacy/index.html", import.meta.url), "utf8");
+const terms = readFileSync(new URL("./terms/index.html", import.meta.url), "utf8");
+const notFound = readFileSync(new URL("./404.html", import.meta.url), "utf8");
 const source = readFileSync(new URL("./i18n.js", import.meta.url), "utf8");
 
 const context = { URLSearchParams };
@@ -81,5 +83,49 @@ assert.match(privacy, /https:\/\/backpackerapp\.cc\/privacy\//);
 assert.match(privacy, /<section id="english" lang="en">/);
 assert.match(privacy, /<section id="russian" lang="ru">/);
 assert.match(privacy, /Available languages: <code>English \/ Русский<\/code>/);
+
+assert.equal(api.TRANSLATIONS.ru["hero.kicker"], "Вся поездка под рукой");
+assert.equal(api.TRANSLATIONS.en["hero.kicker"], "Your trip, all together");
+assert.equal(api.TRANSLATIONS.ru["hero.title"], "Все детали на месте. Больше свободы путешествовать.");
+assert.equal(api.TRANSLATIONS.en["hero.title"], "Every detail in place. More room for the experience.");
+assert.equal(api.TRANSLATIONS.ru["hero.bullet.budget"], "Бюджет и расходы поездки");
+assert.equal(api.TRANSLATIONS.en["hero.bullet.budget"], "Trip budget and costs");
+assert.deepEqual(
+  [1, 2, 3].map((line) => api.TRANSLATIONS.ru[`organizer.body${line}`]),
+  [
+    "Составляйте и обновляйте программу тура по мере изменений.",
+    "Публикуйте для участников программу, стоимость, условия и необходимые материалы.",
+    "Внутренняя смета остаётся приватной.",
+  ],
+);
+assert.deepEqual(
+  [1, 2, 3].map((line) => api.TRANSLATIONS.en[`organizer.body${line}`]),
+  [
+    "Create and update the trip program as plans change.",
+    "Share the current program, price, terms and selected materials with participants.",
+    "Keep your internal budget private.",
+  ],
+);
+
+for (const locale of api.SUPPORTED_LOCALES) {
+  for (const [key, value] of Object.entries(api.TRANSLATIONS[locale])) {
+    const withoutPublishedExtensionName = value.replaceAll("Backpacker Travel Capture", "");
+    assert.doesNotMatch(withoutPublishedExtensionName, /Backpacker|BACKPACKER/, `${locale}.${key}`);
+  }
+  assert.match(api.TRANSLATIONS[locale]["extension.body1"], /Backpacker Travel Capture/, locale);
+}
+
+for (const [name, html] of Object.entries({ index, privacy, terms, notFound })) {
+  const withoutExtensionTransition = html
+    .replaceAll("Backpacker Travel Capture", "")
+    .replaceAll('"Save to Backpacker"', "")
+    .replaceAll("«Сохранить в Backpacker»", "");
+  assert.doesNotMatch(withoutExtensionTransition, /Backpacker|BACKPACKER/, name);
+}
+assert.match(index, /<span>Clavelo<\/span>/);
+assert.match(index, /Every detail in place\. More room for the experience\./);
+assert.match(privacy, /Backpacker Travel Capture is the Chrome extension currently\s+published for Clavelo/);
+assert.match(source, /const STORAGE_KEY = "backpacker\.landing\.locale"/);
+assert.match(source, /globalThis\.BackpackerLandingI18n = api/);
 
 console.log(`landing locale contract: ${api.SUPPORTED_LOCALES.length} locales, ${referenceKeys.length} keys`);
