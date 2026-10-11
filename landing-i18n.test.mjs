@@ -147,15 +147,18 @@ assert.match(source, /const STORAGE_KEY = "backpacker\.landing\.locale"/);
 assert.match(source, /globalThis\.BackpackerLandingI18n = api/);
 
 const approvedAssetHashes = {
-  "assets/logo.svg": "0CA0584F6E0834C2121CE9F60709FB8E586A8FC29AF8CBF5600F89328BB804C4",
-  "assets/clavelo-mark-simple.svg": "E98DF62FC56B23CDE384C28FF6121CB0A0857E35FBA9A2484E42C55D45415D16",
+  "assets/logo.svg": "30E28E319E4A03D74CE100B1F2B56DA212984F1DE2F8124A72AC55E179B24417",
+  "assets/clavelo-mark-simple.svg": "D487D317BF996DCA0C98E623F476466AD365AD2C1A6190C5C9106AF2F8B73E52",
   "assets/favicon-16.png": "F4DDFC6422A8B52299F934229018B10F24D7A1E1DC86CA60A2638BB2CD72CED0",
   "assets/favicon-32.png": "DA7D30D0AD3180F40EE5223A733AEFF30ABD75A224C89751BE331CC25A21BF63",
   "assets/favicon-48.png": "DDE54D2B416AE243687591D68AC54AEA5CBD503146683D6F352681194DD42EDD",
   "assets/apple-touch-icon.png": "E4D8E66361B5D139FD50D50722BC9201D5095351B476D60B250CF8AE7B62E9AA",
 };
 for (const [relativePath, expectedHash] of Object.entries(approvedAssetHashes)) {
-  const bytes = readFileSync(new URL(`./${relativePath}`, import.meta.url));
+  const sourceBytes = readFileSync(new URL(`./${relativePath}`, import.meta.url));
+  const bytes = relativePath.endsWith(".svg")
+    ? Buffer.from(sourceBytes.toString("utf8").replace(/\r\n?/g, "\n"), "utf8")
+    : sourceBytes;
   assert.equal(createHash("sha256").update(bytes).digest("hex").toUpperCase(), expectedHash, relativePath);
 }
 
