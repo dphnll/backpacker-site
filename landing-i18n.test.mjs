@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import vm from "node:vm";
 
@@ -98,6 +99,22 @@ assert.deepEqual(
     "Внутренняя смета остаётся приватной.",
   ],
 );
+
+assert.equal(
+  api.TRANSLATIONS.de["hero.lead"],
+  "Buchungen, Orte, Pläne, Dateien und Kosten bleiben zusammen. Verwalte deine eigene Reise oder teile ein aktuelles Programm mit deiner Gruppe.",
+);
+assert.deepEqual(
+  [1, 2, 3].map((line) => api.TRANSLATIONS.de[`organizer.body${line}`]),
+  [
+    "Erstelle und aktualisiere das Reiseprogramm, wenn sich Pläne ändern.",
+    "Teile das aktuelle Programm, den Preis, die Bedingungen und ausgewählte Unterlagen mit den Teilnehmenden.",
+    "Halte deine interne Kalkulation privat.",
+  ],
+);
+for (const key of ["hero.lead", "organizer.body1", "organizer.body2", "organizer.body3", "closing.title"]) {
+  assert.doesNotMatch(api.TRANSLATIONS.de[key], /\b(?:Sie|Ihnen|Ihre|Ihren|Ihrer|Ihrem|Ihres)\b/, `de.${key}`);
+}
 assert.deepEqual(
   [1, 2, 3].map((line) => api.TRANSLATIONS.en[`organizer.body${line}`]),
   [
@@ -122,10 +139,24 @@ for (const [name, html] of Object.entries({ index, privacy, terms, notFound })) 
     .replaceAll("«Сохранить в Backpacker»", "");
   assert.doesNotMatch(withoutExtensionTransition, /Backpacker|BACKPACKER/, name);
 }
-assert.match(index, /<span>Clavelo<\/span>/);
+assert.match(index, /<a class="brand" href="\.\/" aria-label="Clavelo">[\s\S]*?<img src="\.\/assets\/logo\.svg"/);
+assert.doesNotMatch(index, /<span>Clavelo<\/span>/);
 assert.match(index, /Every detail in place\. More room for the experience\./);
 assert.match(privacy, /Backpacker Travel Capture is the Chrome extension currently\s+published for Clavelo/);
 assert.match(source, /const STORAGE_KEY = "backpacker\.landing\.locale"/);
 assert.match(source, /globalThis\.BackpackerLandingI18n = api/);
+
+const approvedAssetHashes = {
+  "assets/logo.svg": "0CA0584F6E0834C2121CE9F60709FB8E586A8FC29AF8CBF5600F89328BB804C4",
+  "assets/clavelo-mark-simple.svg": "E98DF62FC56B23CDE384C28FF6121CB0A0857E35FBA9A2484E42C55D45415D16",
+  "assets/favicon-16.png": "F4DDFC6422A8B52299F934229018B10F24D7A1E1DC86CA60A2638BB2CD72CED0",
+  "assets/favicon-32.png": "DA7D30D0AD3180F40EE5223A733AEFF30ABD75A224C89751BE331CC25A21BF63",
+  "assets/favicon-48.png": "DDE54D2B416AE243687591D68AC54AEA5CBD503146683D6F352681194DD42EDD",
+  "assets/apple-touch-icon.png": "E4D8E66361B5D139FD50D50722BC9201D5095351B476D60B250CF8AE7B62E9AA",
+};
+for (const [relativePath, expectedHash] of Object.entries(approvedAssetHashes)) {
+  const bytes = readFileSync(new URL(`./${relativePath}`, import.meta.url));
+  assert.equal(createHash("sha256").update(bytes).digest("hex").toUpperCase(), expectedHash, relativePath);
+}
 
 console.log(`landing locale contract: ${api.SUPPORTED_LOCALES.length} locales, ${referenceKeys.length} keys`);

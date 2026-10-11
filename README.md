@@ -35,10 +35,11 @@ Cloudflare Pages project для `backpacker-site` с custom domain
 `backpackerapp.cc`. Существующий `backpacker-app` / `app.backpackerapp.cc`
 к этому deployment не относится.
 
-Текстовая часть перехода на Clavelo готовится отдельно от графики. Текущие
-скриншоты, `assets/logo.svg` и `assets/og-image.jpg` не заменяются временными
-файлами: они будут обновлены только из утверждённого финального asset pack.
-До этого ветка ребрендинга не предназначена для публикации.
+Текстовая часть перехода на Clavelo и утверждённый финальный logo asset pack
+интегрированы в release candidate. Бренд-видимые кадры приложения и
+`assets/og-image.jpg` переснимаются только из локального candidate App, без
+временных логотипов. Ветка ребрендинга не предназначена для публикации до
+отдельного release gate.
 
 ## Структура
 
