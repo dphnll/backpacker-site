@@ -40,7 +40,9 @@ const optionLocales = [...index.matchAll(/<option value="([^"]+)"/g)].map((match
 assert.deepEqual(optionLocales, ["ru", "en", "fr", "ka", "de", "hy", "zh"]);
 assert.equal((index.match(/data-app-link/g) || []).length, 7, "all seven app CTAs/captures are marked");
 assert.doesNotMatch(index, /dphnll\.github\.io\/Backpacker_demo/i);
-assert.match(index, /https:\/\/backpackerapp\.cc\//);
+assert.match(index, /<link rel="canonical" href="https:\/\/clavelo\.cc\/" \/>/);
+assert.match(index, /<meta property="og:url" content="https:\/\/clavelo\.cc\/" \/>/);
+assert.match(index, /<meta property="og:image" content="https:\/\/clavelo\.cc\/assets\/og-image\.jpg" \/>/);
 assert.match(index, /https:\/\/app\.backpackerapp\.cc\/\?lang=en/);
 assert.match(index, /okpfmpplfciccfddgibkcoliemfimifc/);
 assert.equal((index.match(/data-localized-screenshot=/g) || []).length, 6);
@@ -80,7 +82,8 @@ assert.match(api.TRANSLATIONS.hy["hero.title"], /[\u0530-\u058F]/);
 assert.match(api.TRANSLATIONS.zh["hero.title"], /[\u3400-\u9FFF]/);
 assert.match(source, /HTML_LANGUAGE_TAGS = \{ zh: "zh-Hans" \}/);
 
-assert.match(privacy, /https:\/\/backpackerapp\.cc\/privacy\//);
+assert.match(privacy, /<link rel="canonical" href="https:\/\/clavelo\.cc\/privacy\/" \/>/);
+assert.match(privacy, /This page: <code>https:\/\/clavelo\.cc\/privacy\/<\/code>/);
 assert.match(privacy, /<section id="english" lang="en">/);
 assert.match(privacy, /<section id="russian" lang="ru">/);
 assert.match(privacy, /Available languages: <code>English \/ Русский<\/code>/);
