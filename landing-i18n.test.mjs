@@ -1,9 +1,12 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import vm from "node:vm";
 
 const index = readFileSync(new URL("./index.html", import.meta.url), "utf8");
 const privacy = readFileSync(new URL("./privacy/index.html", import.meta.url), "utf8");
+const terms = readFileSync(new URL("./terms/index.html", import.meta.url), "utf8");
+const notFound = readFileSync(new URL("./404.html", import.meta.url), "utf8");
 const source = readFileSync(new URL("./i18n.js", import.meta.url), "utf8");
 
 const context = { URLSearchParams };
@@ -81,5 +84,82 @@ assert.match(privacy, /https:\/\/backpackerapp\.cc\/privacy\//);
 assert.match(privacy, /<section id="english" lang="en">/);
 assert.match(privacy, /<section id="russian" lang="ru">/);
 assert.match(privacy, /Available languages: <code>English \/ Русский<\/code>/);
+
+assert.equal(api.TRANSLATIONS.ru["hero.kicker"], "Вся поездка под рукой");
+assert.equal(api.TRANSLATIONS.en["hero.kicker"], "Your trip, all together");
+assert.equal(api.TRANSLATIONS.ru["hero.title"], "Все детали на месте. Больше свободы путешествовать.");
+assert.equal(api.TRANSLATIONS.en["hero.title"], "Every detail in place. More room for the experience.");
+assert.equal(api.TRANSLATIONS.ru["hero.bullet.budget"], "Бюджет и расходы поездки");
+assert.equal(api.TRANSLATIONS.en["hero.bullet.budget"], "Trip budget and costs");
+assert.deepEqual(
+  [1, 2, 3].map((line) => api.TRANSLATIONS.ru[`organizer.body${line}`]),
+  [
+    "Составляйте и обновляйте программу тура по мере изменений.",
+    "Публикуйте для участников программу, стоимость, условия и необходимые материалы.",
+    "Внутренняя смета остаётся приватной.",
+  ],
+);
+
+assert.equal(
+  api.TRANSLATIONS.de["hero.lead"],
+  "Buchungen, Orte, Pläne, Dateien und Kosten bleiben zusammen. Verwalte deine eigene Reise oder teile ein aktuelles Programm mit deiner Gruppe.",
+);
+assert.deepEqual(
+  [1, 2, 3].map((line) => api.TRANSLATIONS.de[`organizer.body${line}`]),
+  [
+    "Erstelle und aktualisiere das Reiseprogramm, wenn sich Pläne ändern.",
+    "Teile das aktuelle Programm, den Preis, die Bedingungen und ausgewählte Unterlagen mit den Teilnehmenden.",
+    "Halte deine interne Kalkulation privat.",
+  ],
+);
+for (const key of ["hero.lead", "organizer.body1", "organizer.body2", "organizer.body3", "closing.title"]) {
+  assert.doesNotMatch(api.TRANSLATIONS.de[key], /\b(?:Sie|Ihnen|Ihre|Ihren|Ihrer|Ihrem|Ihres)\b/, `de.${key}`);
+}
+assert.deepEqual(
+  [1, 2, 3].map((line) => api.TRANSLATIONS.en[`organizer.body${line}`]),
+  [
+    "Create and update the trip program as plans change.",
+    "Share the current program, price, terms and selected materials with participants.",
+    "Keep your internal budget private.",
+  ],
+);
+
+for (const locale of api.SUPPORTED_LOCALES) {
+  for (const [key, value] of Object.entries(api.TRANSLATIONS[locale])) {
+    const withoutPublishedExtensionName = value.replaceAll("Backpacker Travel Capture", "");
+    assert.doesNotMatch(withoutPublishedExtensionName, /Backpacker|BACKPACKER/, `${locale}.${key}`);
+  }
+  assert.match(api.TRANSLATIONS[locale]["extension.body1"], /Backpacker Travel Capture/, locale);
+}
+
+for (const [name, html] of Object.entries({ index, privacy, terms, notFound })) {
+  const withoutExtensionTransition = html
+    .replaceAll("Backpacker Travel Capture", "")
+    .replaceAll('"Save to Backpacker"', "")
+    .replaceAll("«Сохранить в Backpacker»", "");
+  assert.doesNotMatch(withoutExtensionTransition, /Backpacker|BACKPACKER/, name);
+}
+assert.match(index, /<a class="brand" href="\.\/" aria-label="Clavelo">[\s\S]*?<img src="\.\/assets\/logo\.svg"/);
+assert.doesNotMatch(index, /<span>Clavelo<\/span>/);
+assert.match(index, /Every detail in place\. More room for the experience\./);
+assert.match(privacy, /Backpacker Travel Capture is the Chrome extension currently\s+published for Clavelo/);
+assert.match(source, /const STORAGE_KEY = "backpacker\.landing\.locale"/);
+assert.match(source, /globalThis\.BackpackerLandingI18n = api/);
+
+const approvedAssetHashes = {
+  "assets/logo.svg": "30E28E319E4A03D74CE100B1F2B56DA212984F1DE2F8124A72AC55E179B24417",
+  "assets/clavelo-mark-simple.svg": "D487D317BF996DCA0C98E623F476466AD365AD2C1A6190C5C9106AF2F8B73E52",
+  "assets/favicon-16.png": "F4DDFC6422A8B52299F934229018B10F24D7A1E1DC86CA60A2638BB2CD72CED0",
+  "assets/favicon-32.png": "DA7D30D0AD3180F40EE5223A733AEFF30ABD75A224C89751BE331CC25A21BF63",
+  "assets/favicon-48.png": "DDE54D2B416AE243687591D68AC54AEA5CBD503146683D6F352681194DD42EDD",
+  "assets/apple-touch-icon.png": "E4D8E66361B5D139FD50D50722BC9201D5095351B476D60B250CF8AE7B62E9AA",
+};
+for (const [relativePath, expectedHash] of Object.entries(approvedAssetHashes)) {
+  const sourceBytes = readFileSync(new URL(`./${relativePath}`, import.meta.url));
+  const bytes = relativePath.endsWith(".svg")
+    ? Buffer.from(sourceBytes.toString("utf8").replace(/\r\n?/g, "\n"), "utf8")
+    : sourceBytes;
+  assert.equal(createHash("sha256").update(bytes).digest("hex").toUpperCase(), expectedHash, relativePath);
+}
 
 console.log(`landing locale contract: ${api.SUPPORTED_LOCALES.length} locales, ${referenceKeys.length} keys`);

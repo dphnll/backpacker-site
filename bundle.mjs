@@ -66,15 +66,15 @@ function bundle(srcRel, outName, opts = {}) {
   console.log(`${outName}  ${Math.round(Buffer.byteLength(html, "utf8") / 1024)} КБ`);
 }
 
-bundle("index.html", "Backpacker-лендинг.html", {
+bundle("index.html", "Clavelo-лендинг.html", {
   inlineI18n: true,
   links: {
-    "./privacy/": "./Backpacker-политика-конфиденциальности.html",
+    "./privacy/": "./Clavelo-политика-конфиденциальности.html",
     // Логотип в шапке и подвале ведёт на корень сайта; в автономной
     // копии корня нет, поэтому он ведёт на саму страницу.
-    "./": "./Backpacker-лендинг.html",
+    "./": "./Clavelo-лендинг.html",
   },
 });
-bundle("privacy/index.html", "Backpacker-политика-конфиденциальности.html", {
-  links: { "../": "./Backpacker-лендинг.html" },
+bundle("privacy/index.html", "Clavelo-политика-конфиденциальности.html", {
+  links: { "../": "./Clavelo-лендинг.html" },
 });

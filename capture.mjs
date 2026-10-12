@@ -125,12 +125,48 @@ const evalJs = async (expr) => {
   return r.result.value;
 };
 
+if (process.env.VISUAL_CHECK === "1") {
+  const landingUrl = new URL(process.env.LANDING_URL || "http://127.0.0.1:4174/");
+  landingUrl.searchParams.set("lang", LOCALE);
+  mkdirSync(OUT, { recursive: true });
+  const evidence = [];
+  const visualShot = async (name) => {
+    const { data } = await S("Page.captureScreenshot", { format: "png", fromSurface: true });
+    const file = join(OUT, `${name}.png`);
+    writeFileSync(file, Buffer.from(data, "base64"));
+    return file;
+  };
+  for (const [width, height, mobile] of [[320, 900, true], [375, 900, true], [1200, 800, false]]) {
+    await S("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 1, mobile });
+    await S("Page.navigate", { url: landingUrl.toString() });
+    await sleep(1800);
+    const layout = await evalJs(`({ innerWidth, rootScrollWidth: document.documentElement.scrollWidth, bodyScrollWidth: document.body.scrollWidth })`);
+    evidence.push({ surface: "landing", width, height, ...layout, screenshot: await visualShot(`landing-${width}`) });
+  }
+  for (const width of [320, 375]) {
+    await S("Emulation.setDeviceMetricsOverride", { width, height: 844, deviceScaleFactor: 1, mobile: true });
+    await S("Page.navigate", { url: APP.toString() });
+    await sleep(1800);
+    await evalJs(`document.querySelector("#appSplash")?.classList.remove("hidden"); document.querySelector("#introScreen")?.classList.add("hidden"); document.querySelector("#homeScreen")?.classList.add("hidden"); true`);
+    evidence.push({ surface: "app-splash", width, height: 844, screenshot: await visualShot(`app-splash-${width}`) });
+    await evalJs(`document.querySelector("#appSplash")?.classList.add("hidden"); document.querySelector("#introScreen")?.classList.remove("hidden"); document.querySelector("#homeScreen")?.classList.add("hidden"); window.scrollTo(0, 0); true`);
+    await sleep(300);
+    const layout = await evalJs(`({ innerWidth, rootScrollWidth: document.documentElement.scrollWidth, bodyScrollWidth: document.body.scrollWidth })`);
+    evidence.push({ surface: "app-onboarding", width, height: 844, ...layout, screenshot: await visualShot(`app-onboarding-${width}`) });
+  }
+  console.log(JSON.stringify({ visualCheck: "PASS", output: OUT, evidence }, null, 2));
+  ws.close();
+  chrome.kill();
+  process.exit(0);
+}
+
 await S("Page.navigate", { url: APP.toString() });
 await sleep(4000);
 // Сплэш уходит по таймеру; добиваем принудительно, чтобы не ловить его в кадр.
 await evalJs(`document.querySelector("#appSplash")?.classList.add("hidden");
 document.querySelector("#introScreen")?.classList.add("hidden");
-document.querySelector("#homeScreen")?.classList.remove("hidden"); true`);
+document.querySelector("#homeScreen")?.classList.remove("hidden");
+window.scrollTo(0, 0); true`);
 await sleep(1200);
 
 const shots = [];

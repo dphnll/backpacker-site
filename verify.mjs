@@ -1,7 +1,7 @@
 // Проверяет, что собранная bundle.mjs копия действительно самодостаточна:
 // ни одной ссылки на соседний файл, ни одного url() на диск.
 //
-//   node verify.mjs preview/Backpacker-лендинг.html [ещё файлы...]
+//   node verify.mjs preview/Clavelo-лендинг.html [ещё файлы...]
 //
 import { readFileSync } from "node:fs";
 
