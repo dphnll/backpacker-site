@@ -14,9 +14,9 @@ JavaScript-файл для переключения языка; без сбор�
 
 | Что | Адрес |
 | --- | --- |
-| Landing (публикационный target) | `https://backpackerapp.cc/` |
-| Privacy Policy · EN/RU | `https://backpackerapp.cc/privacy/` |
-| Terms (маршрут занят, текста нет) | `https://backpackerapp.cc/terms/` |
+| Landing (публикационный target) | `https://clavelo.cc/` |
+| Privacy Policy · EN/RU | `https://clavelo.cc/privacy/` |
+| Terms (маршрут занят, текста нет) | `https://clavelo.cc/terms/` |
 | Приложение (не в этом репозитории) | `https://app.backpackerapp.cc/` |
 | Chrome extension | `https://chromewebstore.google.com/detail/backpacker-travel-capture/okpfmpplfciccfddgibkcoliemfimifc` |
 
@@ -31,9 +31,11 @@ JavaScript-файл для переключения языка; без сбор�
 
 Landing остаётся отдельным репозиторием и не меняет PWA, Extension или их
 production-конфигурацию. Публикационный target — отдельный Git-backed
-Cloudflare Pages project для `backpacker-site` с custom domain
-`backpackerapp.cc`. Существующий `backpacker-app` / `app.backpackerapp.cc`
-к этому deployment не относится.
+Cloudflare Pages project для `backpacker-site` с целевым custom domain
+`clavelo.cc`. Старый лендинг `backpackerapp.cc` получает 301 по точному хосту
+только после проверки нового сайта, с сохранением пути и query.
+Существующий `backpacker-app` / `app.backpackerapp.cc` к этому deployment
+не относится и остаётся доступным без редиректа.
 
 Текстовая часть перехода на Clavelo и утверждённый финальный logo asset pack
 интегрированы в release candidate. Бренд-видимые кадры приложения и
@@ -254,13 +256,11 @@ python -m http.server 4173 --bind 127.0.0.1
 
 Preview: `http://127.0.0.1:4173/?lang=en`.
 
-## Перед первым деплоем
+## Выпуск на новом домене
 
-1. Подставить `[EFFECTIVE_DATE]` в `privacy/index.html` (два места: EN и RU).
-2. Подставить `[CONTACT_EMAIL]` в `privacy/index.html` (два места: EN и RU).
-3. Решить, появляется ли контакт в подвале `index.html` — слот закомментирован.
-4. Создать отдельный Git-backed Cloudflare Pages project для репозитория
-   `dphnll/backpacker-site`, ветка `main`, output directory `/`, и только после
-   отдельного разрешения подключить custom domain `backpackerapp.cc`.
-5. Внести адрес `/privacy/` в поле политики конфиденциальности листинга Chrome
-   Web Store и в `[POLICY_URL]` исходного `03_extension/docs/PRIVACY_POLICY.md`.
+1. Завершить согласованный релиз Clavelo #42 и опубликовать лендинг из PR #2.
+2. Подключить `clavelo.cc` к существующему Pages project лендинга, проверить HTTPS, `/`, `/privacy/`, `/terms/`, семь языков, соцпревью и кнопки приложения.
+3. Затем включить 301 только для хоста `backpackerapp.cc`, сохранив путь и query. Проверить старый `/privacy/` и прямой доступ к `app.backpackerapp.cc`.
+4. При сбое выключить правило 301; приложение и его домен не переключать.
+
+Адрес расширения в Chrome Web Store меняется отдельным выпуском; старый `/privacy/` продолжает открывать тот же документ через редирект.
