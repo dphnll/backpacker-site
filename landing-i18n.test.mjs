@@ -15,6 +15,14 @@ const api = context.BackpackerLandingI18n;
 
 assert.ok(api, "i18n.js must expose its testable locale contract");
 assert.deepEqual([...api.SUPPORTED_LOCALES], ["ru", "en", "fr", "ka", "de", "hy", "zh"]);
+assert.equal(api.APP_URL, "https://app.clavelo.cc/");
+
+for (const locale of api.SUPPORTED_LOCALES) {
+  const appUrl = new URL(api.APP_URL);
+  appUrl.searchParams.set("lang", locale);
+  assert.equal(appUrl.toString(), `https://app.clavelo.cc/?lang=${locale}`, `${locale} app CTA`);
+  assert.deepEqual([...appUrl.searchParams], [["lang", locale]], `${locale} app CTA parameters`);
+}
 
 const referenceKeys = Object.keys(api.TRANSLATIONS.en).sort();
 for (const locale of api.SUPPORTED_LOCALES) {
@@ -87,6 +95,11 @@ assert.match(privacy, /This page: <code>https:\/\/clavelo\.cc\/privacy\/<\/code>
 assert.match(privacy, /<section id="english" lang="en">/);
 assert.match(privacy, /<section id="russian" lang="ru">/);
 assert.match(privacy, /Available languages: <code>English \/ Русский<\/code>/);
+assert.match(terms, /<meta name="robots" content="noindex, nofollow" \/>/);
+assert.match(terms, /<a href="\.\.\/privacy\/">Privacy Policy<\/a>/);
+assert.match(notFound, /<link rel="stylesheet" href="\/styles\.css" \/>/);
+assert.match(notFound, /<a class="btn btn-primary" href="\/">На главную<\/a>/);
+assert.match(notFound, /<a href="\/privacy\/">Политика конфиденциальности<\/a>/);
 
 assert.equal(api.TRANSLATIONS.ru["hero.kicker"], "Вся поездка под рукой");
 assert.equal(api.TRANSLATIONS.en["hero.kicker"], "Your trip, all together");

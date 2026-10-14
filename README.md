@@ -17,7 +17,7 @@ JavaScript-файл для переключения языка; без сбор�
 | Landing (публикационный target) | `https://clavelo.cc/` |
 | Privacy Policy · EN/RU | `https://clavelo.cc/privacy/` |
 | Terms (маршрут занят, текста нет) | `https://clavelo.cc/terms/` |
-| Приложение (не в этом репозитории) | `https://app.backpackerapp.cc/` |
+| Приложение (не в этом репозитории) | `https://app.clavelo.cc/` |
 | Chrome extension | `https://chromewebstore.google.com/detail/backpacker-travel-capture/okpfmpplfciccfddgibkcoliemfimifc` |
 
 ## Границы
@@ -156,7 +156,7 @@ Roboto. Всё это либо не реализовано в продукте, 
 рамку даёт сам интерфейс, а на странице у `.crop` нет ни границы, ни фона —
 иначе получается коробка внутри коробки.
 
-Каждый фрагмент обёрнут в ссылку на `https://app.backpackerapp.cc/` с
+Каждый фрагмент обёрнут в ссылку на `https://app.clavelo.cc/` с
 whitelist-параметром `?lang=<locale>`. Причина: на снимках видны
 кнопки, и человек по ним нажимает. Ссылкой сделан весь кадр, а не отдельная
 область — обещать интерактив одной кнопке на картинке было бы обманом.
