@@ -47,6 +47,8 @@ for (const key of referencedKeys) {
 const optionLocales = [...index.matchAll(/<option value="([^"]+)"/g)].map((match) => match[1]);
 assert.deepEqual(optionLocales, ["ru", "en", "fr", "ka", "de", "hy", "zh"]);
 assert.equal((index.match(/data-app-link/g) || []).length, 7, "all seven app CTAs/captures are marked");
+assert.match(index, /<a href="mailto:hello@clavelo\.cc">hello@clavelo\.cc<\/a>/);
+assert.doesNotMatch(index, /dphnll\.ge@gmail\.com/);
 assert.doesNotMatch(index, /dphnll\.github\.io\/Backpacker_demo/i);
 assert.match(index, /<link rel="canonical" href="https:\/\/clavelo\.cc\/" \/>/);
 assert.match(index, /<meta property="og:url" content="https:\/\/clavelo\.cc\/" \/>/);
