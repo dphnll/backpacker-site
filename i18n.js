@@ -3,7 +3,7 @@
 
   const SUPPORTED_LOCALES = ["ru", "en", "fr", "ka", "de", "hy", "zh"];
   const STORAGE_KEY = "backpacker.landing.locale";
-  const APP_URL = "https://app.backpackerapp.cc/";
+  const APP_URL = "https://app.clavelo.cc/";
 
   const TRANSLATIONS = {
     en: {
