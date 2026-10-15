@@ -18,7 +18,7 @@ JavaScript-файл для переключения языка; без сбор�
 | Privacy Policy · EN/RU | `https://clavelo.cc/privacy/` |
 | Terms (маршрут занят, текста нет) | `https://clavelo.cc/terms/` |
 | Приложение (не в этом репозитории) | `https://app.clavelo.cc/` |
-| Chrome extension | `https://chromewebstore.google.com/detail/backpacker-travel-capture/okpfmpplfciccfddgibkcoliemfimifc` |
+| Chrome extension | `https://chromewebstore.google.com/detail/clavelo-travel-capture/okpfmpplfciccfddgibkcoliemfimifc` |
 
 ## Границы
 

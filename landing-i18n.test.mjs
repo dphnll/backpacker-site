@@ -144,23 +144,18 @@ assert.deepEqual(
 
 for (const locale of api.SUPPORTED_LOCALES) {
   for (const [key, value] of Object.entries(api.TRANSLATIONS[locale])) {
-    const withoutPublishedExtensionName = value.replaceAll("Backpacker Travel Capture", "");
-    assert.doesNotMatch(withoutPublishedExtensionName, /Backpacker|BACKPACKER/, `${locale}.${key}`);
+    assert.doesNotMatch(value, /Backpacker|BACKPACKER/, `${locale}.${key}`);
   }
-  assert.match(api.TRANSLATIONS[locale]["extension.body1"], /Backpacker Travel Capture/, locale);
+  assert.match(api.TRANSLATIONS[locale]["extension.body1"], /Clavelo Travel Capture/, locale);
 }
 
 for (const [name, html] of Object.entries({ index, privacy, terms, notFound })) {
-  const withoutExtensionTransition = html
-    .replaceAll("Backpacker Travel Capture", "")
-    .replaceAll('"Save to Backpacker"', "")
-    .replaceAll("«Сохранить в Backpacker»", "");
-  assert.doesNotMatch(withoutExtensionTransition, /Backpacker|BACKPACKER/, name);
+  assert.doesNotMatch(html, /Backpacker|BACKPACKER/, name);
 }
 assert.match(index, /<a class="brand" href="\.\/" aria-label="Clavelo">[\s\S]*?<img src="\.\/assets\/logo\.svg"/);
 assert.doesNotMatch(index, /<span>Clavelo<\/span>/);
 assert.match(index, /Every detail in place\. More room for the experience\./);
-assert.match(privacy, /Backpacker Travel Capture is the Chrome extension currently\s+published for Clavelo/);
+assert.match(privacy, /Clavelo Travel Capture is the Chrome extension for Clavelo/);
 assert.match(source, /const STORAGE_KEY = "backpacker\.landing\.locale"/);
 assert.match(source, /globalThis\.BackpackerLandingI18n = api/);
 
