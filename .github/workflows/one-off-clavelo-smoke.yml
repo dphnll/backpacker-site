@@ -1,0 +1,92 @@
+name: One-off Clavelo production smoke
+
+on:
+  push:
+    branches:
+      - qa/clavelo-live-smoke-20261022
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate source and asset hash
+        run: |
+          node version-assets.mjs --check
+          node landing-i18n.test.mjs
+      - name: Observe production HTTP and cache headers
+        shell: bash
+        run: |
+          set -eu
+          for url in 'https://clavelo.cc/' 'https://clavelo.cc/styles.css?v=b7a3a3997c' 'https://clavelo.cc/i18n.js?v=b7a3a3997c' 'https://clavelo.cc/privacy/'; do
+            echo "REQUEST $url"
+            curl --silent --show-error --location --head --max-time 30 "$url" | grep -iE '^HTTP/|^cache-control:|^cf-cache-status:|^age:|^content-type:' || true
+          done
+      - name: Verify live production HTML and assets match current release
+        run: node check-production.mjs https://clavelo.cc/
+      - name: Install browser test runner (temporary, not part of project)
+        run: |
+          echo "Chrome: $(command -v google-chrome || true)"
+          npm install --prefix /tmp/clavelo-live-smoke --no-save --no-package-lock --ignore-scripts --silent playwright@1.56.1
+      - name: Chromium production visual and navigation smoke
+        run: |
+          mkdir -p /tmp/clavelo-live-smoke/screenshots
+          node <<'NODE'
+          const { chromium } = require('/tmp/clavelo-live-smoke/node_modules/playwright');
+          const fs = require('node:fs');
+          const expected = {ru: 'Поездка собрана', en: 'The trip is ready'};
+          const main = async () => {
+            const browser = await chromium.launch({headless:true, channel:'chrome', args:['--no-sandbox']});
+            try {
+              for (const locale of ['ru','en']) for (const [name,width,height] of [['desktop',1440,900],['mobile',390,844]]) {
+                const context = await browser.newContext({viewport:{width,height},deviceScaleFactor:1});
+                const page = await context.newPage();
+                const errors = [];
+                page.on('pageerror',err=>errors.push(err.message));
+                page.on('response',res=>{if(res.status() >= 400 && ['stylesheet','script','image'].includes(res.request().resourceType()))errors.push(res.status()+' '+res.url())});
+                try {
+                  const url='https://clavelo.cc/?lang='+locale;
+                  const response=await page.goto(url,{waitUntil:'networkidle',timeout:50000});
+                  await page.evaluate(()=>document.fonts.ready);
+                  const report=await page.evaluate(()=>{
+                    const sections=['.hero','.roles','.organizers','.guests','.travel','.closing','.site-footer'];
+                    const missing=sections.filter(s=>!document.querySelector(s));
+                    const badImages=[...document.images].filter(x=>!x.complete || x.naturalWidth===0).map(x=>x.currentSrc);
+                    const h1=document.querySelector('h1')?.innerText || '';
+                    const styles=[...document.styleSheets].map(x=>x.href).filter(Boolean);
+                    return {h1,missing,badImages,styles,docWidth:document.documentElement.scrollWidth,viewWidth:document.documentElement.clientWidth,docHeight:document.documentElement.scrollHeight,appLinks:[...document.querySelectorAll('[data-app-link]')].map(x=>x.href),pilotLinks:[...document.querySelectorAll('[data-pilot-link]')].map(x=>x.href)};
+                  });
+                  const img='/tmp/clavelo-live-smoke/screenshots/'+locale+'-'+name+'.png';
+                  await page.screenshot({path:img,fullPage:true,animations:'disabled'});
+                  console.log(locale,name,JSON.stringify(report), 'browserErrors',errors);
+                  if(response.status()!==200||!report.h1.includes(expected[locale])||report.missing.length||report.badImages.length||report.docWidth>report.viewWidth+3||report.docHeight>25000||!report.styles.some(x=>x.includes('styles.css?v=b7a3a3997c'))||!report.appLinks.length||report.appLinks.some(x=>!x.startsWith('https://app.clavelo.cc/?lang='+locale))||!report.pilotLinks.length||errors.length)throw new Error('Production browser smoke failed: '+locale+' '+name);
+                  await page.reload({waitUntil:'networkidle',timeout:50000});
+                  const warm=await page.evaluate(()=>({h1:document.querySelector('h1')?.innerText,wide:document.documentElement.scrollWidth>document.documentElement.clientWidth+3}));
+                  if(!warm.h1.includes(expected[locale])||warm.wide)throw new Error('Warm-cache reload failed: '+locale+' '+name+' '+JSON.stringify(warm));
+                  console.log('PASS',locale,name,'fresh & cached reload');
+                } finally {await context.close()}
+              }
+              for (const path of ['privacy/','terms/']) {
+                const resp=await fetch('https://clavelo.cc/'+path);
+                console.log(path,resp.status);
+                if(resp.status!==200)throw new Error(path+' failed');
+              }
+            } finally {await browser.close()}
+          };
+          main().catch(e=>{console.error(e);process.exitCode=1});
+          NODE
+      - name: Upload actual browser screenshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: clavelo-production-visual-smoke
+          path: /tmp/clavelo-live-smoke/screenshots/
+          if-no-files-found: ignore
+          retention-days: 2
