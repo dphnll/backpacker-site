@@ -4,6 +4,10 @@
 //
 //   node bundle.mjs [папка-назначения]
 //
+// Снимки интерфейса вшиваются на одном языке — BUNDLE_LOCALE (по умолчанию
+// ru): все семь наборов сделали бы файл в семь раз тяжелее. Переключатель
+// языка в копии меняет тексты, а кадры остаются на языке сборки.
+//
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join, extname, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -11,11 +15,13 @@ import { fileURLToPath } from "node:url";
 // Пути считаются от самого скрипта: репозиторий можно клонировать куда угодно.
 const SITE = dirname(fileURLToPath(import.meta.url));
 const OUT = process.argv[2] || join(SITE, "preview");
+const BUNDLE_LOCALE = process.env.BUNDLE_LOCALE || "ru";
 mkdirSync(OUT, { recursive: true });
 
 const MIME = {
   ".jpg": "image/jpeg",
   ".png": "image/png",
+  ".webp": "image/webp",
   ".svg": "image/svg+xml",
   ".woff2": "font/woff2",
 };
@@ -40,6 +46,10 @@ function bundle(srcRel, outName, opts = {}) {
     /<link rel="stylesheet" href="[^"]*styles\.css"\s*\/?>/,
     `<style>\n${css}\n</style>`,
   );
+  html = html.replace(/assets\/screenshots\/en\//g, `assets/screenshots/${BUNDLE_LOCALE}/`);
+  html = html.replace(/\s*data-localized-screenshot="[^"]+"/g, "");
+  // Адаптивные варианты фото не нужны в одном файле: остаётся src.
+  html = html.replace(/\s*srcset="[^"]*"/g, "").replace(/\s*sizes="[^"]*"/g, "");
   html = html.replace(/href="([^"]*assets\/[^"]+)"/g, (m, p) => `href="${dataUri(p)}"`);
   html = html.replace(/src="([^"]*assets\/[^"]+)"/g, (m, p) => `src="${dataUri(p)}"`);
   if (opts.inlineI18n) {
