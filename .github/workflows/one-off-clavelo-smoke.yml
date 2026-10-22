@@ -72,10 +72,10 @@ jobs:
                   const img='/tmp/clavelo-live-smoke/screenshots/'+locale+'-'+name+'.png';
                   await page.screenshot({path:img,fullPage:true,animations:'disabled'});
                   console.log(locale,name,JSON.stringify(report), 'browserErrors',errors);
-                  if(response.status()!==200||!report.h1.includes(expected[locale])||report.missing.length||report.badImages.length||report.docWidth>report.viewWidth+3||report.docHeight>25000||!report.styles.some(x=>x.includes('styles.css?v=b7a3a3997c'))||!report.appLinks.length||report.appLinks.some(x=>!x.startsWith('https://app.clavelo.cc/?lang='+locale))||!report.pilotLinks.length||errors.length)throw new Error('Production browser smoke failed: '+locale+' '+name);
+                  if(response.status()!==200||!report.h1.replace(/\s+/g,' ').includes(expected[locale])||report.missing.length||report.badImages.length||report.docWidth>report.viewWidth+3||report.docHeight>25000||!report.styles.some(x=>x.includes('styles.css?v=b7a3a3997c'))||!report.appLinks.length||report.appLinks.some(x=>!x.startsWith('https://app.clavelo.cc/?lang='+locale))||!report.pilotLinks.length||errors.length)throw new Error('Production browser smoke failed: '+locale+' '+name);
                   await page.reload({waitUntil:'networkidle',timeout:50000});
                   const warm=await page.evaluate(()=>({h1:document.querySelector('h1')?.innerText,wide:document.documentElement.scrollWidth>document.documentElement.clientWidth+3}));
-                  if(!warm.h1.includes(expected[locale])||warm.wide)throw new Error('Warm-cache reload failed: '+locale+' '+name+' '+JSON.stringify(warm));
+                  if(!warm.h1.replace(/\s+/g,' ').includes(expected[locale])||warm.wide)throw new Error('Warm-cache reload failed: '+locale+' '+name+' '+JSON.stringify(warm));
                   console.log('PASS',locale,name,'fresh & cached reload');
                 } finally {await context.close()}
               }
