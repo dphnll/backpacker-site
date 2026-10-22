@@ -1,4 +1,6 @@
-// Проверяет, что опубликованный лендинг отдаёт файлы одной версии.
+import { readFileSync } from "node:fs";
+
+// Проверяет, что опубликованный лендинг отдаёт файлы текущего коммита одной версии.
 //
 //   node check-production.mjs                     — https://clavelo.cc/
 //   node check-production.mjs https://<preview>/  — любой другой адрес
@@ -17,12 +19,19 @@ const get = async (path) => {
 };
 
 const failures = [];
+// A self-consistent but stale Cloudflare HTML response is still a failed release.
+// Compare its asset version with the version checked out locally.
+const localHtml = readFileSync(new URL("./index.html", import.meta.url), "utf8");
+const expectedVersion = localHtml.match(/styles\.css\?v=([0-9a-f]{10})/)?.[1];
+if (!expectedVersion) failures.push("локальный index.html не содержит версии CSS");
 const { res: page, body: html } = await get("./");
+if (page.status !== 200) failures.push(`HTML ${page.status}`);
 const versions = [...html.matchAll(/(?:styles\.css|i18n\.js|\.webp)\?v=([0-9a-f]{10})"/g)].map((m) => m[1]);
 const unique = [...new Set(versions)];
 console.log(`HTML ${page.status}, cache-control: ${page.headers.get("cache-control")}`);
 console.log(`versioned references: ${versions.length}, versions: ${unique.join(", ") || "—"}`);
 if (unique.length !== 1) failures.push(`в HTML должна быть ровно одна версия ассетов, найдено: ${unique.length}`);
+if (unique[0] !== expectedVersion) failures.push(`устаревший HTML: production ${unique[0] || "без версии"}, ожидается ${expectedVersion}`);
 if (!/max-age=0/.test(page.headers.get("cache-control") || "")) failures.push("HTML кэшируется: ожидался max-age=0");
 
 const version = unique[0];
