@@ -199,6 +199,10 @@ assert.deepEqual(
   ["Путешествую", "Организую", "Участвую"],
 );
 assert.match(index, /The trip is ready\. Everyone knows what’s next/);
+// Без JS (поисковики, превью ссылок) страница отдаёт ровно английские мета-теги.
+assert.ok(index.includes(`<title>${T.en["meta.title"]}</title>`), "static title matches en");
+assert.ok(index.includes(`content="${T.en["meta.description"]}"`), "static description matches en");
+assert.ok(index.includes(`<meta property="og:title" content="${T.en["meta.ogTitle"]}" />`), "static og:title matches en");
 
 for (const locale of api.SUPPORTED_LOCALES) {
   for (const [key, value] of Object.entries(T[locale])) {
