@@ -305,6 +305,18 @@ const evalJs = async (expr) => {
 };
 const viewport = (width, height) => S("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 2, mobile: true });
 
+// Одна карточка события целиком. Карточки дня лежат в горизонтальной
+// ленте, поэтому сначала прокручиваем ленту к карточке, потом снимаем.
+async function shootCard(file, itemId) {
+  await evalJs(`(() => {
+    const card = document.querySelector('.item-card[data-edit="${itemId}"]');
+    card.scrollIntoView({ block: "center", inline: "center" });
+    return true;
+  })()`);
+  await sleep(500);
+  return shoot(file, `document.querySelector('.item-card[data-edit="${itemId}"]').getBoundingClientRect()`);
+}
+
 // Кадр по прямоугольнику в координатах СТРАНИЦЫ: с captureBeyondViewport
 // clip считается от начала документа, поэтому прибавляем scrollX/scrollY.
 async function shoot(file, rectExpr) {
@@ -360,6 +372,12 @@ for (const locale of LOCALES) {
   })()`);
   await sleep(1500);
   report.push(await shoot(join(out, "role-plan.webp")));
+
+  // 1a. Карточки событий для ролевых карточек лендинга: настоящие карточки
+  // приложения с корешком типа, иконкой и временем.
+  for (const id of ["t1", "t2", "t3", "t5"]) report.push(await shootCard(join(out, `card-${id}.webp`), id));
+  await evalJs(`window.scrollTo(0, 0); document.querySelectorAll(".day-items").forEach((row) => { row.scrollLeft = 0; }); true`);
+  await sleep(400);
 
   // 2. Организатор: панель группы — участники, ссылка, условия программы.
   // Шторка ограничена высотой экрана; на время кадра окно вытягиваем,
@@ -417,7 +435,11 @@ for (const locale of LOCALES) {
     return true;
   })()`);
   await sleep(1500);
-  report.push(await shoot(join(out, "role-guest.webp")));
+
+  // 3a. Карточки участника: без цен организатора.
+  for (const id of ["t6", "t7"]) report.push(await shootCard(join(out, `card-${id}.webp`), id));
+  await evalJs(`window.scrollTo(0, 0); document.querySelectorAll(".day-items").forEach((row) => { row.scrollLeft = 0; }); true`);
+  await sleep(400);
 
   // 4. Участник: блок «О программе» крупно.
   report.push(await shoot(join(out, "role-guest-info.webp"), `document.querySelector("#participantProgramInfo").getBoundingClientRect()`));

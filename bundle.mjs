@@ -48,6 +48,8 @@ function bundle(srcRel, outName, opts = {}) {
   );
   html = html.replace(/assets\/screenshots\/en\//g, `assets/screenshots/${BUNDLE_LOCALE}/`);
   html = html.replace(/\s*data-localized-screenshot="[^"]+"/g, "");
+  // Адаптивные варианты фото не нужны в одном файле: остаётся src.
+  html = html.replace(/\s*srcset="[^"]*"/g, "").replace(/\s*sizes="[^"]*"/g, "");
   html = html.replace(/href="([^"]*assets\/[^"]+)"/g, (m, p) => `href="${dataUri(p)}"`);
   html = html.replace(/src="([^"]*assets\/[^"]+)"/g, (m, p) => `src="${dataUri(p)}"`);
   if (opts.inlineI18n) {

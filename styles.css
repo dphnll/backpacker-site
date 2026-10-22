@@ -83,9 +83,10 @@ html {
 }
 
 body {
+  position: relative;
   margin: 0;
   min-width: 0;
-  background: var(--paper);
+  background: transparent;
   color: var(--ink);
   font-family: Inter, "Noto Sans Georgian", "Noto Sans Armenian", "Segoe UI",
     Arial, Roboto, system-ui, sans-serif;
@@ -93,6 +94,188 @@ body {
   font-weight: 400;
   line-height: 1.55;
   overflow-wrap: break-word;
+}
+
+/* Карта — среда, как на главной приложения. position: fixed, а не
+   background-attachment: fixed — второй игнорируется на iOS. Маска та же,
+   что в приложении: плотно у кромок кадра, тише в середине. Источник —
+   та же старинная карта мира (05_design/2010x1400_capuchin_2017.jpg):
+   на телефоне портретный фрагмент Атлантики, как в приложении, но из
+   исходника в полтора раза крупнее; на широком экране — карта целиком,
+   чтобы не растягивать узкий кадр втрое. Контрастные полосы
+   (организаторы, свои поездки) лежат поверх карты и закрывают её. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  background-image: url("./assets/map-portrait.webp");
+  background-size: cover;
+  background-position: center;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.18) 26%, rgba(0, 0, 0, 0.18) 74%, #000 100%);
+  mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.18) 26%, rgba(0, 0, 0, 0.18) 74%, #000 100%);
+}
+
+@media (min-width: 700px) {
+  body::before {
+    background-image: url("./assets/map-wide.webp");
+  }
+}
+
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ПРАВИЛО КОНТРАСТА НАД КАРТОЙ (из v0, замерено по самому файлу карты):
+   под слоем 0,4 фон в худшем месте опускается до 165 из 255. --ink-soft
+   даёт на нём 2,25, --ink — 7,02. Поэтому текст, лежащий прямо на карте,
+   всегда --ink; иерархию держит кегль. На плашках, фото-подписях и
+   тёмной полосе правило не нужно. */
+body .hero-lead,
+body .hero-note,
+body .roles .section-lead,
+body .guests .section-lead,
+body .facts span,
+body .days-shot figcaption,
+body .closing-note,
+body .kicker {
+  color: var(--ink);
+}
+
+
+/* ---------- Полоса падающих плиток по правому краю ----------
+   Мотив взят с экрана приветствия приложения: те же восемь типов
+   событий, та же приглушённая палитра корешков, тот же радиус 12,
+   та же мягкая тень и тот же цикл 13 секунд с отрицательными
+   задержками — за счёт них лента с первого кадра выглядит идущей,
+   а не начинающейся.
+
+   Полоса зафиксирована у правого края и лежит СЛОЙ В СЛОЙ с картой,
+   ниже содержимого. На узких экранах плитки уходят за плашки и
+   проглядывают только в промежутках между ними, на широких —
+   целиком живут в правом поле. Ни касаний, ни ширины документа
+   она не трогает: position: fixed из потока выведен. */
+/* Полоса выходит за экран сверху и снизу: путь плитки становится длиннее
+   видимой высоты, поэтому восемь плиток разъезжаются шире и не наезжают
+   друг на друга даже в невысоком окне. Заодно они не возникают и не
+   исчезают на кромке кадра, а приходят и уходят за неё. */
+.edge-strip {
+  position: fixed;
+  top: -6vh;
+  right: 0;
+  bottom: -6vh;
+  z-index: 0;
+  width: clamp(112px, 14vw, 184px);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.edge-tile {
+  position: absolute;
+  top: 0;
+  display: grid;
+  /* Размер ограничен и по высоте экрана: на широком, но низком окне
+     плитка в 132px съедала весь промежуток между соседями. */
+  width: clamp(88px, min(10.4vw, 12vh), 132px);
+  height: clamp(88px, min(10.4vw, 12vh), 132px);
+  place-items: center;
+  padding: clamp(14px, 1.6vw, 20px);
+  border-radius: 12px;
+  color: #fff;
+  opacity: 0.3;
+  box-shadow: 0 4px 12px rgba(28, 26, 23, 0.1);
+  animation: edge-fall 13s linear infinite;
+  will-change: transform;
+}
+
+.edge-tile svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Палитра корешков карточек события — те же значения, что в приложении.
+
+   Задержки разложены строго через 1.625s — это 13s цикла, делённые на
+   восемь плиток. Раньше шаг гулял от 2s до 1s, и плитки то расходились,
+   то наезжали друг на друга. При равном шаге вертикальный промежуток
+   между ними тоже равный: путь за цикл — высота экрана плюс 280px, то
+   есть на телефоне около 136px между плитками при высоте плитки 88px.
+
+   Горизонтальные позиции чередуются широко: соседние по времени плитки
+   разведены по краям полосы, поэтому даже в самом тесном месте они не
+   перекрывают друг друга. */
+.tile-ticket {
+  left: 2%;
+  background: #44637e;
+  animation-delay: 0s;
+}
+
+.tile-food {
+  left: 20%;
+  background: #a2503a;
+  animation-delay: -1.625s;
+}
+
+.tile-place {
+  left: 8%;
+  background: #6e675c;
+  animation-delay: -3.25s;
+}
+
+.tile-spa {
+  left: 22%;
+  background: #7a5568;
+  animation-delay: -4.875s;
+}
+
+.tile-excursion {
+  left: 0%;
+  background: #2e6b5e;
+  animation-delay: -6.5s;
+}
+
+.tile-stay {
+  left: 16%;
+  background: #8a6d2e;
+  animation-delay: -8.125s;
+}
+
+.tile-idea {
+  left: 10%;
+  background: #6e675c;
+  animation-delay: -9.75s;
+}
+
+.tile-shopping {
+  left: 18%;
+  background: #2e6b5e;
+  animation-delay: -11.375s;
+}
+
+@keyframes edge-fall {
+  from {
+    transform: translateY(-140px) rotate(-2deg);
+  }
+
+  to {
+    /* 112vh — высота полосы вместе с вылетами за кромки экрана. */
+    transform: translateY(calc(112vh + 140px)) rotate(2deg);
+  }
+}
+
+/* Движение — украшение, а не смысл: кому оно мешает, тот его не видит. */
+@media (prefers-reduced-motion: reduce) {
+  .edge-strip {
+    display: none;
+  }
 }
 
 html[lang="zh-Hans"] body {
@@ -223,7 +406,7 @@ h2 .phrase + .phrase {
   width: 9px;
   height: 9px;
   border-radius: 2.5px;
-  background: currentColor;
+  background: var(--brand);
 }
 
 .section-head {
@@ -488,71 +671,67 @@ html:lang(fr) .hero h1 {
   line-height: 1.45;
 }
 
-/* Сцена: знак Clavelo, увеличенный до композиции. Квадрат — план того,
-   кто готовит поездку. Четверть, отодвинутая по диагонали с бумажным
-   зазором, — та же программа у участника. Координаты в процентах
-   ширины и высоты сцены, поэтому пропорции держатся на любой ширине. */
+/* Сцена: знак Clavelo, увеличенный до композиции. В большом квадрате —
+   живой момент поездки, фотография. В четверти, отодвинутой по диагонали
+   с бумажным зазором, — тот же момент в Clavelo: настоящий план поездки.
+   Координаты в процентах сцены, поэтому пропорции держатся на любой ширине.
+   Телефон стоит справа от человека в кадре и не закрывает его. */
 .stage {
   position: relative;
   width: 100%;
-  max-width: 560px;
+  max-width: 600px;
   margin: 0 auto;
-  aspect-ratio: 100 / 110;
+  aspect-ratio: 100 / 104;
 }
 
-.stage-square,
-.stage-quarter {
+.stage-photo {
   position: absolute;
   display: block;
 }
 
-.stage-square {
+.stage-photo {
   left: 0;
-  top: 6%;
-  width: 74%;
+  top: 0;
+  width: 84%;
   aspect-ratio: 1;
-  border-radius: clamp(20px, 6vw, 36px);
-  background: var(--brand);
-}
-
-.stage-quarter {
-  left: 48%;
-  top: 55%;
-  width: 52%;
-  aspect-ratio: 1;
-  border-radius: clamp(14px, 4vw, 24px);
+  overflow: hidden;
+  border-radius: clamp(20px, 6vw, 34px);
   background: var(--kraft);
-  /* Зазор знака: бумага вокруг четверти вырезает угол квадрата. */
-  box-shadow: 0 0 0 clamp(7px, 2vw, 12px) var(--paper);
+  box-shadow: 0 30px 60px rgba(28, 26, 23, 0.18);
 }
 
+.stage-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 40% 50%;
+}
+
+/* Рамка телефона из v0: тонкая нейтральная, полупрозрачная. Устройство
+   не изображается — только экран. */
 .device {
   position: absolute;
   width: 40%;
-  padding: clamp(4px, 1.1vw, 7px);
-  border-radius: clamp(20px, 5.6vw, 36px);
-  background: var(--card);
-  box-shadow: var(--shadow-shot);
+  padding: clamp(5px, 1.2vw, 8px);
+  border-radius: clamp(22px, 5.6vw, 34px);
+  background: rgba(246, 241, 231, 0.55);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 20px 40px rgba(28, 26, 23, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
 }
 
 .device img {
   width: 100%;
   height: auto;
   aspect-ratio: 375 / 812;
-  border-radius: clamp(16px, 4.6vw, 30px);
+  border-radius: clamp(17px, 4.4vw, 26px);
   background: var(--paper);
   object-fit: cover;
 }
 
-.device-back {
-  left: 7%;
-  top: 2%;
-}
-
 .device-front {
-  left: 56%;
-  top: 19%;
-  box-shadow: 0 30px 60px rgba(28, 26, 23, 0.22);
+  left: 59%;
+  top: 14%;
 }
 
 .chip {
@@ -561,7 +740,7 @@ html:lang(fr) .hero h1 {
   /* Подпись может быть длинной (армянский, грузинский): переносится,
      а не вылезает за край экрана. */
   width: max-content;
-  max-width: min(260px, 56vw);
+  max-width: min(220px, 44vw);
   padding: 7px 12px;
   border-radius: 16px;
   font-size: clamp(11px, 3vw, 14px);
@@ -572,31 +751,29 @@ html:lang(fr) .hero h1 {
 }
 
 .chip-dark {
-  left: -8%;
-  bottom: 12%;
+  right: 72%;
+  bottom: 16%;
   background: var(--ink);
   color: var(--paper);
 }
 
-.chip-light {
-  right: 4%;
-  top: clamp(-34px, -6vw, -24px);
-  border: 1px solid var(--line);
-  background: var(--card);
-  color: var(--ink);
-}
-
 @media (prefers-reduced-motion: no-preference) {
-  .device-back {
-    animation: rise 700ms 80ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  .stage-photo {
+    animation: fade 900ms 40ms ease-out both;
   }
 
   .device-front {
-    animation: rise 700ms 240ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation: rise 700ms 260ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
   }
 
-  .stage-quarter {
-    animation: settle 900ms 160ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
@@ -607,16 +784,6 @@ html:lang(fr) .hero h1 {
   }
   to {
     opacity: 1;
-    transform: none;
-  }
-}
-
-/* Четверть встаёт на место по той же диагонали, что в знаке. */
-@keyframes settle {
-  from {
-    transform: translate(-6%, -6%);
-  }
-  to {
     transform: none;
   }
 }
@@ -694,12 +861,47 @@ html:lang(fr) .hero h1 {
   text-underline-offset: 4px;
 }
 
+/* Две настоящие карточки событий приложения веером: корешок типа,
+   иконка, время. Чужие картинки и нарисованные значки сюда не идут. */
 .role-art {
   grid-area: art;
   position: relative;
-  width: 84px;
-  height: 84px;
+  width: 132px;
+  height: 104px;
 }
+
+.role-card {
+  position: absolute;
+  top: 0;
+  width: 78px;
+  height: auto;
+  border-radius: 9px;
+  box-shadow: 0 10px 22px rgba(28, 26, 23, 0.2);
+  transition: transform 220ms ease;
+}
+
+.role-card-a {
+  left: 0;
+  top: 8px;
+  transform: rotate(-7deg);
+}
+
+.role-card-b {
+  left: 50px;
+  transform: rotate(5deg);
+}
+
+@media (hover: hover) {
+  .role:hover .role-card-a {
+    transform: rotate(-10deg) translateX(-4px);
+  }
+
+  .role:hover .role-card-b {
+    transform: rotate(8deg) translateX(4px);
+  }
+}
+
+
 
 .role-travel {
   background: var(--kraft);
@@ -732,129 +934,6 @@ html:lang(fr) .hero h1 {
   color: var(--ink-muted);
 }
 
-/* Путешествую: три карточки событий вразброс — билет, жильё, место. */
-.mini-tile {
-  position: absolute;
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  box-shadow: 0 6px 14px rgba(28, 26, 23, 0.18);
-}
-
-.mini-tile svg {
-  width: 22px;
-  height: 22px;
-  fill: none;
-  stroke: #fff;
-  stroke-width: 1.9;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.mt-ticket {
-  left: 0;
-  top: 4px;
-  background: var(--slate);
-  transform: rotate(-8deg);
-}
-
-.mt-stay {
-  left: 34px;
-  top: 0;
-  background: var(--ochre);
-  transform: rotate(6deg);
-}
-
-.mt-place {
-  left: 20px;
-  top: 38px;
-  background: var(--terra);
-  transform: rotate(-3deg);
-}
-
-/* Организую: программа по времени. */
-.program-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  height: 22px;
-  margin-bottom: 6px;
-  padding: 0 7px;
-  border-radius: 7px;
-  background: rgba(246, 241, 231, 0.1);
-}
-
-.program-row b {
-  font-size: 10px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-
-.program-row i {
-  display: block;
-  flex: 1;
-  height: 4px;
-  border-radius: 2px;
-  background: rgba(246, 241, 231, 0.45);
-}
-
-.program-row:nth-child(2) i {
-  margin-right: 10px;
-}
-
-.program-row:nth-child(3) i {
-  margin-right: 4px;
-}
-
-/* Участвую: программа в телефоне. */
-.mini-phone {
-  position: absolute;
-  left: 18px;
-  top: 0;
-  display: grid;
-  align-content: start;
-  gap: 6px;
-  width: 50px;
-  height: 84px;
-  padding: 12px 8px;
-  border: 2px solid var(--slate);
-  border-radius: 13px;
-  background: var(--card);
-}
-
-.mini-phone-line {
-  display: block;
-  height: 4px;
-  border-radius: 2px;
-  background: rgba(68, 99, 126, 0.45);
-}
-
-.mini-phone-line.short {
-  width: 60%;
-}
-
-.mini-phone-pin {
-  display: grid;
-  place-items: center;
-  width: 26px;
-  height: 26px;
-  margin-top: 6px;
-  border-radius: 8px;
-  background: var(--slate);
-}
-
-.mini-phone-pin svg {
-  width: 16px;
-  height: 16px;
-  fill: none;
-  stroke: #fff;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
 /* ============================================================
    03 · Для организаторов — главный раздел, тёмная полоса
    ============================================================ */
@@ -871,6 +950,10 @@ html:lang(fr) .hero h1 {
 
 .organizers .kicker {
   color: #b7d4c9;
+}
+
+.organizers .kicker::before {
+  background: currentColor;
 }
 
 .organizers .section-lead {
@@ -898,10 +981,32 @@ html:lang(fr) .hero h1 {
   line-height: 1.35;
 }
 
-.org-flow {
+/* Заголовок и шаги слева, справа — группа у микроавтобуса, а на фото
+   лежит настоящая панель организатора. Весь блок — один экран. */
+.org-top {
   display: grid;
-  gap: 44px;
-  margin-top: 56px;
+  gap: 36px;
+}
+
+/* Фото не занимает весь блок: это кадр в правой колонке. Центр смещён
+   вправо, к девушке, которая садится первой, — она и есть смысл кадра. */
+.org-visual {
+  position: relative;
+  margin-bottom: 72px;
+}
+
+.org-photo {
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: rgba(246, 241, 231, 0.08);
+}
+
+.org-photo img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  object-position: 72% 50%;
 }
 
 .steps {
@@ -912,9 +1017,9 @@ html:lang(fr) .hero h1 {
 
 .steps li {
   display: grid;
-  grid-template-columns: 44px minmax(0, 1fr);
-  column-gap: 18px;
-  padding: 24px 0;
+  grid-template-columns: 40px minmax(0, 1fr);
+  column-gap: 16px;
+  padding: 16px 0;
   border-top: 1px solid var(--on-deep-line);
 }
 
@@ -926,8 +1031,8 @@ html:lang(fr) .hero h1 {
   grid-row: span 2;
   display: grid;
   place-items: center;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 12px;
   background: var(--kraft);
   color: var(--deep);
@@ -936,37 +1041,41 @@ html:lang(fr) .hero h1 {
 }
 
 .steps h3 {
-  font-size: 22px;
+  font-size: 20px;
   line-height: 1.2;
 }
 
 .steps p {
-  margin-top: 8px;
+  margin-top: 6px;
   color: var(--on-deep-soft);
-  font-size: 16px;
-  line-height: 1.5;
+  font-size: 15px;
+  line-height: 1.45;
 }
 
+.steps .phrase + .phrase {
+  margin-top: 0.15em;
+}
+
+/* Панель организатора лежит на фото и выходит за его нижний край. */
 .panel-shot {
-  justify-self: center;
-  width: 100%;
-  max-width: 360px;
+  position: absolute;
+  left: 14px;
+  bottom: -72px;
+  width: 54%;
+  max-width: 270px;
 }
 
-/* Высокий кадр панели на телефоне показываем верхней частью:
-   участники и ссылка — то, ради чего он здесь. */
 .panel-shot img {
   width: 100%;
   height: auto;
-  max-height: 560px;
-  border-radius: 22px;
+  max-height: 300px;
+  border-radius: 18px;
   object-fit: cover;
   object-position: top;
   background: var(--card);
   box-shadow: var(--shadow-deep);
 }
 
-.panel-shot figcaption,
 .mirror-who {
   display: block;
   margin-top: 14px;
@@ -987,6 +1096,8 @@ html:lang(fr) .hero h1 {
 }
 
 .mirror-side {
+  display: flex;
+  flex-direction: column;
   width: 100%;
   max-width: 420px;
   justify-self: center;
@@ -1000,6 +1111,7 @@ html:lang(fr) .hero h1 {
 }
 
 .mirror-frame {
+  flex: 1;
   overflow: hidden;
   padding: 10px 12px;
   border-radius: 22px;
@@ -1131,32 +1243,43 @@ html:lang(fr) .hero h1 {
   line-height: 1.5;
 }
 
-.days-shot {
-  position: relative;
-  justify-self: center;
-  width: 100%;
-  max-width: 380px;
+/* Встреча в аэропорту и программа, которая уже в телефоне. Кадр дней
+   наезжает на фотографию снизу справа — как четверть в знаке. */
+.guests-visual {
+  display: grid;
 }
 
-/* Четверть знака за снимком: тот же мотив, что в герое. */
-.days-shot::before {
-  content: "";
-  position: absolute;
-  right: -14px;
-  top: 40px;
-  width: 70%;
-  aspect-ratio: 1;
-  border-radius: 28px;
-  background: var(--slate-tint);
+.guests-photo {
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--kraft);
+}
+
+.guests-photo img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 774 / 694;
+  object-fit: cover;
+  object-position: 30% 50%;
+}
+
+.days-shot {
+  position: relative;
+  justify-self: end;
+  width: 82%;
+  max-width: 360px;
+  margin-top: -96px;
+  margin-right: 12px;
 }
 
 .days-frame {
   position: relative;
   overflow: hidden;
-  max-height: 720px;
+  max-height: 520px;
+  border: clamp(4px, 1.1vw, 7px) solid var(--card);
   border-radius: 26px;
   background: var(--paper);
-  box-shadow: var(--shadow-shot);
+  box-shadow: 0 30px 60px rgba(28, 26, 23, 0.22);
   /* Третий день уходит под край: видно, что программа продолжается. */
   -webkit-mask-image: linear-gradient(180deg, #000 82%, transparent);
   mask-image: linear-gradient(180deg, #000 82%, transparent);
@@ -1172,7 +1295,7 @@ html:lang(fr) .hero h1 {
   margin-top: 14px;
   color: var(--ink-soft);
   font-size: 14px;
-  text-align: center;
+  text-align: right;
 }
 
 /* ============================================================
@@ -1186,6 +1309,27 @@ html:lang(fr) .hero h1 {
 
 .travel .section-lead {
   color: var(--ink-muted);
+}
+
+.travel-head {
+  display: grid;
+  gap: 32px;
+}
+
+/* Камерный портрет: человек за планированием. Лицо и блокнот — в левой
+   половине кадра, поэтому при обрезке держим левый край. */
+.travel-photo {
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+
+.travel-photo img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  object-position: 30% 60%;
 }
 
 .path {
@@ -1401,9 +1545,16 @@ html:lang(fr) .hero h1 {
   }
 
   .role-art {
-    width: 70px;
-    transform: scale(0.84);
-    transform-origin: top right;
+    width: 112px;
+    height: 92px;
+  }
+
+  .role-card {
+    width: 66px;
+  }
+
+  .role-card-b {
+    left: 42px;
   }
 }
 
@@ -1490,19 +1641,81 @@ html:lang(fr) .hero h1 {
     margin-bottom: 30px;
   }
 
-  .org-flow {
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+
+  .travel-head {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr);
     align-items: center;
-    gap: 72px;
+    gap: 64px;
+  }
+
+  .travel-photo img {
+    aspect-ratio: 1024 / 940;
+  }
+
+  /* Раздел организатора держится в одном экране: заголовок на две строки,
+     поля полосы меньше общего шага. */
+  .organizers {
+    padding: 96px 0;
+  }
+
+  .org-head h2 {
+    font-size: clamp(34px, 3.6vw, 46px);
+  }
+
+  .org-top {
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+    grid-template-areas:
+      "head visual"
+      "steps visual";
+    align-items: start;
+    column-gap: 64px;
+    row-gap: 28px;
+  }
+
+  .org-head {
+    grid-area: head;
+  }
+
+  .org-visual {
+    grid-area: visual;
+    margin-bottom: 0;
+  }
+
+  .steps {
+    grid-area: steps;
+  }
+
+  .org-photo img {
+    aspect-ratio: 4 / 5;
+  }
+
+  .panel-shot {
+    left: -36px;
+    bottom: -28px;
+    width: 52%;
+    max-width: 280px;
   }
 
   .panel-shot img {
-    max-height: none;
+    max-height: 340px;
+  }
+
+  .role-art {
+    width: 190px;
+    height: 150px;
+  }
+
+  .role-card {
+    width: 112px;
+  }
+
+  .role-card-b {
+    left: 74px;
   }
 
   .mirror {
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    align-items: start;
+    align-items: stretch;
     column-gap: 32px;
     row-gap: 28px;
   }

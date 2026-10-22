@@ -36,6 +36,38 @@
   <body class="landing">
     <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
 
+    <!-- Полоса падающих плиток по правому краю. Мотив, палитра, радиус,
+         тень и тайминг взяты из экрана приветствия приложения
+         (01_app: .intro-floater, @keyframes intro-float) без изменений.
+         Только декорация: aria-hidden, не ловит касания, гаснет при
+         prefers-reduced-motion. -->
+    <div class="edge-strip" aria-hidden="true">
+      <span class="edge-tile tile-ticket">
+        <svg viewBox="0 0 24 24"><path d="M3 12h18M4 12l6-6M4 12l6 6M14 6l6 6-6 6"></path></svg>
+      </span>
+      <span class="edge-tile tile-food">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="5"></circle><path d="M4 4v7M6 4v7M8 4v7M6 11v9"></path><path d="M19 4v16M16.5 4c0 4 2.5 4 2.5 7"></path></svg>
+      </span>
+      <span class="edge-tile tile-place">
+        <svg viewBox="0 0 24 24"><path d="M12 21s6-5.4 6-11a6 6 0 1 0-12 0c0 5.6 6 11 6 11z"></path><circle cx="12" cy="10" r="2"></circle></svg>
+      </span>
+      <span class="edge-tile tile-spa">
+        <svg viewBox="0 0 24 24"><path d="M7 14c-1.5-1.4-1.5-3.1 0-4.5M12 14c-1.5-1.4-1.5-3.1 0-4.5M17 14c-1.5-1.4-1.5-3.1 0-4.5"></path><path d="M5 17h14l-1.4 3H6.4L5 17z"></path></svg>
+      </span>
+      <span class="edge-tile tile-excursion">
+        <svg viewBox="0 0 24 24"><circle cx="13" cy="4.5" r="2"></circle><path d="M12 7.5 9.5 12l3 2.2"></path><path d="M10 12l-3 2M12.5 14.2 10 20M13.5 14.2 18 20M14 9.5l3 2.5"></path></svg>
+      </span>
+      <span class="edge-tile tile-stay">
+        <svg viewBox="0 0 24 24"><path d="M4 11.5 12 5l8 6.5"></path><path d="M6.5 10.5V20h11V10.5"></path><path d="M10 20v-5h4v5"></path></svg>
+      </span>
+      <span class="edge-tile tile-idea">
+        <svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M8.2 14.2a6 6 0 1 1 7.6 0c-.8.6-1.3 1.4-1.5 2.3H9.7c-.2-.9-.7-1.7-1.5-2.3z"></path></svg>
+      </span>
+      <span class="edge-tile tile-shopping">
+        <svg viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7L6 8z"></path><path d="M9 8a3 3 0 0 1 6 0"></path></svg>
+      </span>
+    </div>
+
     <header class="site-header">
       <div class="wrap">
         <a class="brand" href="./" aria-label="Clavelo">
@@ -82,10 +114,22 @@
             <p class="hero-note" data-i18n="hero.note">Works in the browser. You can start without signing up</p>
           </div>
 
-          <div class="stage" aria-label="Organizer plan and participant program" data-i18n-aria-label="hero.stageLabel" role="group">
-            <span class="stage-square" aria-hidden="true"></span>
-            <span class="stage-quarter" aria-hidden="true"></span>
-            <figure class="device device-back">
+          <!-- Живой момент поездки и тот же момент в Clavelo: телефон
+               ложится на фотографию там, где у человека в руке телефон. -->
+          <div class="stage">
+            <figure class="stage-photo">
+              <img
+                src="./assets/photos/street-phone-750.webp"
+                srcset="./assets/photos/street-phone-480.webp 480w, ./assets/photos/street-phone-750.webp 750w"
+                sizes="(min-width: 900px) 440px, 78vw"
+                width="750"
+                height="750"
+                alt="A traveler with a backpack checks her plan on her phone in an old-town street"
+                data-i18n-alt="photo.street.alt"
+                fetchpriority="high"
+              />
+            </figure>
+            <figure class="device device-front">
               <img
                 src="./assets/screenshots/en/role-plan.webp"
                 data-localized-screenshot="role-plan.webp"
@@ -96,18 +140,6 @@
                 fetchpriority="high"
               />
               <figcaption class="chip chip-dark" data-i18n="hero.planLabel">Your plan</figcaption>
-            </figure>
-            <figure class="device device-front">
-              <img
-                src="./assets/screenshots/en/role-guest.webp"
-                data-localized-screenshot="role-guest.webp"
-                width="750"
-                height="1624"
-                alt="The same program for a participant: price, what is included and materials. The budget is hidden."
-                data-i18n-alt="hero.guestAlt"
-                fetchpriority="high"
-              />
-              <figcaption class="chip chip-light" data-i18n="hero.guestLabel">What participants see</figcaption>
             </figure>
           </div>
         </div>
@@ -126,9 +158,8 @@
             <li>
               <a class="role role-travel" href="#travel">
                 <span class="role-art" aria-hidden="true">
-                  <span class="mini-tile mt-ticket"><svg viewBox="0 0 24 24"><path d="M3 12h18M4 12l6-6M4 12l6 6M14 6l6 6-6 6"></path></svg></span>
-                  <span class="mini-tile mt-stay"><svg viewBox="0 0 24 24"><path d="M4 11.5 12 5l8 6.5"></path><path d="M6.5 10.5V20h11V10.5"></path><path d="M10 20v-5h4v5"></path></svg></span>
-                  <span class="mini-tile mt-place"><svg viewBox="0 0 24 24"><path d="M12 21s6-5.4 6-11a6 6 0 1 0-12 0c0 5.6 6 11 6 11z"></path><circle cx="12" cy="10" r="2"></circle></svg></span>
+                  <img class="role-card role-card-a" src="./assets/screenshots/en/card-t2.webp" data-localized-screenshot="card-t2.webp" width="360" height="432" alt="" loading="lazy" decoding="async" />
+                  <img class="role-card role-card-b" src="./assets/screenshots/en/card-t5.webp" data-localized-screenshot="card-t5.webp" width="360" height="432" alt="" loading="lazy" decoding="async" />
                 </span>
                 <strong class="role-name" data-i18n="roles.travel.name">I travel</strong>
                 <span class="role-body" data-i18n="roles.travel.body">My plans, bookings, places I like, documents and budget together</span>
@@ -138,9 +169,8 @@
             <li>
               <a class="role role-organize" href="#organizers">
                 <span class="role-art" aria-hidden="true">
-                  <span class="program-row"><b>09:40</b><i></i></span>
-                  <span class="program-row"><b>11:00</b><i></i></span>
-                  <span class="program-row"><b>19:30</b><i></i></span>
+                  <img class="role-card role-card-a" src="./assets/screenshots/en/card-t1.webp" data-localized-screenshot="card-t1.webp" width="360" height="432" alt="" loading="lazy" decoding="async" />
+                  <img class="role-card role-card-b" src="./assets/screenshots/en/card-t3.webp" data-localized-screenshot="card-t3.webp" width="360" height="432" alt="" loading="lazy" decoding="async" />
                 </span>
                 <strong class="role-name" data-i18n="roles.organize.name">I organize</strong>
                 <span class="role-body" data-i18n="roles.organize.body">One program for the people I host or travel with</span>
@@ -150,7 +180,8 @@
             <li>
               <a class="role role-participate" href="#guests">
                 <span class="role-art" aria-hidden="true">
-                  <span class="mini-phone"><span class="mini-phone-line"></span><span class="mini-phone-line short"></span><span class="mini-phone-pin"><svg viewBox="0 0 24 24"><path d="M12 21s6-5.4 6-11a6 6 0 1 0-12 0c0 5.6 6 11 6 11z"></path><circle cx="12" cy="10" r="2"></circle></svg></span></span>
+                  <img class="role-card role-card-a" src="./assets/screenshots/en/card-t7.webp" data-localized-screenshot="card-t7.webp" width="360" height="432" alt="" loading="lazy" decoding="async" />
+                  <img class="role-card role-card-b" src="./assets/screenshots/en/card-t6.webp" data-localized-screenshot="card-t6.webp" width="360" height="432" alt="" loading="lazy" decoding="async" />
                 </span>
                 <strong class="role-name" data-i18n="roles.participate.name">I take part</strong>
                 <span class="role-body" data-i18n="roles.participate.body">I know where, when and what happens, because the program is at hand</span>
@@ -164,20 +195,48 @@
       <!-- ================= 03 · Для организаторов ================= -->
       <section class="organizers" id="organizers" aria-labelledby="organizers-title">
         <div class="wrap">
-          <div class="org-head">
-            <p class="kicker" data-i18n="org.kicker">For organizers</p>
-            <h2 id="organizers-title" data-i18n="org.title" data-phrases>You prepare the program. Guests know what to expect</h2>
-            <p class="section-lead" data-i18n="org.lead">For anyone who hosts guests, leads a group or puts together a visit program</p>
-            <ul class="audience" aria-label="Who it is for" data-i18n-aria-label="org.audienceLabel">
-              <li data-i18n="org.who.guides">Guides and tour operators</li>
-              <li data-i18n="org.who.hospitality">Hospitality managers</li>
-              <li data-i18n="org.who.business">Business trips and visits</li>
-              <li data-i18n="org.who.events">Group and event coordinators</li>
-              <li data-i18n="org.who.family">Trips for family or friends</li>
-            </ul>
-          </div>
+          <div class="org-top">
+            <div class="org-head">
+              <p class="kicker" data-i18n="org.kicker">For organizers</p>
+              <h2 id="organizers-title" data-i18n="org.title" data-phrases>You prepare the program. Guests know what to expect</h2>
+              <p class="section-lead" data-i18n="org.lead">For anyone who hosts guests, leads a group or puts together a visit program</p>
+              <ul class="audience" aria-label="Who it is for" data-i18n-aria-label="org.audienceLabel">
+                <li data-i18n="org.who.guides">Guides and tour operators</li>
+                <li data-i18n="org.who.hospitality">Hospitality managers</li>
+                <li data-i18n="org.who.business">Business trips and visits</li>
+                <li data-i18n="org.who.events">Group and event coordinators</li>
+                <li data-i18n="org.who.family">Trips for family and friends</li>
+              </ul>
+            </div>
 
-          <div class="org-flow">
+            <div class="org-visual">
+            <figure class="org-photo">
+              <img
+                src="./assets/photos/group-minibus-1600.webp"
+                srcset="./assets/photos/group-minibus-900.webp 900w, ./assets/photos/group-minibus-1600.webp 1600w"
+                sizes="(min-width: 1180px) 1084px, 92vw"
+                width="1600"
+                height="1066"
+                alt="A group with luggage boards a minibus before departure"
+                data-i18n-alt="photo.group.alt"
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+              <figure class="panel-shot">
+                <img
+                  src="./assets/screenshots/en/role-organizer.webp"
+                  data-localized-screenshot="role-organizer.webp"
+                  width="694"
+                  height="922"
+                  alt="Organizer panel: the list of joined participants and the participant link."
+                  data-i18n-alt="org.panelAlt"
+                  loading="lazy"
+                />
+                <figcaption class="sr-only" data-i18n="org.panelCaption">Who has joined and the participant link</figcaption>
+              </figure>
+            </div>
+
             <ol class="steps">
               <li>
                 <span class="step-num" aria-hidden="true">1</span>
@@ -195,18 +254,6 @@
                 <p data-i18n="org.step3.body" data-phrases>A time or place changed? Edit the program. Participants open the current published version from the same link and see when it was updated.</p>
               </li>
             </ol>
-            <figure class="panel-shot">
-              <img
-                src="./assets/screenshots/en/role-organizer.webp"
-                data-localized-screenshot="role-organizer.webp"
-                width="694"
-                height="922"
-                alt="Organizer panel: the list of joined participants and the participant link."
-                data-i18n-alt="org.panelAlt"
-                loading="lazy"
-              />
-              <figcaption data-i18n="org.panelCaption">Who has joined and the participant link</figcaption>
-            </figure>
           </div>
 
           <div class="mirror" role="group" aria-labelledby="mirror-title">
@@ -282,6 +329,20 @@
             </ul>
             <p class="guest-note" data-i18n="guest.note" data-phrases>You can view the program from the link without signing up. To join the group and keep the program in your list, you need an email and a name.</p>
           </div>
+          <div class="guests-visual">
+            <figure class="guests-photo">
+              <img
+                src="./assets/photos/airport-welcome-774.webp"
+                srcset="./assets/photos/airport-welcome-480.webp 480w, ./assets/photos/airport-welcome-774.webp 774w"
+                sizes="(min-width: 900px) 520px, 92vw"
+                width="774"
+                height="694"
+                alt="A host with a name sign welcomes a family in the arrivals hall"
+                data-i18n-alt="photo.airport.alt"
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
           <figure class="days-shot">
             <div class="days-frame">
               <img
@@ -296,16 +357,32 @@
             </div>
             <figcaption data-i18n="guest.example">Example: three days in Tbilisi, made-up data</figcaption>
           </figure>
+          </div>
         </div>
       </section>
 
       <!-- ================= 05 · Для своих поездок ================= -->
       <section class="travel" id="travel" aria-labelledby="travel-title">
         <div class="wrap">
+          <div class="travel-head">
           <div class="section-head">
             <p class="kicker" data-i18n="travel.kicker">For your own trips</p>
             <h2 id="travel-title" data-i18n="travel.title" data-phrases>Your trip. Your pace</h2>
             <p class="section-lead" data-i18n="travel.lead">Gather what you’ve found, lay it out by day and keep it at hand on the road</p>
+          </div>
+          <figure class="travel-photo">
+            <img
+              src="./assets/photos/cafe-planning-1024.webp"
+              srcset="./assets/photos/cafe-planning-600.webp 600w, ./assets/photos/cafe-planning-1024.webp 1024w"
+              sizes="(min-width: 900px) 460px, 92vw"
+              width="1024"
+              height="940"
+              alt="A woman at a street café writes trip ideas in her notebook"
+              data-i18n-alt="photo.cafe.alt"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
           </div>
           <ol class="path">
             <li class="path-step">

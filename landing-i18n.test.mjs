@@ -113,15 +113,32 @@ function webpSize(path) {
   throw new Error(`unknown WebP chunk ${chunk} in ${path}`);
 }
 
-const screenshots = [...index.matchAll(/<img\b[^>]*?data-localized-screenshot="([^"]+)"[^>]*>/gs)].map((match) => ({
+const allFrames = [...index.matchAll(/<img\b[^>]*?data-localized-screenshot="([^"]+)"[^>]*>/gs)].map((match) => ({
   tag: match[0],
   name: match[1],
 }));
+// Карточки событий в ролевых карточках — украшение: alt="" внутри
+// aria-hidden. Остальные кадры — содержание со своим переведённым alt.
+const cardFrames = allFrames.filter(({ tag }) => /\balt=""/.test(tag));
+const screenshots = allFrames.filter(({ tag }) => !/\balt=""/.test(tag));
+assert.deepEqual(
+  cardFrames.map((shot) => shot.name),
+  ["card-t2.webp", "card-t5.webp", "card-t1.webp", "card-t3.webp", "card-t7.webp", "card-t6.webp"],
+);
+assert.equal((index.match(/<span class="role-art" aria-hidden="true">/g) || []).length, 3, "card fans are decorative");
+for (const { tag, name } of cardFrames) {
+  assert.match(tag, /loading="lazy"/, `${name} loads lazily`);
+  assert.deepEqual(webpSize(new URL(`./assets/screenshots/en/${name}`, import.meta.url)), [360, 432], `${name} is a whole event card`);
+  for (const locale of api.SUPPORTED_LOCALES) {
+    const file = new URL(`./assets/screenshots/${locale}/${name}`, import.meta.url);
+    assert.ok(existsSync(file), `${locale} missing ${name}`);
+    assert.ok(statSync(file).size < 40 * 1024, `${locale}/${name} stays small`);
+  }
+}
 assert.deepEqual(
   screenshots.map((shot) => shot.name),
   [
     "role-plan.webp",
-    "role-guest.webp",
     "role-organizer.webp",
     "role-organizer-program.webp",
     "role-guest-info.webp",
@@ -149,9 +166,33 @@ for (const { tag, name } of screenshots) {
     assert.ok(statSync(file).size < 200 * 1024, `${locale}/${name} stays under 200 KB`);
   }
 }
-// Первый экран грузит только два кадра героя, остальные — лениво.
+// Первый экран грузит только кадр героя, остальные — лениво.
 const eager = screenshots.filter(({ tag }) => !/loading="lazy"/.test(tag)).map(({ name }) => name);
-assert.deepEqual(eager, ["role-plan.webp", "role-guest.webp"]);
+assert.deepEqual(eager, ["role-plan.webp"]);
+
+// ---------- Фотографии ----------
+// Свои файлы, без внешних CDN: адаптивные WebP, alt на всех языках,
+// всё ниже героя — лениво.
+const photos = [...index.matchAll(/<img\s[^>]*?src="\.\/assets\/photos\/[^"]+"[^>]*>/gs)].map((match) => match[0]);
+assert.equal(photos.length, 4, "street, group, airport, cafe");
+for (const [position, tag] of photos.entries()) {
+  const sources = [...tag.matchAll(/\.\/assets\/photos\/([^" ,]+\.webp)/g)].map((match) => match[1]);
+  assert.ok(sources.length >= 3, `${tag.slice(0, 80)} has src and a two-step srcset`);
+  for (const file of new Set(sources)) {
+    const url = new URL(`./assets/photos/${file}`, import.meta.url);
+    assert.ok(existsSync(url), `missing photo ${file}`);
+    assert.ok(statSync(url).size < 200 * 1024, `${file} stays under 200 KB`);
+  }
+  assert.match(tag, /\ssizes="[^"]+"/, "photo has sizes");
+  const altKey = tag.match(/data-i18n-alt="([^"]+)"/)?.[1];
+  assert.match(altKey || "", /^photo\./, "photo alt is localized");
+  for (const locale of api.SUPPORTED_LOCALES) assert.ok(T[locale][altKey].length > 10, `${locale}.${altKey} describes the scene`);
+  const [width] = webpSize(new URL(`./assets/photos/${sources[0]}`, import.meta.url));
+  assert.equal(Number(tag.match(/\swidth="(\d+)"/)?.[1]), width, `${sources[0]} width attribute`);
+  if (position === 0) assert.match(tag, /fetchpriority="high"/, "hero photo loads first");
+  else assert.match(tag, /loading="lazy"/, "photos below the hero load lazily");
+}
+assert.doesNotMatch(liveMarkup, /src="https?:\/\/(?!app\.clavelo\.cc)/, "no external image hosts");
 
 // ---------- Определение языка ----------
 
