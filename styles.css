@@ -150,7 +150,6 @@ body .kicker {
   color: var(--ink);
 }
 
-
 /* ---------- Полоса падающих плиток по правому краю ----------
    Мотив взят с экрана приветствия приложения: те же восемь типов
    событий, та же приглушённая палитра корешков, тот же радиус 12,
@@ -926,8 +925,6 @@ html:lang(fr) .hero h1 {
   }
 }
 
-
-
 .role-travel {
   background: var(--kraft);
   color: var(--ink);
@@ -957,253 +954,6 @@ html:lang(fr) .hero h1 {
 
 .role-participate .role-body {
   color: var(--ink-muted);
-}
-
-/* ============================================================
-   03 · Для организаторов — главный раздел, тёмная полоса
-   ============================================================ */
-
-.organizers {
-  padding: var(--section) 0;
-  background: var(--deep);
-  color: var(--on-deep);
-}
-
-.organizers :focus-visible {
-  outline-color: var(--on-deep);
-}
-
-.organizers .kicker {
-  color: #b7d4c9;
-}
-
-.organizers .kicker::before {
-  background: currentColor;
-}
-
-.organizers .section-lead {
-  color: var(--on-deep-soft);
-}
-
-.org-head {
-  max-width: 820px;
-}
-
-.audience {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 20px;
-  padding: 0;
-  list-style: none;
-}
-
-.audience li {
-  padding: 5px 12px;
-  border: 1px solid var(--on-deep-line);
-  border-radius: 999px;
-  font-size: 13px;
-  line-height: 1.35;
-}
-
-/* Заголовок и шаги слева, справа — группа у микроавтобуса, а на фото
-   лежит настоящая панель организатора. Весь блок — один экран. */
-.org-top {
-  display: grid;
-  gap: 36px;
-}
-
-/* Фото не занимает весь блок: это кадр в правой колонке. Центр смещён
-   вправо, к девушке, которая садится первой, — она и есть смысл кадра. */
-.org-visual {
-  position: relative;
-  margin-bottom: 72px;
-}
-
-.org-photo {
-  overflow: hidden;
-  border-radius: var(--radius);
-  background: rgba(246, 241, 231, 0.08);
-}
-
-.org-photo img {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  object-position: 72% 50%;
-}
-
-.steps {
-  display: grid;
-  padding: 0;
-  list-style: none;
-}
-
-.steps li {
-  display: grid;
-  grid-template-columns: 34px minmax(0, 1fr);
-  column-gap: 14px;
-  padding: 12px 0;
-  border-top: 1px solid var(--on-deep-line);
-}
-
-.steps li:last-child {
-  border-bottom: 1px solid var(--on-deep-line);
-}
-
-.step-num {
-  grid-row: span 2;
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  background: var(--kraft);
-  color: var(--deep);
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.steps h3 {
-  font-size: 18px;
-  line-height: 1.25;
-}
-
-.steps p {
-  margin-top: 2px;
-  color: var(--on-deep-soft);
-  font-size: 15px;
-  line-height: 1.45;
-}
-
-/* Целый экран телефона организатора лежит на фото и выходит за его
-   нижний край. Рамка та же, что у телефона в герое. */
-.org-phone {
-  left: 10px;
-  bottom: -64px;
-  width: 42%;
-  max-width: 220px;
-  box-shadow: var(--shadow-deep), inset 0 0 0 1px rgba(255, 255, 255, 0.4);
-}
-
-.mirror-who {
-  display: block;
-  margin-top: 14px;
-  color: var(--on-deep-soft);
-  font-size: 14px;
-  line-height: 1.4;
-}
-
-.mirror {
-  display: grid;
-  gap: 18px;
-  margin-top: 72px;
-}
-
-.mirror-title {
-  font-size: clamp(24px, 5.4vw, 34px);
-  letter-spacing: -0.025em;
-}
-
-.mirror-side {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 420px;
-  justify-self: center;
-}
-
-.mirror-who {
-  margin: 0 0 12px;
-  color: var(--on-deep);
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.mirror-frame {
-  flex: 1;
-  overflow: hidden;
-  padding: 10px 12px;
-  border-radius: 22px;
-  background: var(--card);
-  box-shadow: var(--shadow-deep);
-}
-
-.mirror-frame img {
-  width: 100%;
-  height: auto;
-}
-
-.mirror-link {
-  display: grid;
-  justify-items: center;
-  gap: 8px;
-  color: var(--on-deep-soft);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.mirror-link svg {
-  box-sizing: content-box;
-  width: 22px;
-  height: 22px;
-  padding: 13px;
-  border-radius: 50%;
-  background: var(--kraft);
-  fill: none;
-  stroke: var(--deep);
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.org-foot {
-  display: grid;
-  gap: 24px;
-  margin-top: 64px;
-  padding-top: 32px;
-  border-top: 1px solid var(--on-deep-line);
-}
-
-.privacy-note {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  max-width: 44em;
-  font-size: 18px;
-  line-height: 1.45;
-}
-
-.privacy-note svg {
-  flex: none;
-  width: 26px;
-  height: 26px;
-  margin-top: 1px;
-  fill: none;
-  stroke: var(--kraft);
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.org-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.org-actions .btn {
-  flex: 1 1 240px;
-}
-
-.org-howto {
-  max-width: 46em;
-  color: var(--on-deep-soft);
-  font-size: 14px;
-  line-height: 1.5;
 }
 
 /* ============================================================
@@ -1614,11 +1364,6 @@ html:lang(fr) .hero h1 {
     font-size: 13px;
   }
 
-  /* Плитки — фон, а не содержание: под текстом на узком экране они
-     почти прозрачны. Мотив и анимация те же. */
-  .edge-tile {
-    opacity: 0.12;
-  }
 }
 
 @media (min-width: 600px) {
@@ -1704,7 +1449,6 @@ html:lang(fr) .hero h1 {
     margin-bottom: 30px;
   }
 
-
   .travel-head {
     grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr);
     align-items: center;
@@ -1713,54 +1457,6 @@ html:lang(fr) .hero h1 {
 
   .travel-photo img {
     aspect-ratio: 1024 / 940;
-  }
-
-  /* Раздел организатора держится в одном экране: заголовок на две строки,
-     поля полосы меньше общего шага. */
-  .organizers {
-    padding: 96px 0;
-  }
-
-  .org-head h2 {
-    font-size: clamp(32px, 3.4vw, 44px);
-  }
-
-  .organizers .section-lead {
-    margin-top: 12px;
-    font-size: 17px;
-  }
-
-  .org-top {
-    grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
-    grid-template-areas:
-      "head visual"
-      "steps visual";
-    align-items: start;
-    column-gap: 64px;
-    row-gap: 20px;
-  }
-
-  .org-head {
-    grid-area: head;
-  }
-
-  .org-visual {
-    grid-area: visual;
-    margin-bottom: 0;
-  }
-
-  .steps {
-    grid-area: steps;
-  }
-
-  .org-photo img {
-    aspect-ratio: 1;
-  }
-
-  .org-phone {
-    left: -44px;
-    bottom: -48px;
-    width: 44%;
   }
 
   .role-art {
@@ -1774,36 +1470,6 @@ html:lang(fr) .hero h1 {
 
   .role-card-b {
     left: 74px;
-  }
-
-  .mirror {
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    align-items: stretch;
-    column-gap: 32px;
-    row-gap: 28px;
-  }
-
-  .mirror-title {
-    grid-column: 1 / -1;
-  }
-
-  .mirror-link {
-    align-self: center;
-  }
-
-  .org-foot {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    column-gap: 48px;
-  }
-
-  .org-actions {
-    grid-row: span 2;
-    flex-direction: column;
-  }
-
-  .org-actions .btn {
-    flex: none;
   }
 
   .guests-grid {
@@ -1845,6 +1511,234 @@ html:lang(fr) .hero h1 {
   *::after {
     animation: none !important;
     transition: none !important;
+  }
+}
+
+/* ============================================================
+   03 · Для организаторов — одна композиция в один экран
+   Слева смысл: заголовок, три действия, кому, кнопки. Справа
+   доказательство: группа у микроавтобуса и целый экран телефона
+   организатора, без обрезки — в естественных пропорциях 375 × 812.
+   ============================================================ */
+
+.organizers {
+  padding: 56px 0 64px;
+  background: var(--deep);
+  color: var(--on-deep);
+}
+
+.organizers :focus-visible {
+  outline-color: var(--on-deep);
+}
+
+.organizers .kicker,
+body .organizers .kicker {
+  color: #b7d4c9;
+}
+
+.organizers .kicker::before {
+  background: currentColor;
+}
+
+.org-top {
+  display: grid;
+  gap: 24px;
+}
+
+.org-head h2 {
+  font-size: clamp(30px, 7vw, 44px);
+}
+
+/* Три действия: глагол и продолжение одной фразой. */
+.steps {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.steps li {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  column-gap: 14px;
+  align-items: start;
+}
+
+.step-num {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--kraft);
+  color: var(--deep);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.steps p {
+  padding-top: 3px;
+  color: var(--on-deep-soft);
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+.steps strong {
+  color: var(--on-deep);
+  font-weight: 600;
+}
+
+.org-foot {
+  display: grid;
+  gap: 18px;
+}
+
+.audience {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0;
+  list-style: none;
+}
+
+.audience li {
+  padding: 5px 12px;
+  border: 1px solid var(--on-deep-line);
+  border-radius: 999px;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.org-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.org-actions .btn {
+  flex: 1 1 220px;
+}
+
+.org-howto {
+  color: var(--on-deep-soft);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* Фото и телефон. Фото кадрируется (это фотография), экран телефона —
+   никогда: ширина задаёт высоту через родные пропорции кадра. */
+.org-visual {
+  position: relative;
+  display: grid;
+  grid-template-columns: 40% 1fr;
+  align-items: end;
+}
+
+.org-photo {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  overflow: hidden;
+  margin-left: 22%;
+  border-radius: var(--radius);
+  background: rgba(246, 241, 231, 0.08);
+}
+
+.org-photo img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: 72% 50%;
+}
+
+.org-phone {
+  position: relative;
+  grid-column: 1;
+  grid-row: 1;
+  align-self: center;
+  width: 100%;
+  max-width: 240px;
+  box-shadow: var(--shadow-deep), inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+
+.org-phone img {
+  object-fit: contain;
+}
+
+@media (min-width: 900px) {
+  /* Контрольный экран 1280 × 800: шапка 60 + полоса ≤ 740. */
+  .org-top {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
+    grid-template-areas:
+      "head visual"
+      "steps visual"
+      "foot visual";
+    grid-template-rows: auto auto 1fr;
+    column-gap: 56px;
+    row-gap: 22px;
+    align-items: start;
+  }
+
+  .org-head {
+    grid-area: head;
+  }
+
+  .steps {
+    grid-area: steps;
+  }
+
+  .org-foot {
+    grid-area: foot;
+    align-self: end;
+  }
+
+  .org-visual {
+    grid-area: visual;
+    align-self: stretch;
+    grid-template-columns: 46% 1fr;
+    align-items: start;
+  }
+
+  .org-photo {
+    margin-left: 30%;
+    height: 100%;
+  }
+
+  .org-photo img {
+    height: 100%;
+    aspect-ratio: auto;
+  }
+
+  /* Телефон поднят к заголовку: стоит у верхнего края колонки. */
+  .org-phone {
+    align-self: start;
+    margin-top: 28px;
+    max-width: 252px;
+  }
+
+  .org-actions .btn {
+    flex: 0 1 auto;
+    min-height: 48px;
+    padding: 10px 20px;
+    font-size: 16px;
+  }
+
+  /* Длинные языки: заголовок не должен разваливаться на четыре строки,
+     иначе раздел перестаёт помещаться в экран. */
+  html:lang(de) .org-head h2,
+  html:lang(fr) .org-head h2,
+  html:lang(hy) .org-head h2 {
+    font-size: 36px;
+  }
+
+  html:lang(ka) .org-head h2 {
+    font-size: 32px;
+  }
+
+  html:lang(ka) .steps p,
+  html:lang(hy) .steps p {
+    font-size: 15px;
   }
 }
 

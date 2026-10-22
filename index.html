@@ -193,13 +193,35 @@
       </section>
 
       <!-- ================= 03 · Для организаторов ================= -->
+      <!-- ================= 03 · Для организаторов =================
+           Одна композиция в один экран: слева смысл (три действия, кому,
+           кнопки), справа доказательство — группа у микроавтобуса и целый
+           экран телефона организатора. Участника показывают раздел гостей
+           и карточка «Участвую», поэтому здесь сценарий не повторяется. -->
       <section class="organizers" id="organizers" aria-labelledby="organizers-title">
         <div class="wrap">
           <div class="org-top">
             <div class="org-head">
               <p class="kicker" data-i18n="org.kicker">For organizers</p>
               <h2 id="organizers-title" data-i18n="org.title" data-phrases>You prepare the program. Guests know what to expect</h2>
-              <p class="section-lead" data-i18n="org.lead">For anyone who hosts guests or leads groups</p>
+            </div>
+
+            <ul class="steps">
+              <li>
+                <span class="step-num" aria-hidden="true">1</span>
+                <p><strong data-i18n="org.step1.title">Build</strong> <span data-i18n="org.step1.body">arrival, transfers, stays, meetings and events – by day</span></p>
+              </li>
+              <li>
+                <span class="step-num" aria-hidden="true">2</span>
+                <p><strong data-i18n="org.step2.title">Share</strong> <span data-i18n="org.step2.body">one link with the schedule, terms and materials</span></p>
+              </li>
+              <li>
+                <span class="step-num" aria-hidden="true">3</span>
+                <p><strong data-i18n="org.step3.title">Update</strong> <span data-i18n="org.step3.body">the program – guests see the current version at the same link; your budget stays private</span></p>
+              </li>
+            </ul>
+
+            <div class="org-foot">
               <ul class="audience" aria-label="Who it is for" data-i18n-aria-label="org.audienceLabel">
                 <li data-i18n="org.who.guides">Guides and tour operators</li>
                 <li data-i18n="org.who.hospitality">Hospitality managers</li>
@@ -207,22 +229,27 @@
                 <li data-i18n="org.who.events">Groups and events</li>
                 <li data-i18n="org.who.family">Family and friends</li>
               </ul>
+              <div class="org-actions">
+                <a class="btn btn-light" data-app-link href="https://app.clavelo.cc/?lang=en" data-i18n="org.cta">Create a program in Clavelo</a>
+                <a class="btn btn-outline-light" data-pilot-link href="mailto:hello@clavelo.cc?subject=Clavelo%3A%20a%20pilot%20for%20a%20group" data-i18n="org.pilot">Discuss a pilot</a>
+              </div>
+              <p class="org-howto" data-i18n="org.howto">Organizer mode is turned on inside a trip: “Share trip” → “Run a trip for a group”. It requires signing in with email.</p>
             </div>
 
             <div class="org-visual">
-            <figure class="org-photo">
-              <img
-                src="./assets/photos/group-minibus-1600.webp"
-                srcset="./assets/photos/group-minibus-900.webp 900w, ./assets/photos/group-minibus-1600.webp 1600w"
-                sizes="(min-width: 1180px) 1084px, 92vw"
-                width="1600"
-                height="1066"
-                alt="A group with luggage boards a minibus before departure"
-                data-i18n-alt="photo.group.alt"
-                loading="lazy"
-                decoding="async"
-              />
-            </figure>
+              <figure class="org-photo">
+                <img
+                  src="./assets/photos/group-minibus-1600.webp"
+                  srcset="./assets/photos/group-minibus-900.webp 900w, ./assets/photos/group-minibus-1600.webp 1600w"
+                  sizes="(min-width: 900px) 420px, 92vw"
+                  width="1600"
+                  height="1066"
+                  alt="A group with luggage boards a minibus before departure"
+                  data-i18n-alt="photo.group.alt"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </figure>
               <figure class="device org-phone">
                 <img
                   src="./assets/screenshots/en/role-organizer-phone.webp"
@@ -236,72 +263,6 @@
                 <figcaption class="sr-only" data-i18n="org.panelCaption">Who has joined and the participant link</figcaption>
               </figure>
             </div>
-
-            <ol class="steps">
-              <li>
-                <span class="step-num" aria-hidden="true">1</span>
-                <h3 data-i18n="org.step1.title">Build the program</h3>
-                <p data-i18n="org.step1.body">Arrival, transfers, stays, meetings and departure – by day and hour</p>
-              </li>
-              <li>
-                <span class="step-num" aria-hidden="true">2</span>
-                <h3 data-i18n="org.step2.title">Share it with participants</h3>
-                <p data-i18n="org.step2.body">One link: times, places, price, what’s included, materials</p>
-              </li>
-              <li>
-                <span class="step-num" aria-hidden="true">3</span>
-                <h3 data-i18n="org.step3.title">Update it as plans change</h3>
-                <p data-i18n="org.step3.body">The same link opens the current version with its update date</p>
-              </li>
-            </ol>
-          </div>
-
-          <div class="mirror" role="group" aria-labelledby="mirror-title">
-            <h3 class="mirror-title" id="mirror-title" data-i18n="org.mirror.title">One program, two sides</h3>
-            <figure class="mirror-side">
-              <figcaption><span class="mirror-who" data-i18n="org.mirror.organizer">The organizer fills in</span></figcaption>
-              <div class="mirror-frame">
-                <img
-                  src="./assets/screenshots/en/role-organizer-program.webp"
-                  data-localized-screenshot="role-organizer-program.webp"
-                  width="694"
-                  height="886"
-                  alt="The organizer’s form: price per person, currency, what is included, what is not, important information."
-                  data-i18n-alt="org.mirror.organizerAlt"
-                  loading="lazy"
-                />
-              </div>
-            </figure>
-            <span class="mirror-link" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"></path><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"></path></svg>
-              <span data-i18n="org.mirror.link">one link</span>
-            </span>
-            <figure class="mirror-side">
-              <figcaption><span class="mirror-who" data-i18n="org.mirror.participant">The participant sees</span></figcaption>
-              <div class="mirror-frame">
-                <img
-                  src="./assets/screenshots/en/role-guest-info.webp"
-                  data-localized-screenshot="role-guest-info.webp"
-                  width="694"
-                  height="872"
-                  alt="The participant’s “About the program” block: price, included, not included, important information and materials."
-                  data-i18n-alt="org.mirror.participantAlt"
-                  loading="lazy"
-                />
-              </div>
-            </figure>
-          </div>
-
-          <div class="org-foot">
-            <p class="privacy-note">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"></rect><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"></path></svg>
-              <span data-i18n="org.privacy">Your internal budget stays yours. Participants see the program and the terms, not your costs</span>
-            </p>
-            <div class="org-actions">
-              <a class="btn btn-light" data-app-link href="https://app.clavelo.cc/?lang=en" data-i18n="org.cta">Create a program in Clavelo</a>
-              <a class="btn btn-outline-light" data-pilot-link href="mailto:hello@clavelo.cc?subject=Clavelo%3A%20a%20pilot%20for%20a%20group" data-i18n="org.pilot">Discuss a pilot</a>
-            </div>
-            <p class="org-howto" data-i18n="org.howto" data-phrases>Organizer mode is turned on inside a trip: Share trip → Run a trip for a group. It needs sign-in with email.</p>
           </div>
         </div>
       </section>

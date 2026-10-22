@@ -147,8 +147,6 @@ assert.deepEqual(
   [
     "role-plan.webp",
     "role-organizer-phone.webp",
-    "role-organizer-program.webp",
-    "role-guest-info.webp",
     "role-guest-days.webp",
     "crop-ai.webp",
     "crop-day.webp",
@@ -156,6 +154,14 @@ assert.deepEqual(
   ],
 );
 assert.match(source, /assets\/screenshots\/\$\{normalized\}\/\$\{name\}/);
+
+// Организаторы — одна композиция: экран телефона целиком, в родных
+// пропорциях, без cover-обрезки; дублирующего блока «две стороны» нет.
+const styles = readFileSync(new URL("./styles.css", import.meta.url), "utf8");
+assert.match(styles, /\.org-phone img \{\s*object-fit: contain;\s*\}/, "organizer phone screen is never cropped");
+assert.match(styles, /\.device img \{[^}]*aspect-ratio: 375 \/ 812;/, "phone frames keep the 375×812 screen ratio");
+assert.doesNotMatch(index, /class="mirror|privacy-note/, "the scenario is explained once");
+assert.equal((index.match(/<section class="organizers"[\s\S]*?<\/section>/)[0].match(/<img\b/g) || []).length, 2, "photo + phone");
 for (const { tag, name } of screenshots) {
   assert.match(tag, new RegExp(`src="\\./assets/screenshots/en/${name.replace(".", "\\.")}"`), `${name} default src`);
   assert.match(tag, /\balt="[^"]+"/, `${name} alt`);

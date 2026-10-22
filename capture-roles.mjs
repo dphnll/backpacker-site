@@ -379,9 +379,7 @@ for (const locale of LOCALES) {
   await evalJs(`window.scrollTo(0, 0); document.querySelectorAll(".day-items").forEach((row) => { row.scrollLeft = 0; }); true`);
   await sleep(400);
 
-  // 2. Организатор: панель группы — участники, ссылка, условия программы.
-  // Шторка ограничена высотой экрана; на время кадра окно вытягиваем,
-  // ширина та же, значит вёрстка панели не меняется.
+  // 2. Организатор: панель группы — участники и ссылка.
   await evalJs(`(() => {
     groupTripContext = { loading: false, participants: ${JSON.stringify(PARTICIPANTS.map((displayName) => ({ displayName })))} };
     organizerGroupMaterialsState = { ...organizerGroupMaterialsState, loading: false, error: "", loadedTripId: state.trip.id };
@@ -402,28 +400,6 @@ for (const locale of LOCALES) {
   })()`);
   await sleep(700);
   report.push(await shoot(join(out, "role-organizer-phone.webp")));
-
-  await evalJs(`(() => {
-    document.querySelector("#shareSheet .sheet-panel").style.maxHeight = "none";
-    // Поля условий — textarea на три строки с ручкой ресайза. Растягиваем их
-    // по тексту, как сделал бы сам организатор, чтобы строки не обрезались.
-    for (const el of document.querySelectorAll("#organizerProgramInfoForm textarea")) {
-      el.style.height = "auto";
-      el.style.height = el.scrollHeight + 4 + "px";
-    }
-    return true;
-  })()`);
-  await viewport(375, 3200);
-  await sleep(1400);
-  // 2b. «Информация для участников»: то, что потом появится у участника
-  // в блоке «О программе».
-  report.push(await shoot(join(out, "role-organizer-program.webp"),
-    `(() => {
-      const card = document.querySelector("#groupTripShareCard").getBoundingClientRect();
-      const form = document.querySelector("#organizerProgramInfoForm").getBoundingClientRect();
-      const end = document.querySelector("#organizerProgramImportant").getBoundingClientRect();
-      return { left: card.left, top: form.top - 4, width: card.width, height: end.bottom - form.top + 8 };
-    })()`));
   await evalJs(`closeSheet("shareSheet"); true`);
   await viewport(375, 812);
   await sleep(600);
