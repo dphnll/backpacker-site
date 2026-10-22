@@ -447,7 +447,7 @@ section[id] {
 }
 
 .hero h1 {
-  max-width: 13ch;
+  max-width: 15ch;
   font-size: clamp(38px, 10.6vw, 74px);
   line-height: 1.02;
   letter-spacing: -0.035em;
