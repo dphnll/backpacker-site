@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 
 const index = readFileSync(new URL("./index.html", import.meta.url), "utf8");
@@ -12,10 +14,15 @@ const source = readFileSync(new URL("./i18n.js", import.meta.url), "utf8");
 const context = { URLSearchParams };
 vm.runInNewContext(source, context, { filename: "i18n.js" });
 const api = context.BackpackerLandingI18n;
+const T = api.TRANSLATIONS;
+const NBSP = "\u00A0";
+
+// ---------- Локали и ключи ----------
 
 assert.ok(api, "i18n.js must expose its testable locale contract");
 assert.deepEqual([...api.SUPPORTED_LOCALES], ["ru", "en", "fr", "ka", "de", "hy", "zh"]);
 assert.equal(api.APP_URL, "https://app.clavelo.cc/");
+assert.equal(api.CONTACT_EMAIL, "hello@clavelo.cc");
 
 for (const locale of api.SUPPORTED_LOCALES) {
   const appUrl = new URL(api.APP_URL);
@@ -24,39 +31,185 @@ for (const locale of api.SUPPORTED_LOCALES) {
   assert.deepEqual([...appUrl.searchParams], [["lang", locale]], `${locale} app CTA parameters`);
 }
 
-const referenceKeys = Object.keys(api.TRANSLATIONS.en).sort();
+const referenceKeys = Object.keys(T.en).sort();
 for (const locale of api.SUPPORTED_LOCALES) {
-  assert.deepEqual(Object.keys(api.TRANSLATIONS[locale]).sort(), referenceKeys, `${locale} key set`);
-  for (const [key, value] of Object.entries(api.TRANSLATIONS[locale])) {
+  assert.deepEqual(Object.keys(T[locale]).sort(), referenceKeys, `${locale} key set`);
+  for (const [key, value] of Object.entries(T[locale])) {
     assert.equal(typeof value, "string", `${locale}.${key} must be text`);
     assert.ok(value.trim(), `${locale}.${key} must not be empty`);
   }
-  assert.doesNotMatch(api.TRANSLATIONS[locale]["footer.privacy"], /English\s*\/\s*Русский/);
-  for (const asset of ["shot-home.png", "crop-ai.png", "crop-extension.png", "crop-day.png", "crop-card.png", "crop-budget.png"]) {
-    assert.ok(existsSync(new URL(`./assets/screenshots/${locale}/${asset}`, import.meta.url)), `${locale} missing ${asset}`);
-  }
+  assert.doesNotMatch(T[locale]["footer.privacy"], /English\s*\/\s*Русский/);
 }
 
-const referencedKeys = [
-  ...index.matchAll(/data-i18n(?:-aria-label|-alt)?="([^"]+)"/g),
-].map((match) => match[1]);
+const referencedKeys = [...index.matchAll(/data-i18n(?:-aria-label|-alt)?="([^"]+)"/g)].map((match) => match[1]);
 for (const key of referencedKeys) {
   assert.ok(referenceKeys.includes(key), `missing translation key: ${key}`);
+}
+// Каждый ключ перевода где-то используется: мёртвых строк в словаре нет.
+const runtimeKeys = new Set(["meta.title", "meta.description", "meta.ogTitle", "meta.ogDescription", "pilot.subject"]);
+for (const key of referenceKeys) {
+  assert.ok(referencedKeys.includes(key) || runtimeKeys.has(key), `unused translation key: ${key}`);
 }
 
 const optionLocales = [...index.matchAll(/<option value="([^"]+)"/g)].map((match) => match[1]);
 assert.deepEqual(optionLocales, ["ru", "en", "fr", "ka", "de", "hy", "zh"]);
-assert.equal((index.match(/data-app-link/g) || []).length, 7, "all seven app CTAs/captures are marked");
+
+// ---------- Ссылки и CTA ----------
+
+const appLinks = [...index.matchAll(/<a\b[^>]*\bdata-app-link\b[^>]*>/g)].map((match) => match[0]);
+assert.equal(appLinks.length, 7, "header, hero, organizer CTA, three traveler frames, closing");
+for (const link of appLinks) {
+  // Без JS ссылка всё равно ведёт в рабочее приложение.
+  assert.match(link, /href="https:\/\/app\.clavelo\.cc\/\?lang=en"/, link);
+}
+
+// «Обсудить пилот» — только письмо, без форм и своих маршрутов.
+const pilotLinks = [...index.matchAll(/<a\b[^>]*\bdata-pilot-link\b[^>]*>/g)].map((match) => match[0]);
+assert.equal(pilotLinks.length, 2, "organizer section and closing");
+for (const link of pilotLinks) {
+  assert.match(link, /href="mailto:hello@clavelo\.cc\?subject=[^"]+"/, link);
+}
+for (const locale of api.SUPPORTED_LOCALES) {
+  const mailto = new URL(api.pilotMailto(locale));
+  assert.equal(mailto.protocol, "mailto:");
+  assert.equal(mailto.pathname, "hello@clavelo.cc");
+  assert.equal(new URLSearchParams(mailto.search).get("subject"), T[locale]["pilot.subject"], `${locale} pilot subject`);
+  assert.match(T[locale]["pilot.subject"], /^Clavelo/, `${locale} pilot subject is branded`);
+}
+assert.doesNotMatch(index, /<form\b/i, "no lead forms");
+
+// Якоря навигации и ролевых карточек ведут в существующие разделы.
+for (const [, anchor] of index.matchAll(/href="#([^"]+)"/g)) {
+  assert.match(index, new RegExp(`id="${anchor}"`), `anchor #${anchor} exists`);
+}
+for (const section of ["travel", "organizers", "guests"]) {
+  assert.match(index, new RegExp(`<section class="[^"]+" id="${section}"`), `${section} section`);
+}
+
 assert.match(index, /<a href="mailto:hello@clavelo\.cc">hello@clavelo\.cc<\/a>/);
 assert.doesNotMatch(index, /dphnll\.ge@gmail\.com/);
 assert.doesNotMatch(index, /dphnll\.github\.io\/Backpacker_demo/i);
 assert.match(index, /<link rel="canonical" href="https:\/\/clavelo\.cc\/" \/>/);
 assert.match(index, /<meta property="og:url" content="https:\/\/clavelo\.cc\/" \/>/);
 assert.match(index, /<meta property="og:image" content="https:\/\/clavelo\.cc\/assets\/og-image\.jpg" \/>/);
-assert.match(index, /https:\/\/app\.backpackerapp\.cc\/\?lang=en/);
-assert.match(index, /okpfmpplfciccfddgibkcoliemfimifc/);
-assert.equal((index.match(/data-localized-screenshot=/g) || []).length, 6);
+assert.match(index, /href="https:\/\/chromewebstore\.google\.com\/detail\/clavelo-travel-capture\/okpfmpplfciccfddgibkcoliemfimifc"/);
+// Магазинов, кроме опубликованного расширения, нет: ни ссылок, ни бейджей.
+const liveMarkup = index.replace(/<!--[\s\S]*?-->/g, "");
+assert.doesNotMatch(liveMarkup, /play\.google\.com|apps\.apple\.com|testflight|\.apk\b|Google Play|App Store/i);
+// Прямого маршрута в Organizer Mode у приложения нет — и на лендинге его нет.
+assert.doesNotMatch(liveMarkup, /app\.clavelo\.cc\/[^"?]+|[?&](?:mode|organizer|share)=/);
+
+// ---------- Снимки ----------
+
+function webpSize(path) {
+  const bytes = readFileSync(path);
+  assert.equal(bytes.toString("ascii", 0, 4), "RIFF", path);
+  assert.equal(bytes.toString("ascii", 8, 12), "WEBP", path);
+  const chunk = bytes.toString("ascii", 12, 16);
+  if (chunk === "VP8X") return [1 + bytes.readUIntLE(24, 3), 1 + bytes.readUIntLE(27, 3)];
+  if (chunk === "VP8 ") return [bytes.readUInt16LE(26) & 0x3fff, bytes.readUInt16LE(28) & 0x3fff];
+  if (chunk === "VP8L") {
+    const bits = bytes.readUInt32LE(21);
+    return [(bits & 0x3fff) + 1, ((bits >> 14) & 0x3fff) + 1];
+  }
+  throw new Error(`unknown WebP chunk ${chunk} in ${path}`);
+}
+
+const allFrames = [...index.matchAll(/<img\b[^>]*?data-localized-screenshot="([^"]+)"[^>]*>/gs)].map((match) => ({
+  tag: match[0],
+  name: match[1],
+}));
+// Карточки событий в ролевых карточках — украшение: alt="" внутри
+// aria-hidden. Остальные кадры — содержание со своим переведённым alt.
+const decorative = allFrames.filter(({ tag }) => /\balt=""/.test(tag));
+const cardFrames = decorative.filter(({ name }) => name.startsWith("card-"));
+const screenshots = allFrames.filter(({ tag }) => !/\balt=""/.test(tag));
+assert.deepEqual(
+  cardFrames.map((shot) => shot.name),
+  ["card-t2.webp", "card-t5.webp", "card-t1.webp", "card-t3.webp"],
+);
+// «Участвую» иллюстрирует гостевой экран, а не те же карточки, что «Организую».
+assert.deepEqual(
+  decorative.filter(({ name }) => !name.startsWith("card-")).map((shot) => shot.name),
+  ["role-guest-info.webp"],
+);
+assert.match(index, /<span class="role-art role-art-screen" aria-hidden="true">\s*<img class="role-screen"[^>]*role-guest-info\.webp/);
+assert.equal((index.match(/<span class="role-art[^"]*" aria-hidden="true">/g) || []).length, 3, "role illustrations are decorative");
+for (const { tag, name } of cardFrames) {
+  assert.match(tag, /loading="lazy"/, `${name} loads lazily`);
+  assert.deepEqual(webpSize(new URL(`./assets/screenshots/en/${name}`, import.meta.url)), [360, 432], `${name} is a whole event card`);
+  for (const locale of api.SUPPORTED_LOCALES) {
+    const file = new URL(`./assets/screenshots/${locale}/${name}`, import.meta.url);
+    assert.ok(existsSync(file), `${locale} missing ${name}`);
+    assert.ok(statSync(file).size < 40 * 1024, `${locale}/${name} stays small`);
+  }
+}
+assert.deepEqual(
+  screenshots.map((shot) => shot.name),
+  [
+    "role-plan.webp",
+    "role-organizer-phone.webp",
+    "role-guest-days.webp",
+    "crop-ai.webp",
+    "crop-day.webp",
+    "crop-budget.webp",
+  ],
+);
 assert.match(source, /assets\/screenshots\/\$\{normalized\}\/\$\{name\}/);
+
+// Организаторы — одна композиция: экран телефона целиком, в родных
+// пропорциях, без cover-обрезки; дублирующего блока «две стороны» нет.
+const styles = readFileSync(new URL("./styles.css", import.meta.url), "utf8");
+assert.match(styles, /\.org-phone img \{\s*object-fit: contain;\s*\}/, "organizer phone screen is never cropped");
+assert.match(styles, /\.device img \{[^}]*aspect-ratio: 375 \/ 812;/, "phone frames keep the 375×812 screen ratio");
+assert.doesNotMatch(index, /class="mirror|privacy-note/, "the scenario is explained once");
+assert.equal((index.match(/<section class="organizers"[\s\S]*?<\/section>/)[0].match(/<img\b/g) || []).length, 2, "photo + phone");
+for (const { tag, name } of screenshots) {
+  assert.match(tag, new RegExp(`src="\\./assets/screenshots/en/${name.replace(".", "\\.")}\\?v=${api.ASSET_VERSION}"`), `${name} default src`);
+  assert.match(tag, /\balt="[^"]+"/, `${name} alt`);
+  assert.match(tag, /\bdata-i18n-alt="[^"]+"/, `${name} localized alt`);
+  const width = Number(tag.match(/\bwidth="(\d+)"/)?.[1]);
+  const height = Number(tag.match(/\bheight="(\d+)"/)?.[1]);
+  // Атрибуты резервируют место под кадр до загрузки: они обязаны совпадать
+  // с английским кадром, остальные локали отличаются лишь на перенос строки.
+  assert.deepEqual([width, height], webpSize(new URL(`./assets/screenshots/en/${name}`, import.meta.url)), `${name} size attributes`);
+  for (const locale of api.SUPPORTED_LOCALES) {
+    const file = new URL(`./assets/screenshots/${locale}/${name}`, import.meta.url);
+    assert.ok(existsSync(file), `${locale} missing ${name}`);
+    const [w] = webpSize(file);
+    assert.equal(w, width, `${locale}/${name} keeps the shared width`);
+    assert.ok(statSync(file).size < 200 * 1024, `${locale}/${name} stays under 200 KB`);
+  }
+}
+// Первый экран грузит только кадр героя, остальные — лениво.
+const eager = screenshots.filter(({ tag }) => !/loading="lazy"/.test(tag)).map(({ name }) => name);
+assert.deepEqual(eager, ["role-plan.webp"]);
+
+// ---------- Фотографии ----------
+// Свои файлы, без внешних CDN: адаптивные WebP, alt на всех языках,
+// всё ниже героя — лениво.
+const photos = [...index.matchAll(/<img\s[^>]*?src="\.\/assets\/photos\/[^"]+"[^>]*>/gs)].map((match) => match[0]);
+assert.equal(photos.length, 4, "street, group, airport, cafe");
+for (const [position, tag] of photos.entries()) {
+  const sources = [...tag.matchAll(/\.\/assets\/photos\/([^" ,]+\.webp)/g)].map((match) => match[1]);
+  assert.ok(sources.length >= 3, `${tag.slice(0, 80)} has src and a two-step srcset`);
+  for (const file of new Set(sources)) {
+    const url = new URL(`./assets/photos/${file}`, import.meta.url);
+    assert.ok(existsSync(url), `missing photo ${file}`);
+    assert.ok(statSync(url).size < 200 * 1024, `${file} stays under 200 KB`);
+  }
+  assert.match(tag, /\ssizes="[^"]+"/, "photo has sizes");
+  const altKey = tag.match(/data-i18n-alt="([^"]+)"/)?.[1];
+  assert.match(altKey || "", /^photo\./, "photo alt is localized");
+  for (const locale of api.SUPPORTED_LOCALES) assert.ok(T[locale][altKey].length > 10, `${locale}.${altKey} describes the scene`);
+  const [width] = webpSize(new URL(`./assets/photos/${sources[0]}`, import.meta.url));
+  assert.equal(Number(tag.match(/\swidth="(\d+)"/)?.[1]), width, `${sources[0]} width attribute`);
+  if (position === 0) assert.match(tag, /fetchpriority="high"/, "hero photo loads first");
+  else assert.match(tag, /loading="lazy"/, "photos below the hero load lazily");
+}
+assert.doesNotMatch(liveMarkup, /src="https?:\/\/(?!app\.clavelo\.cc)/, "no external image hosts");
+
+// ---------- Определение языка ----------
 
 assert.equal(JSON.stringify(api.resolveInitialLocale({ search: "?lang=fr", saved: "ru", languages: ["de-DE"] })), JSON.stringify({
   locale: "ru",
@@ -84,13 +237,85 @@ assert.equal(JSON.stringify(api.resolveInitialLocale({ languages: ["zh-Hant", "z
 }));
 assert.equal(api.normalizeLocale("zh-Hans-TW"), "zh");
 assert.equal(api.normalizeLocale("zh-Hant-CN"), null);
-
-assert.match(api.TRANSLATIONS.fr["meta.description"], /é|è|ê|à|î|ç/);
-assert.match(api.TRANSLATIONS.de["hero.foot"], /ü|ä|ö|ß/);
-assert.match(api.TRANSLATIONS.ka["hero.title"], /[\u10A0-\u10FF]/);
-assert.match(api.TRANSLATIONS.hy["hero.title"], /[\u0530-\u058F]/);
-assert.match(api.TRANSLATIONS.zh["hero.title"], /[\u3400-\u9FFF]/);
 assert.match(source, /HTML_LANGUAGE_TAGS = \{ zh: "zh-Hans" \}/);
+
+// ---------- Тексты ----------
+
+assert.match(T.fr["meta.description"], /é|è|ê|à|î|ç/);
+assert.match(T.de["hero.lead"], /ü|ä|ö|ß/);
+assert.match(T.ka["hero.title"], /[\u10A0-\u10FF]/);
+assert.match(T.hy["hero.title"], /[\u0530-\u058F]/);
+assert.match(T.zh["hero.title"], /[\u3400-\u9FFF]/);
+
+assert.equal(T.ru["hero.title"], "Поездка собрана. Все знают, что дальше");
+assert.equal(T.en["hero.title"], "The trip is ready. Everyone knows what’s next");
+assert.equal(T.ru["org.title"], "Вы готовите программу. Гости знают, что их ждёт");
+assert.deepEqual(
+  ["roles.travel.name", "roles.organize.name", "roles.participate.name"].map((key) => T.ru[key]),
+  ["Путешествую", "Организую", "Участвую"],
+);
+assert.match(index, /The trip is ready\. Everyone knows what’s next/);
+// Без JS (поисковики, превью ссылок) страница отдаёт ровно английские мета-теги.
+assert.ok(index.includes(`<title>${T.en["meta.title"]}</title>`), "static title matches en");
+assert.ok(index.includes(`content="${T.en["meta.description"]}"`), "static description matches en");
+assert.ok(index.includes(`<meta property="og:title" content="${T.en["meta.ogTitle"]}" />`), "static og:title matches en");
+
+for (const locale of api.SUPPORTED_LOCALES) {
+  for (const [key, value] of Object.entries(T[locale])) {
+    assert.doesNotMatch(value, /Backpacker|BACKPACKER/, `${locale}.${key}`);
+    // Тире — обычное «–», не длинное.
+    assert.doesNotMatch(value, /—/, `${locale}.${key} uses an en dash`);
+  }
+  assert.match(T[locale]["travel.extension"], /Clavelo Travel Capture/, locale);
+  // Подсказка про режим организатора цитирует подписи самого приложения.
+  assert.match(T[locale]["org.howto"], /→/, `${locale} organizer how-to`);
+}
+
+// Немецкий лендинг обращается на «Sie», как приложение Clavelo.
+for (const [key, value] of Object.entries(T.de)) {
+  assert.doesNotMatch(value, /\b(?:du|dein|deine|deinen|deiner|deinem|deines|dir|dich)\b/i, `de.${key} uses the formal Sie`);
+}
+assert.match(T.de["hero.lead"], /\bPlanen Sie\b/);
+assert.equal(T.de["closing.pilot.cta"], "Schreiben Sie uns");
+
+// Чего продукт не умеет, того лендинг не обещает.
+const NOT_PROMISED = {
+  ru: /реальном времени|мгновенн|push|уведомлени|CRM|оплат[аиуы] (?:в|через) Clavelo|автоматическ\w* брон|команд\w* сотрудник|совместн\w* редактир/i,
+  en: /real[- ]?time|instant|push|notif|CRM|pay (?:in|through) Clavelo|in-app payment|auto(?:matic(?:ally)?)?[- ]book|team of staff|co-?edit/i,
+};
+for (const [locale, pattern] of Object.entries(NOT_PROMISED)) {
+  for (const [key, value] of Object.entries(T[locale])) {
+    assert.doesNotMatch(value, pattern, `${locale}.${key} promises something Clavelo does not do`);
+  }
+}
+// Участнику не обещан вход без регистрации там, где нужен Join.
+assert.match(T.ru["guest.note"], /без регистрации[\s\S]*email и имя/);
+assert.match(T.en["guest.note"], /without signing up[\s\S]*email and a name/);
+
+// Отдельные фразы — без точки в конце: лейблы, подписи, короткие обещания.
+const plainKeys = [...index.matchAll(/data-i18n="([^"]+)"(?![^>]*data-phrases)/g)].map((match) => match[1]);
+for (const locale of api.SUPPORTED_LOCALES) {
+  for (const key of plainKeys) {
+    assert.doesNotMatch(T[locale][key], /[.。։]$/u, `${locale}.${key} is a standalone phrase without a final period`);
+  }
+}
+
+// ---------- Типографика ----------
+
+assert.equal(api.typograph("Встреча в аэропорту и трансферы", "ru"), `Встреча в${NBSP}аэропорту и${NBSP}трансферы`);
+assert.equal(api.typograph("важные детали – в одном плане", "ru"), `важные детали${NBSP}– в${NBSP}одном плане`);
+assert.equal(api.typograph("Отель, 2 ночи", "ru"), `Отель, 2${NBSP}ночи`);
+assert.equal(api.typograph("Un horaire bouge ?", "fr"), `Un${NBSP}horaire bouge${NBSP}?`);
+assert.equal(api.typograph("One link to the program", "en"), `One link to${NBSP}the${NBSP}program`);
+assert.equal(api.typograph("行程已就绪。每个人都知道", "zh"), "行程已就绪。每个人都知道");
+assert.deepEqual(
+  [...api.splitPhrases(T.ru["guest.note"])],
+  ["Посмотреть программу по ссылке можно без регистрации.", "Чтобы присоединиться к группе и сохранить программу у себя, нужны email и имя."],
+);
+assert.equal(api.splitPhrases(T.hy["hero.lead"]).length, 2, "Armenian full stop splits phrases");
+assert.equal(api.splitPhrases(T.zh["hero.title"]).length, 2, "Chinese full stop splits phrases");
+
+// ---------- Служебные страницы ----------
 
 assert.match(privacy, /<link rel="canonical" href="https:\/\/clavelo\.cc\/privacy\/" \/>/);
 assert.match(privacy, /This page: <code>https:\/\/clavelo\.cc\/privacy\/<\/code>/);
@@ -99,62 +324,34 @@ assert.match(privacy, /<section id="russian" lang="ru">/);
 assert.match(privacy, /Available languages: <code>English \/ Русский<\/code>/);
 assert.match(terms, /<meta name="robots" content="noindex, nofollow" \/>/);
 assert.match(terms, /<a href="\.\.\/privacy\/">Privacy Policy<\/a>/);
-assert.match(notFound, /<link rel="stylesheet" href="\/styles\.css" \/>/);
-assert.match(notFound, /<a class="btn btn-primary" href="\/">На главную<\/a>/);
-assert.match(notFound, /<a href="\/privacy\/">Политика конфиденциальности<\/a>/);
+assert.match(notFound, /<link rel="stylesheet" href="\/styles\.css\?v=[0-9a-f]{10}" \/>/);
 
-assert.equal(api.TRANSLATIONS.ru["hero.kicker"], "Вся поездка под рукой");
-assert.equal(api.TRANSLATIONS.en["hero.kicker"], "Your trip, all together");
-assert.equal(api.TRANSLATIONS.ru["hero.title"], "Все детали на месте. Больше свободы путешествовать.");
-assert.equal(api.TRANSLATIONS.en["hero.title"], "Every detail in place. More room for the experience.");
-assert.equal(api.TRANSLATIONS.ru["hero.bullet.budget"], "Бюджет и расходы поездки");
-assert.equal(api.TRANSLATIONS.en["hero.bullet.budget"], "Trip budget and costs");
-assert.deepEqual(
-  [1, 2, 3].map((line) => api.TRANSLATIONS.ru[`organizer.body${line}`]),
-  [
-    "Составляйте и обновляйте программу тура по мере изменений.",
-    "Публикуйте для участников программу, стоимость, условия и необходимые материалы.",
-    "Внутренняя смета остаётся приватной.",
-  ],
-);
-
-assert.equal(
-  api.TRANSLATIONS.de["hero.lead"],
-  "Buchungen, Orte, Pläne, Dateien und Kosten bleiben zusammen. Verwalte deine eigene Reise oder teile ein aktuelles Programm mit deiner Gruppe.",
-);
-assert.deepEqual(
-  [1, 2, 3].map((line) => api.TRANSLATIONS.de[`organizer.body${line}`]),
-  [
-    "Erstelle und aktualisiere das Reiseprogramm, wenn sich Pläne ändern.",
-    "Teile das aktuelle Programm, den Preis, die Bedingungen und ausgewählte Unterlagen mit den Teilnehmenden.",
-    "Halte deine interne Kalkulation privat.",
-  ],
-);
-for (const key of ["hero.lead", "organizer.body1", "organizer.body2", "organizer.body3", "closing.title"]) {
-  assert.doesNotMatch(api.TRANSLATIONS.de[key], /\b(?:Sie|Ihnen|Ihre|Ihren|Ihrer|Ihrem|Ihres)\b/, `de.${key}`);
+// ---------- Версии файлов ----------
+// clavelo.cc отдаёт CSS/JS/картинки с max-age=14400, HTML — с max-age=0.
+// Одинаковые адреса между выпусками смешивали свежий HTML со старыми CSS и
+// JS из кэша браузера. Каждый изменяемый файл обязан нести версию выпуска,
+// и она обязана совпадать с содержимым.
+execFileSync(process.execPath, [fileURLToPath(new URL("./version-assets.mjs", import.meta.url)), "--check"], { stdio: "pipe" });
+assert.match(api.ASSET_VERSION, /^[0-9a-f]{10}$/);
+const versioned = `?v=${api.ASSET_VERSION}`;
+assert.ok(index.includes(`<link rel="stylesheet" href="./styles.css${versioned}" />`), "index: versioned CSS");
+assert.ok(index.includes(`<script src="./i18n.js${versioned}" defer></script>`), "index: versioned JS");
+assert.ok(privacy.includes(`href="../styles.css${versioned}"`), "privacy: versioned CSS");
+assert.ok(terms.includes(`href="../styles.css${versioned}"`), "terms: versioned CSS");
+assert.ok(notFound.includes(`href="/styles.css${versioned}"`), "404: versioned CSS");
+assert.match(source, /assets\/screenshots\/\$\{normalized\}\/\$\{name\}\?v=\$\{ASSET_VERSION\}/, "language switch keeps the version");
+for (const [name, html] of Object.entries({ index, privacy, terms, notFound })) {
+  // Ни одного неверсионированного обращения к CSS, JS или снимкам интерфейса.
+  assert.doesNotMatch(html, /(?:styles\.css|i18n\.js|assets\/screenshots\/[^"?]+)"/, `${name}: unversioned mutable asset`);
 }
-assert.deepEqual(
-  [1, 2, 3].map((line) => api.TRANSLATIONS.en[`organizer.body${line}`]),
-  [
-    "Create and update the trip program as plans change.",
-    "Share the current program, price, terms and selected materials with participants.",
-    "Keep your internal budget private.",
-  ],
-);
-
-for (const locale of api.SUPPORTED_LOCALES) {
-  for (const [key, value] of Object.entries(api.TRANSLATIONS[locale])) {
-    assert.doesNotMatch(value, /Backpacker|BACKPACKER/, `${locale}.${key}`);
-  }
-  assert.match(api.TRANSLATIONS[locale]["extension.body1"], /Clavelo Travel Capture/, locale);
-}
+assert.match(notFound, /<a class="btn btn-primary" href="\/">На\sглавную<\/a>/);
+assert.match(notFound, /<a href="\/privacy\/">Политика\sконфиденциальности<\/a>/);
 
 for (const [name, html] of Object.entries({ index, privacy, terms, notFound })) {
   assert.doesNotMatch(html, /Backpacker|BACKPACKER/, name);
 }
 assert.match(index, /<a class="brand" href="\.\/" aria-label="Clavelo">[\s\S]*?<img src="\.\/assets\/logo\.svg"/);
 assert.doesNotMatch(index, /<span>Clavelo<\/span>/);
-assert.match(index, /Every detail in place\. More room for the experience\./);
 assert.match(privacy, /Clavelo Travel Capture is the Chrome extension for Clavelo/);
 assert.match(source, /const STORAGE_KEY = "backpacker\.landing\.locale"/);
 assert.match(source, /globalThis\.BackpackerLandingI18n = api/);
@@ -175,4 +372,4 @@ for (const [relativePath, expectedHash] of Object.entries(approvedAssetHashes)) 
   assert.equal(createHash("sha256").update(bytes).digest("hex").toUpperCase(), expectedHash, relativePath);
 }
 
-console.log(`landing locale contract: ${api.SUPPORTED_LOCALES.length} locales, ${referenceKeys.length} keys`);
+console.log(`landing locale contract: ${api.SUPPORTED_LOCALES.length} locales, ${referenceKeys.length} keys, ${screenshots.length} localized frames`);

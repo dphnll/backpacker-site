@@ -4,6 +4,10 @@
 //
 //   node bundle.mjs [папка-назначения]
 //
+// Снимки интерфейса вшиваются на одном языке — BUNDLE_LOCALE (по умолчанию
+// ru): все семь наборов сделали бы файл в семь раз тяжелее. Переключатель
+// языка в копии меняет тексты, а кадры остаются на языке сборки.
+//
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join, extname, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -11,17 +15,20 @@ import { fileURLToPath } from "node:url";
 // Пути считаются от самого скрипта: репозиторий можно клонировать куда угодно.
 const SITE = dirname(fileURLToPath(import.meta.url));
 const OUT = process.argv[2] || join(SITE, "preview");
+const BUNDLE_LOCALE = process.env.BUNDLE_LOCALE || "ru";
 mkdirSync(OUT, { recursive: true });
 
 const MIME = {
   ".jpg": "image/jpeg",
   ".png": "image/png",
+  ".webp": "image/webp",
   ".svg": "image/svg+xml",
   ".woff2": "font/woff2",
 };
 
 const dataUri = (rel) => {
-  const p = join(SITE, rel.replace(/^\.\//, "").replace(/^\.\.\//, ""));
+  // ?v=<версия> нужен только браузерному кэшу; на диске файл без него.
+  const p = join(SITE, rel.replace(/\?.*$/, "").replace(/^\.\//, "").replace(/^\.\.\//, ""));
   const buf = readFileSync(p);
   return `data:${MIME[extname(p)] || "application/octet-stream"};base64,${buf.toString("base64")}`;
 };
@@ -37,14 +44,18 @@ function bundle(srcRel, outName, opts = {}) {
   let html = readFileSync(join(SITE, srcRel), "utf8");
 
   html = html.replace(
-    /<link rel="stylesheet" href="[^"]*styles\.css"\s*\/?>/,
+    /<link rel="stylesheet" href="[^"]*styles\.css(?:\?v=[0-9a-f]*)?"\s*\/?>/,
     `<style>\n${css}\n</style>`,
   );
+  html = html.replace(/assets\/screenshots\/en\//g, `assets/screenshots/${BUNDLE_LOCALE}/`);
+  html = html.replace(/\s*data-localized-screenshot="[^"]+"/g, "");
+  // Адаптивные варианты фото не нужны в одном файле: остаётся src.
+  html = html.replace(/\s*srcset="[^"]*"/g, "").replace(/\s*sizes="[^"]*"/g, "");
   html = html.replace(/href="([^"]*assets\/[^"]+)"/g, (m, p) => `href="${dataUri(p)}"`);
   html = html.replace(/src="([^"]*assets\/[^"]+)"/g, (m, p) => `src="${dataUri(p)}"`);
   if (opts.inlineI18n) {
     html = html.replace(
-      /<script src="\.\/i18n\.js" defer><\/script>/,
+      /<script src="\.\/i18n\.js(?:\?v=[0-9a-f]*)?" defer><\/script>/,
       `<script>\n${i18n}\n</script>`,
     );
   }
