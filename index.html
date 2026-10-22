@@ -3,11 +3,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#2f5d55" />
-    <title>Clavelo — Every trip detail in place</title>
+    <meta name="theme-color" content="#f6f1e7" />
+    <title>Clavelo – Trip plans and group programs</title>
     <meta
       name="description"
-      content="Keep bookings, places, plans, files and costs together. Manage your own trip or share one current mobile program with your group."
+      content="Plan your own trips or prepare programs for other people. Tickets, meetings, stays, places and key details in one clear plan."
     />
     <link rel="canonical" href="https://clavelo.cc/" />
     <link rel="icon" href="./assets/clavelo-mark-simple.svg" type="image/svg+xml" />
@@ -20,10 +20,10 @@
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Clavelo" />
     <meta property="og:locale" content="en_US" />
-    <meta property="og:title" content="Clavelo — Every trip detail in place" />
+    <meta property="og:title" content="Clavelo – Trip plans and group programs" />
     <meta
       property="og:description"
-      content="Keep bookings, places, plans, files and costs together. Manage your own trip or share one current mobile program with your group."
+      content="Plan your own trips or prepare programs for other people. Tickets, meetings, stays, places and key details in one clear plan."
     />
     <meta property="og:url" content="https://clavelo.cc/" />
     <meta property="og:image" content="https://clavelo.cc/assets/og-image.jpg" />
@@ -33,46 +33,19 @@
     <script src="./i18n.js" defer></script>
   </head>
 
-  <body>
+  <body class="landing">
     <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
-
-    <!-- Полоса падающих плиток по правому краю. Мотив, палитра, радиус,
-         тень и тайминг взяты из экрана приветствия приложения
-         (01_app: .intro-floater, @keyframes intro-float) без изменений.
-         Только декорация: aria-hidden, не ловит касания, гаснет при
-         prefers-reduced-motion. -->
-    <div class="edge-strip" aria-hidden="true">
-      <span class="edge-tile tile-ticket">
-        <svg viewBox="0 0 24 24"><path d="M3 12h18M4 12l6-6M4 12l6 6M14 6l6 6-6 6"></path></svg>
-      </span>
-      <span class="edge-tile tile-food">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="5"></circle><path d="M4 4v7M6 4v7M8 4v7M6 11v9"></path><path d="M19 4v16M16.5 4c0 4 2.5 4 2.5 7"></path></svg>
-      </span>
-      <span class="edge-tile tile-place">
-        <svg viewBox="0 0 24 24"><path d="M12 21s6-5.4 6-11a6 6 0 1 0-12 0c0 5.6 6 11 6 11z"></path><circle cx="12" cy="10" r="2"></circle></svg>
-      </span>
-      <span class="edge-tile tile-spa">
-        <svg viewBox="0 0 24 24"><path d="M7 14c-1.5-1.4-1.5-3.1 0-4.5M12 14c-1.5-1.4-1.5-3.1 0-4.5M17 14c-1.5-1.4-1.5-3.1 0-4.5"></path><path d="M5 17h14l-1.4 3H6.4L5 17z"></path></svg>
-      </span>
-      <span class="edge-tile tile-excursion">
-        <svg viewBox="0 0 24 24"><circle cx="13" cy="4.5" r="2"></circle><path d="M12 7.5 9.5 12l3 2.2"></path><path d="M10 12l-3 2M12.5 14.2 10 20M13.5 14.2 18 20M14 9.5l3 2.5"></path></svg>
-      </span>
-      <span class="edge-tile tile-stay">
-        <svg viewBox="0 0 24 24"><path d="M4 11.5 12 5l8 6.5"></path><path d="M6.5 10.5V20h11V10.5"></path><path d="M10 20v-5h4v5"></path></svg>
-      </span>
-      <span class="edge-tile tile-idea">
-        <svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M8.2 14.2a6 6 0 1 1 7.6 0c-.8.6-1.3 1.4-1.5 2.3H9.7c-.2-.9-.7-1.7-1.5-2.3z"></path></svg>
-      </span>
-      <span class="edge-tile tile-shopping">
-        <svg viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7L6 8z"></path><path d="M9 8a3 3 0 0 1 6 0"></path></svg>
-      </span>
-    </div>
 
     <header class="site-header">
       <div class="wrap">
         <a class="brand" href="./" aria-label="Clavelo">
           <img src="./assets/logo.svg" alt="" width="116" height="28" />
         </a>
+        <nav class="site-nav" aria-label="Clavelo" data-i18n-aria-label="nav.label">
+          <a href="#travel" data-i18n="nav.travel">I travel</a>
+          <a href="#organizers" data-i18n="nav.organize">I organize</a>
+          <a href="#guests" data-i18n="nav.participate">I take part</a>
+        </nav>
         <label class="language-control">
           <span class="sr-only" data-i18n="language.label">Language</span>
           <select id="languageSelect" class="language-select" aria-label="Language" data-i18n-aria-label="language.label">
@@ -85,248 +58,330 @@
             <option value="zh">简体中文</option>
           </select>
         </label>
+        <a class="btn btn-primary btn-compact header-cta" data-app-link href="https://app.clavelo.cc/?lang=en" data-i18n="action.openShort">Open</a>
       </div>
     </header>
 
-    <main id="main">
-      <!-- ================= Герой ================= -->
-      <section class="hero">
-        <div class="wrap">
-          <div>
-            <p class="kicker" data-i18n="hero.kicker">Your trip, all together</p>
-            <h1 data-i18n="hero.title">Every detail in place. More room for the experience.</h1>
-            <p class="hero-lead" data-i18n="hero.lead">
-              Keep bookings, places, plans, files and costs together. Manage your own trip or share one current mobile program with your group.
+    <main id="main" tabindex="-1">
+      <!-- ================= 01 · Герой =================
+           Композиция повторяет знак Clavelo: большой квадрат и отодвинутая
+           по диагонали четверть. В большом — план того, кто готовит поездку,
+           в четверти — та же программа у участника. -->
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="wrap hero-grid">
+          <div class="hero-copy">
+            <p class="kicker" data-i18n="hero.kicker">For your own trips and for groups</p>
+            <h1 id="hero-title" data-i18n="hero.title" data-phrases>The trip is ready. Everyone knows what’s next</h1>
+            <p class="hero-lead" data-i18n="hero.lead" data-phrases>
+              Plan your own trips or prepare programs for other people. Tickets, meetings, stays, places and key details live in one clear plan.
             </p>
-
-            <div class="card hero-card">
-              <ul class="bullets">
-                <li data-i18n="hero.bullet.tickets">Tickets</li>
-                <li data-i18n="hero.bullet.stays">Stays</li>
-                <li data-i18n="hero.bullet.places">Places</li>
-                <li data-i18n="hero.bullet.ideas">Ideas and wish list</li>
-                <li data-i18n="hero.bullet.people">Your own trip, friends or an organized group</li>
-                <li data-i18n="hero.bullet.budget">Trip budget and costs</li>
-              </ul>
-              <p class="hero-card-foot" data-i18n="hero.foot">Every event is a clear card</p>
-            </div>
-
             <div class="hero-actions">
-              <a class="btn btn-primary btn-block" data-app-link href="https://app.backpackerapp.cc/?lang=en" data-i18n="action.open">
-                Open Clavelo
-              </a>
-              <p class="cta-note" data-i18n="hero.note">Works in a browser. The app interface is available in Russian, English, French, Georgian, German, Armenian and Simplified Chinese.</p>
+              <a class="btn btn-primary" data-app-link href="https://app.clavelo.cc/?lang=en" data-i18n="action.open">Open Clavelo</a>
+              <a class="btn btn-ghost" href="#organizers" data-i18n="hero.toOrganizers">For organizers</a>
             </div>
+            <p class="hero-note" data-i18n="hero.note">Works in the browser. You can start without signing up</p>
           </div>
 
-          <div class="phone">
-            <img
-              src="./assets/screenshots/en/shot-home.png"
-              data-localized-screenshot="shot-home.png"
-              width="750"
-              height="1624"
-              alt="Clavelo home screen with a trip card, dates, total, new-trip action and Ideas."
-              data-i18n-alt="hero.imageAlt"
-              fetchpriority="high"
-            />
+          <div class="stage" aria-label="Organizer plan and participant program" data-i18n-aria-label="hero.stageLabel" role="group">
+            <span class="stage-square" aria-hidden="true"></span>
+            <span class="stage-quarter" aria-hidden="true"></span>
+            <figure class="device device-back">
+              <img
+                src="./assets/screenshots/en/role-plan.webp"
+                data-localized-screenshot="role-plan.webp"
+                width="750"
+                height="1624"
+                alt="Tbilisi visit planned by day: transfers, hotel and dinners with the organizer’s budget."
+                data-i18n-alt="hero.planAlt"
+                fetchpriority="high"
+              />
+              <figcaption class="chip chip-dark" data-i18n="hero.planLabel">Your plan</figcaption>
+            </figure>
+            <figure class="device device-front">
+              <img
+                src="./assets/screenshots/en/role-guest.webp"
+                data-localized-screenshot="role-guest.webp"
+                width="750"
+                height="1624"
+                alt="The same program for a participant: price, what is included and materials. The budget is hidden."
+                data-i18n-alt="hero.guestAlt"
+                fetchpriority="high"
+              />
+              <figcaption class="chip chip-light" data-i18n="hero.guestLabel">What participants see</figcaption>
+            </figure>
           </div>
         </div>
       </section>
 
-      <!-- ================= Проблема ================= -->
-      <section class="section problem">
+      <!-- ================= 02 · Для кого ================= -->
+      <section class="roles" aria-labelledby="roles-title">
         <div class="wrap">
-          <div class="card narrow">
-            <h2 data-i18n="problem.title">Is your trip scattered across a dozen places?</h2>
-            <ul class="bullets">
-              <li data-i18n="problem.tickets">Tickets in email</li>
-              <li data-i18n="problem.stays">Stays in booking apps</li>
-              <li data-i18n="problem.places">Places in notes</li>
-              <li data-i18n="problem.prices">Prices in screenshots</li>
-              <li data-i18n="problem.people">Participants in chats</li>
-              <li data-i18n="problem.links">Links in open tabs</li>
+          <div class="section-head">
+            <h2 id="roles-title" data-i18n="roles.title">Who are you on this trip?</h2>
+            <p class="section-lead" data-i18n="roles.lead" data-phrases>
+              One person can organize one trip and take part in another. Clavelo shows each of them what they need.
+            </p>
+          </div>
+          <ul class="role-list">
+            <li>
+              <a class="role role-travel" href="#travel">
+                <span class="role-art" aria-hidden="true">
+                  <span class="mini-tile mt-ticket"><svg viewBox="0 0 24 24"><path d="M3 12h18M4 12l6-6M4 12l6 6M14 6l6 6-6 6"></path></svg></span>
+                  <span class="mini-tile mt-stay"><svg viewBox="0 0 24 24"><path d="M4 11.5 12 5l8 6.5"></path><path d="M6.5 10.5V20h11V10.5"></path><path d="M10 20v-5h4v5"></path></svg></span>
+                  <span class="mini-tile mt-place"><svg viewBox="0 0 24 24"><path d="M12 21s6-5.4 6-11a6 6 0 1 0-12 0c0 5.6 6 11 6 11z"></path><circle cx="12" cy="10" r="2"></circle></svg></span>
+                </span>
+                <strong class="role-name" data-i18n="roles.travel.name">I travel</strong>
+                <span class="role-body" data-i18n="roles.travel.body">My plans, bookings, places I like, documents and budget together</span>
+                <span class="role-go"><span data-i18n="roles.travel.link">Your own trip</span><span class="arrow" aria-hidden="true">↓</span></span>
+              </a>
+            </li>
+            <li>
+              <a class="role role-organize" href="#organizers">
+                <span class="role-art" aria-hidden="true">
+                  <span class="program-row"><b>09:40</b><i></i></span>
+                  <span class="program-row"><b>11:00</b><i></i></span>
+                  <span class="program-row"><b>19:30</b><i></i></span>
+                </span>
+                <strong class="role-name" data-i18n="roles.organize.name">I organize</strong>
+                <span class="role-body" data-i18n="roles.organize.body">One program for the people I host or travel with</span>
+                <span class="role-go"><span data-i18n="roles.organize.link">A program for a group</span><span class="arrow" aria-hidden="true">↓</span></span>
+              </a>
+            </li>
+            <li>
+              <a class="role role-participate" href="#guests">
+                <span class="role-art" aria-hidden="true">
+                  <span class="mini-phone"><span class="mini-phone-line"></span><span class="mini-phone-line short"></span><span class="mini-phone-pin"><svg viewBox="0 0 24 24"><path d="M12 21s6-5.4 6-11a6 6 0 1 0-12 0c0 5.6 6 11 6 11z"></path><circle cx="12" cy="10" r="2"></circle></svg></span></span>
+                </span>
+                <strong class="role-name" data-i18n="roles.participate.name">I take part</strong>
+                <span class="role-body" data-i18n="roles.participate.body">I know where, when and what happens, because the program is at hand</span>
+                <span class="role-go"><span data-i18n="roles.participate.link">The participant’s program</span><span class="arrow" aria-hidden="true">↓</span></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ================= 03 · Для организаторов ================= -->
+      <section class="organizers" id="organizers" aria-labelledby="organizers-title">
+        <div class="wrap">
+          <div class="org-head">
+            <p class="kicker" data-i18n="org.kicker">For organizers</p>
+            <h2 id="organizers-title" data-i18n="org.title" data-phrases>You prepare the program. Guests know what to expect</h2>
+            <p class="section-lead" data-i18n="org.lead">For anyone who hosts guests, leads a group or puts together a visit program</p>
+            <ul class="audience" aria-label="Who it is for" data-i18n-aria-label="org.audienceLabel">
+              <li data-i18n="org.who.guides">Guides and tour operators</li>
+              <li data-i18n="org.who.hospitality">Hospitality managers</li>
+              <li data-i18n="org.who.business">Business trips and visits</li>
+              <li data-i18n="org.who.events">Group and event coordinators</li>
+              <li data-i18n="org.who.family">Trips for family or friends</li>
             </ul>
-            <p class="lede" data-i18n="problem.conclusion">
-              The full picture exists only in your head — and only while you remember it. 🤯
-            </p>
           </div>
-        </div>
-      </section>
 
-      <!-- ================= Голосом или текстом ================= -->
-      <section class="section">
-        <div class="wrap">
-          <div class="card narrow card-wide">
-            <p class="kicker" data-i18n="ai.kicker">Voice or text</p>
-            <h3 data-i18n="ai.title">Describe the trip and get a draft</h3>
-            <p class="lines lede">
-              <span data-i18n="ai.body1">Describe the trip in your own words, by text or voice.</span>
-              <span data-i18n="ai.body2">The draft uses only your words and documents. Anything approximate is marked.</span>
-              <span data-i18n="ai.body3">Review and confirm the draft to create the trip in Clavelo.</span>
-            </p>
-            <div class="crop">
-              <a class="crop-link" data-app-link href="https://app.backpackerapp.cc/?lang=en" aria-label="Open Clavelo and create a trip draft" data-i18n-aria-label="ai.linkAria">
+          <div class="org-flow">
+            <ol class="steps">
+              <li>
+                <span class="step-num" aria-hidden="true">1</span>
+                <h3 data-i18n="org.step1.title">Build the program</h3>
+                <p data-i18n="org.step1.body" data-phrases>Arrival, transfers, stays, meetings, events and departure – by day and by time. Prices, bookings and notes stay with you.</p>
+              </li>
+              <li>
+                <span class="step-num" aria-hidden="true">2</span>
+                <h3 data-i18n="org.step2.title">Share it with participants</h3>
+                <p data-i18n="org.step2.body" data-phrases>One link to the published program. Inside: times, places, price, what is included and the materials they need.</p>
+              </li>
+              <li>
+                <span class="step-num" aria-hidden="true">3</span>
+                <h3 data-i18n="org.step3.title">Update it as plans change</h3>
+                <p data-i18n="org.step3.body" data-phrases>A time or place changed? Edit the program. Participants open the current published version from the same link and see when it was updated.</p>
+              </li>
+            </ol>
+            <figure class="panel-shot">
               <img
-                src="./assets/screenshots/en/crop-ai.png"
-                data-localized-screenshot="crop-ai.png"
-                width="800"
-                height="437"
-                alt="Trip draft screen with a text field and voice input action."
-                data-i18n-alt="ai.imageAlt"
+                src="./assets/screenshots/en/role-organizer.webp"
+                data-localized-screenshot="role-organizer.webp"
+                width="694"
+                height="922"
+                alt="Organizer panel: the list of joined participants and the participant link."
+                data-i18n-alt="org.panelAlt"
                 loading="lazy"
               />
-              </a>
+              <figcaption data-i18n="org.panelCaption">Who has joined and the participant link</figcaption>
+            </figure>
+          </div>
+
+          <div class="mirror" role="group" aria-labelledby="mirror-title">
+            <h3 class="mirror-title" id="mirror-title" data-i18n="org.mirror.title">One program, two sides</h3>
+            <figure class="mirror-side">
+              <figcaption><span class="mirror-who" data-i18n="org.mirror.organizer">The organizer fills in</span></figcaption>
+              <div class="mirror-frame">
+                <img
+                  src="./assets/screenshots/en/role-organizer-program.webp"
+                  data-localized-screenshot="role-organizer-program.webp"
+                  width="694"
+                  height="886"
+                  alt="The organizer’s form: price per person, currency, what is included, what is not, important information."
+                  data-i18n-alt="org.mirror.organizerAlt"
+                  loading="lazy"
+                />
+              </div>
+            </figure>
+            <span class="mirror-link" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"></path><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"></path></svg>
+              <span data-i18n="org.mirror.link">one link</span>
+            </span>
+            <figure class="mirror-side">
+              <figcaption><span class="mirror-who" data-i18n="org.mirror.participant">The participant sees</span></figcaption>
+              <div class="mirror-frame">
+                <img
+                  src="./assets/screenshots/en/role-guest-info.webp"
+                  data-localized-screenshot="role-guest-info.webp"
+                  width="694"
+                  height="872"
+                  alt="The participant’s “About the program” block: price, included, not included, important information and materials."
+                  data-i18n-alt="org.mirror.participantAlt"
+                  loading="lazy"
+                />
+              </div>
+            </figure>
+          </div>
+
+          <div class="org-foot">
+            <p class="privacy-note">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"></rect><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"></path></svg>
+              <span data-i18n="org.privacy">Your internal budget stays yours. Participants see the program and the terms, not your costs</span>
+            </p>
+            <div class="org-actions">
+              <a class="btn btn-light" data-app-link href="https://app.clavelo.cc/?lang=en" data-i18n="org.cta">Create a program in Clavelo</a>
+              <a class="btn btn-outline-light" data-pilot-link href="mailto:hello@clavelo.cc?subject=Clavelo%3A%20a%20pilot%20for%20a%20group" data-i18n="org.pilot">Discuss a pilot</a>
             </div>
+            <p class="org-howto" data-i18n="org.howto" data-phrases>Organizer mode is turned on inside a trip: Share trip → Run a trip for a group. It needs sign-in with email.</p>
           </div>
         </div>
       </section>
 
-      <!-- ================= Расширение ================= -->
-      <section class="section">
-        <div class="wrap">
-          <div class="card narrow ext-card">
-            <div class="ext-text">
-              <p class="kicker" data-i18n="extension.kicker">Ideas from the browser</p>
-              <h3 data-i18n="extension.title">Save travel finds with the Chrome extension</h3>
-              <p class="lines lede">
-                <span data-i18n="extension.body1">The desktop Chrome extension is Clavelo Travel Capture. It saves information available on the current page and sends the find to Ideas.</span>
-                <span data-i18n="extension.body2">Some sites may not make every detail available; the source link is kept with the idea.</span>
-                <span data-i18n="extension.body3">Move the idea into a trip when you are ready, or keep it for later.</span>
-              </p>
-              <p class="extension-action">
-                <a class="btn btn-secondary" href="https://chromewebstore.google.com/detail/clavelo-travel-capture/okpfmpplfciccfddgibkcoliemfimifc" rel="noopener" data-i18n="extension.cta">Install for Chrome</a>
-              </p>
+      <!-- ================= 04 · Для гостей и участников ================= -->
+      <section class="guests" id="guests" aria-labelledby="guests-title">
+        <div class="wrap guests-grid">
+          <div class="guests-copy">
+            <p class="kicker" data-i18n="guest.kicker">For guests and participants</p>
+            <h2 id="guests-title" data-i18n="guest.title" data-phrases>You’ve landed. The program is already on your phone</h2>
+            <p class="section-lead" data-i18n="guest.lead">The organizer sent a link with everything you need for the coming days</p>
+            <ul class="facts">
+              <li>
+                <strong data-i18n="guest.where.title">Where and when</strong>
+                <span data-i18n="guest.where.body">Meetings, transfers and events by day, with times and places</span>
+              </li>
+              <li>
+                <strong data-i18n="guest.included.title">What is included</strong>
+                <span data-i18n="guest.included.body">Price, what is and isn’t included, what to know in advance</span>
+              </li>
+              <li>
+                <strong data-i18n="guest.materials.title">Materials</strong>
+                <span data-i18n="guest.materials.body">Guides, maps and documents the organizer shared with the group</span>
+              </li>
+            </ul>
+            <p class="guest-note" data-i18n="guest.note" data-phrases>You can view the program from the link without signing up. To join the group and keep the program in your list, you need an email and a name.</p>
+          </div>
+          <figure class="days-shot">
+            <div class="days-frame">
+              <img
+                src="./assets/screenshots/en/role-guest-days.webp"
+                data-localized-screenshot="role-guest-days.webp"
+                width="694"
+                height="1784"
+                alt="Three days of the Tbilisi visit for a participant: airport meeting, hotel, working meeting, Old Town walk, Mtskheta and the airport transfer."
+                data-i18n-alt="guest.daysAlt"
+                loading="lazy"
+              />
             </div>
+            <figcaption data-i18n="guest.example">Example: three days in Tbilisi, made-up data</figcaption>
+          </figure>
+        </div>
+      </section>
 
-            <div class="crop crop-panel">
-              <a class="crop-link" data-app-link href="https://app.backpackerapp.cc/?lang=en" aria-label="Open Clavelo Ideas" data-i18n-aria-label="extension.linkAria">
+      <!-- ================= 05 · Для своих поездок ================= -->
+      <section class="travel" id="travel" aria-labelledby="travel-title">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="kicker" data-i18n="travel.kicker">For your own trips</p>
+            <h2 id="travel-title" data-i18n="travel.title" data-phrases>Your trip. Your pace</h2>
+            <p class="section-lead" data-i18n="travel.lead">Gather what you’ve found, lay it out by day and keep it at hand on the road</p>
+          </div>
+          <ol class="path">
+            <li class="path-step">
+              <a class="path-shot" data-app-link href="https://app.clavelo.cc/?lang=en" aria-label="Open Clavelo and create a trip draft" data-i18n-aria-label="travel.collect.linkAria">
                 <img
-                  src="./assets/screenshots/en/crop-extension.png"
-                  data-localized-screenshot="crop-extension.png"
-                  width="419"
-                  height="1073"
-                  alt="Clavelo Travel Capture side panel with a travel idea and its source."
-                  data-i18n-alt="extension.imageAlt"
+                  src="./assets/screenshots/en/crop-ai.webp"
+                  data-localized-screenshot="crop-ai.webp"
+                  width="1500"
+                  height="848"
+                  alt="Trip draft screen with a text field and voice input action."
+                  data-i18n-alt="travel.collect.imageAlt"
                   loading="lazy"
                 />
               </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ================= День и карточка ================= -->
-      <section class="section">
-        <div class="wrap">
-          <div class="proof-grid">
-            <article class="card proof">
-              <p class="kicker" data-i18n="day.kicker">Day by day</p>
-              <h3 data-i18n="day.title">A day is a stream of cards</h3>
-              <p class="lines lede">
-                <span data-i18n="day.body1">Every event has its own card.</span>
-                <span data-i18n="day.body2">Browse the day as a clear sequence of events.</span>
-                <span data-i18n="day.body3">Plans changed? Move a card to another day or keep it in Ideas for later.</span>
-              </p>
-              <div class="crop">
-                <a class="crop-link" data-app-link href="https://app.backpackerapp.cc/?lang=en" aria-label="Open Clavelo and plan the trip by day" data-i18n-aria-label="day.linkAria">
+              <span class="path-num" aria-hidden="true">01</span>
+              <h3 data-i18n="travel.collect.title">Collect</h3>
+              <p data-i18n="travel.collect.body" data-phrases>Describe the trip by text or voice and Clavelo builds a draft from your words only. Save finds from websites with the Chrome extension.</p>
+              <a class="text-link" href="https://chromewebstore.google.com/detail/clavelo-travel-capture/okpfmpplfciccfddgibkcoliemfimifc" rel="noopener" data-i18n="travel.extension">Clavelo Travel Capture for Chrome</a>
+            </li>
+            <li class="path-step">
+              <a class="path-shot path-shot-tall" data-app-link href="https://app.clavelo.cc/?lang=en" aria-label="Open Clavelo and plan the trip by day" data-i18n-aria-label="travel.arrange.linkAria">
                 <img
-                  src="./assets/screenshots/en/crop-day.png"
-                  data-localized-screenshot="crop-day.png"
-                  width="800"
-                  height="1360"
+                  src="./assets/screenshots/en/crop-day.webp"
+                  data-localized-screenshot="crop-day.webp"
+                  width="1388"
+                  height="2360"
                   alt="Two days of a trip plan shown as event cards."
-                  data-i18n-alt="day.imageAlt"
+                  data-i18n-alt="travel.arrange.imageAlt"
                   loading="lazy"
                 />
-                </a>
-              </div>
-            </article>
-
-            <article class="card proof">
-              <p class="kicker" data-i18n="card.kicker">Event card</p>
-              <h3 data-i18n="card.title">Everything you need, together</h3>
-              <p class="lines lede">
-                <span data-i18n="card.body1">Time, price, booking link, status and notes stay in one card.</span>
-                <span data-i18n="card.body2">Add useful files: a ticket or booking PDF, boarding pass, voucher scan or photo.</span>
-                <span data-i18n="card.body3">See what is paid and what is still only an idea without searching through chats.</span>
-              </p>
-              <div class="crop">
-                <a class="crop-link" data-app-link href="https://app.backpackerapp.cc/?lang=en" aria-label="Open Clavelo and fill in an event card" data-i18n-aria-label="card.linkAria">
+              </a>
+              <span class="path-num" aria-hidden="true">02</span>
+              <h3 data-i18n="travel.arrange.title">Lay it out</h3>
+              <p data-i18n="travel.arrange.body" data-phrases>Every event is a card with time, price, booking and files. Plans changed? Drag the card to another day.</p>
+            </li>
+            <li class="path-step">
+              <a class="path-shot" data-app-link href="https://app.clavelo.cc/?lang=en" aria-label="Open Clavelo and view the trip budget" data-i18n-aria-label="travel.use.linkAria">
                 <img
-                  src="./assets/screenshots/en/crop-card.png"
-                  data-localized-screenshot="crop-card.png"
-                  width="752"
-                  height="1499"
-                  alt="Event card with its details, price, status, booking link and location."
-                  data-i18n-alt="card.imageAlt"
+                  src="./assets/screenshots/en/crop-budget.webp"
+                  data-localized-screenshot="crop-budget.webp"
+                  width="1484"
+                  height="992"
+                  alt="Trip budget summary with totals for paid, reserved and available amounts."
+                  data-i18n-alt="travel.use.imageAlt"
                   loading="lazy"
                 />
-                </a>
-              </div>
-            </article>
-          </div>
+              </a>
+              <span class="path-num" aria-hidden="true">03</span>
+              <h3 data-i18n="travel.use.title">Use it on the trip</h3>
+              <p data-i18n="travel.use.body" data-phrases>Tickets, addresses and bookings open from your phone. Totals for each day and the whole trip add up on their own.</p>
+            </li>
+          </ol>
         </div>
       </section>
 
-      <!-- ================= Бюджет ================= -->
-      <section class="section">
+      <!-- ================= 06 · Закрытие ================= -->
+      <section class="closing" aria-labelledby="closing-title">
         <div class="wrap">
-          <div class="card narrow card-wide">
-            <p class="kicker" data-i18n="budget.kicker">Budget</p>
-            <h3 data-i18n="budget.title">Totals update automatically</h3>
-            <p class="lines lede">
-              <span data-i18n="budget.body1">As you edit and move cards, Clavelo recalculates totals for each day and the whole trip.</span>
-              <span data-i18n="budget.body2">If the cost is unknown, leave it empty or add an estimate.</span>
-            </p>
-            <div class="crop">
-              <a class="crop-link" data-app-link href="https://app.backpackerapp.cc/?lang=en" aria-label="Open Clavelo and view the trip budget" data-i18n-aria-label="budget.linkAria">
-              <img
-                src="./assets/screenshots/en/crop-budget.png"
-                data-localized-screenshot="crop-budget.png"
-                width="800"
-                height="535"
-                alt="Trip budget summary with totals for paid, reserved and available amounts."
-                data-i18n-alt="budget.imageAlt"
-                loading="lazy"
-              />
-              </a>
+          <h2 id="closing-title" data-i18n="closing.title">Where shall we start?</h2>
+          <div class="closing-grid">
+            <div class="closing-card closing-travel">
+              <h3 data-i18n="closing.travel.title">Plan a trip</h3>
+              <p data-i18n="closing.travel.body">Open Clavelo in the browser and start from a draft or an empty trip</p>
+              <a class="btn btn-primary" data-app-link href="https://app.clavelo.cc/?lang=en" data-i18n="action.open">Open Clavelo</a>
+            </div>
+            <div class="closing-card closing-pilot">
+              <h3 data-i18n="closing.pilot.title">Discuss a pilot for a group</h3>
+              <p data-i18n="closing.pilot.body">Do you host guests or lead groups? Write to us and we’ll look at your scenario together</p>
+              <a class="btn btn-light" data-pilot-link href="mailto:hello@clavelo.cc?subject=Clavelo%3A%20a%20pilot%20for%20a%20group" data-i18n="closing.pilot.cta">Write to us</a>
             </div>
           </div>
-        </div>
-      </section>
-
-      <!-- ================= Organizer Mode ================= -->
-      <section class="section">
-        <div class="wrap">
-          <div class="card narrow organizer-card">
-            <p class="kicker" data-i18n="organizer.kicker">Organizer Mode</p>
-            <h3 data-i18n="organizer.title">One current program for the whole group</h3>
-            <p class="lines lede">
-              <span data-i18n="organizer.body1">Create and update the trip program as plans change.</span>
-              <span data-i18n="organizer.body2">Share the current program, price, terms and selected materials with participants.</span>
-              <span data-i18n="organizer.body3">Keep your internal budget private.</span>
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ================= Закрытие ================= -->
-      <section class="closing">
-        <div class="wrap">
-          <h2 data-i18n="closing.title">Put every trip detail in place</h2>
-          <a class="btn btn-primary" data-app-link href="https://app.backpackerapp.cc/?lang=en" data-i18n="action.open">
-            Open Clavelo
-          </a>
+          <p class="closing-note" data-i18n="closing.note">The app is available in Russian, English, French, Georgian, German, Armenian and Simplified Chinese</p>
 
           <!-- БУДУЩИЙ СЛОТ · каналы дистрибуции: Google Play, App Store,
                TestFlight, прямой Android APK. Появляются только когда есть
-               реальные публичные ссылки. Стиль .store-row задан в styles.css.
-
-          <div class="store-row">
-            <a class="btn btn-secondary" href="ЗАМЕНИТЬ" rel="noopener">Google Play</a>
-            <a class="btn btn-secondary" href="ЗАМЕНИТЬ" rel="noopener">App Store</a>
-          </div>
-          -->
+               реальные публичные ссылки. -->
         </div>
       </section>
     </main>
