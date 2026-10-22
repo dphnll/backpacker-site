@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, statSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 
 const index = readFileSync(new URL("./index.html", import.meta.url), "utf8");
@@ -163,7 +165,7 @@ assert.match(styles, /\.device img \{[^}]*aspect-ratio: 375 \/ 812;/, "phone fra
 assert.doesNotMatch(index, /class="mirror|privacy-note/, "the scenario is explained once");
 assert.equal((index.match(/<section class="organizers"[\s\S]*?<\/section>/)[0].match(/<img\b/g) || []).length, 2, "photo + phone");
 for (const { tag, name } of screenshots) {
-  assert.match(tag, new RegExp(`src="\\./assets/screenshots/en/${name.replace(".", "\\.")}"`), `${name} default src`);
+  assert.match(tag, new RegExp(`src="\\./assets/screenshots/en/${name.replace(".", "\\.")}\\?v=${api.ASSET_VERSION}"`), `${name} default src`);
   assert.match(tag, /\balt="[^"]+"/, `${name} alt`);
   assert.match(tag, /\bdata-i18n-alt="[^"]+"/, `${name} localized alt`);
   const width = Number(tag.match(/\bwidth="(\d+)"/)?.[1]);
@@ -322,7 +324,26 @@ assert.match(privacy, /<section id="russian" lang="ru">/);
 assert.match(privacy, /Available languages: <code>English \/ Русский<\/code>/);
 assert.match(terms, /<meta name="robots" content="noindex, nofollow" \/>/);
 assert.match(terms, /<a href="\.\.\/privacy\/">Privacy Policy<\/a>/);
-assert.match(notFound, /<link rel="stylesheet" href="\/styles\.css" \/>/);
+assert.match(notFound, /<link rel="stylesheet" href="\/styles\.css\?v=[0-9a-f]{10}" \/>/);
+
+// ---------- Версии файлов ----------
+// clavelo.cc отдаёт CSS/JS/картинки с max-age=14400, HTML — с max-age=0.
+// Одинаковые адреса между выпусками смешивали свежий HTML со старыми CSS и
+// JS из кэша браузера. Каждый изменяемый файл обязан нести версию выпуска,
+// и она обязана совпадать с содержимым.
+execFileSync(process.execPath, [fileURLToPath(new URL("./version-assets.mjs", import.meta.url)), "--check"], { stdio: "pipe" });
+assert.match(api.ASSET_VERSION, /^[0-9a-f]{10}$/);
+const versioned = `?v=${api.ASSET_VERSION}`;
+assert.ok(index.includes(`<link rel="stylesheet" href="./styles.css${versioned}" />`), "index: versioned CSS");
+assert.ok(index.includes(`<script src="./i18n.js${versioned}" defer></script>`), "index: versioned JS");
+assert.ok(privacy.includes(`href="../styles.css${versioned}"`), "privacy: versioned CSS");
+assert.ok(terms.includes(`href="../styles.css${versioned}"`), "terms: versioned CSS");
+assert.ok(notFound.includes(`href="/styles.css${versioned}"`), "404: versioned CSS");
+assert.match(source, /assets\/screenshots\/\$\{normalized\}\/\$\{name\}\?v=\$\{ASSET_VERSION\}/, "language switch keeps the version");
+for (const [name, html] of Object.entries({ index, privacy, terms, notFound })) {
+  // Ни одного неверсионированного обращения к CSS, JS или снимкам интерфейса.
+  assert.doesNotMatch(html, /(?:styles\.css|i18n\.js|assets\/screenshots\/[^"?]+)"/, `${name}: unversioned mutable asset`);
+}
 assert.match(notFound, /<a class="btn btn-primary" href="\/">На\sглавную<\/a>/);
 assert.match(notFound, /<a href="\/privacy\/">Политика\sконфиденциальности<\/a>/);
 

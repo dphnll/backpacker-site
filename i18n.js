@@ -5,6 +5,10 @@
   const STORAGE_KEY = "backpacker.landing.locale";
   const APP_URL = "https://app.clavelo.cc/";
   const CONTACT_EMAIL = "hello@clavelo.cc";
+  // Версия изменяемых файлов (CSS, JS, снимки). Ставит node version-assets.mjs;
+  // адрес снимка меняется вместе с содержимым, поэтому кэш браузера не
+  // смешивает выпуски.
+  const ASSET_VERSION = "b7a3a3997c";
 
   const TRANSLATIONS = {
     en: {
@@ -754,6 +758,7 @@
     STORAGE_KEY,
     APP_URL,
     CONTACT_EMAIL,
+    ASSET_VERSION,
     TRANSLATIONS,
     normalizeLocale,
     resolveInitialLocale,
@@ -836,7 +841,7 @@
     }
     for (const image of document.querySelectorAll("[data-localized-screenshot]")) {
       const name = image.dataset.localizedScreenshot;
-      if (name) image.setAttribute("src", `./assets/screenshots/${normalized}/${name}`);
+      if (name) image.setAttribute("src", `./assets/screenshots/${normalized}/${name}?v=${ASSET_VERSION}`);
     }
 
     const languageSelect = document.querySelector("#languageSelect");

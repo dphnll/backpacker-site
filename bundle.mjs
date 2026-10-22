@@ -27,7 +27,8 @@ const MIME = {
 };
 
 const dataUri = (rel) => {
-  const p = join(SITE, rel.replace(/^\.\//, "").replace(/^\.\.\//, ""));
+  // ?v=<версия> нужен только браузерному кэшу; на диске файл без него.
+  const p = join(SITE, rel.replace(/\?.*$/, "").replace(/^\.\//, "").replace(/^\.\.\//, ""));
   const buf = readFileSync(p);
   return `data:${MIME[extname(p)] || "application/octet-stream"};base64,${buf.toString("base64")}`;
 };
@@ -43,7 +44,7 @@ function bundle(srcRel, outName, opts = {}) {
   let html = readFileSync(join(SITE, srcRel), "utf8");
 
   html = html.replace(
-    /<link rel="stylesheet" href="[^"]*styles\.css"\s*\/?>/,
+    /<link rel="stylesheet" href="[^"]*styles\.css(?:\?v=[0-9a-f]*)?"\s*\/?>/,
     `<style>\n${css}\n</style>`,
   );
   html = html.replace(/assets\/screenshots\/en\//g, `assets/screenshots/${BUNDLE_LOCALE}/`);
@@ -54,7 +55,7 @@ function bundle(srcRel, outName, opts = {}) {
   html = html.replace(/src="([^"]*assets\/[^"]+)"/g, (m, p) => `src="${dataUri(p)}"`);
   if (opts.inlineI18n) {
     html = html.replace(
-      /<script src="\.\/i18n\.js" defer><\/script>/,
+      /<script src="\.\/i18n\.js(?:\?v=[0-9a-f]*)?" defer><\/script>/,
       `<script>\n${i18n}\n</script>`,
     );
   }
