@@ -55,6 +55,12 @@ jobs:
                   const url='https://clavelo.cc/?lang='+locale;
                   const response=await page.goto(url,{waitUntil:'networkidle',timeout:50000});
                   await page.evaluate(()=>document.fonts.ready);
+                  // Force below-the-fold lazy assets to load before judging images.
+                  await page.evaluate(async () => {
+                    const images=[...document.images];
+                    for(const img of images)img.loading='eager';
+                    await Promise.all(images.map(img=>img.decode().catch(()=>{})));
+                  });
                   const report=await page.evaluate(()=>{
                     const sections=['.hero','.roles','.organizers','.guests','.travel','.closing','.site-footer'];
                     const missing=sections.filter(s=>!document.querySelector(s));
