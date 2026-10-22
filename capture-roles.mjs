@@ -388,6 +388,22 @@ for (const locale of LOCALES) {
     openShareSheet();
     openShareModePanel = "organizer";
     renderTripLinkOptions();
+    return true;
+  })()`);
+  await sleep(1400);
+  // 2a. Целый экран телефона: шторка «Поделиться поездкой» открыта на панели
+  // организатора — участники и ссылка. Шторку прокручиваем к карточке
+  // «Для организатора», как это сделал бы сам человек.
+  await evalJs(`(() => {
+    const panel = document.querySelector("#shareSheet .sheet-panel");
+    const card = document.querySelector("#groupTripShareCard");
+    panel.scrollTop = card.getBoundingClientRect().top - panel.getBoundingClientRect().top + panel.scrollTop - 14;
+    return true;
+  })()`);
+  await sleep(700);
+  report.push(await shoot(join(out, "role-organizer-phone.webp")));
+
+  await evalJs(`(() => {
     document.querySelector("#shareSheet .sheet-panel").style.maxHeight = "none";
     // Поля условий — textarea на три строки с ручкой ресайза. Растягиваем их
     // по тексту, как сделал бы сам организатор, чтобы строки не обрезались.
@@ -399,13 +415,6 @@ for (const locale of LOCALES) {
   })()`);
   await viewport(375, 3200);
   await sleep(1400);
-  // 2a. Участники и ссылка: от заголовка «Для организатора» до кнопки копирования.
-  report.push(await shoot(join(out, "role-organizer.webp"),
-    `(() => {
-      const card = document.querySelector("#groupTripShareCard").getBoundingClientRect();
-      const end = document.querySelector("#tripShareLinkStatus").getBoundingClientRect();
-      return { left: card.left, top: card.top, width: card.width, height: end.top - card.top - 2 };
-    })()`));
   // 2b. «Информация для участников»: то, что потом появится у участника
   // в блоке «О программе».
   report.push(await shoot(join(out, "role-organizer-program.webp"),
@@ -435,11 +444,6 @@ for (const locale of LOCALES) {
     return true;
   })()`);
   await sleep(1500);
-
-  // 3a. Карточки участника: без цен организатора.
-  for (const id of ["t6", "t7"]) report.push(await shootCard(join(out, `card-${id}.webp`), id));
-  await evalJs(`window.scrollTo(0, 0); document.querySelectorAll(".day-items").forEach((row) => { row.scrollLeft = 0; }); true`);
-  await sleep(400);
 
   // 4. Участник: блок «О программе» крупно.
   report.push(await shoot(join(out, "role-guest-info.webp"), `document.querySelector("#participantProgramInfo").getBoundingClientRect()`));

@@ -108,7 +108,8 @@ body::before {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: 0;
+  /* Ниже фона контрастных полос: тёмная и крафтовая полосы закрывают карту. */
+  z-index: -1;
   pointer-events: none;
   opacity: 0.4;
   background-image: url("./assets/map-portrait.webp");
@@ -124,7 +125,11 @@ body::before {
   }
 }
 
-body > * {
+/* Слои: карта (-1) → фоны полос → бегущие плитки (0) → содержимое (1).
+   Плитки идут и поверх контрастных полос, но под текстом и снимками:
+   содержимое каждого раздела живёт в .wrap, и оно выше полосы плиток. */
+.wrap,
+.site-footer .wrap {
   position: relative;
   z-index: 1;
 }
@@ -891,7 +896,27 @@ html:lang(fr) .hero h1 {
   transform: rotate(5deg);
 }
 
+/* Участвую: не карточки, а гостевой экран — блок «О программе», каким
+   его видит участник. Верх кадра, чуть повёрнут, как лист в руке. */
+.role-screen {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  border: 3px solid var(--card);
+  border-radius: 12px;
+  box-shadow: 0 10px 22px rgba(28, 26, 23, 0.2);
+  transform: rotate(-3deg);
+  transition: transform 220ms ease;
+}
+
 @media (hover: hover) {
+  .role:hover .role-screen {
+    transform: rotate(-1deg) translateY(-3px);
+  }
+
   .role:hover .role-card-a {
     transform: rotate(-10deg) translateX(-4px);
   }
@@ -967,17 +992,17 @@ html:lang(fr) .hero h1 {
 .audience {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 26px;
+  gap: 6px;
+  margin-top: 20px;
   padding: 0;
   list-style: none;
 }
 
 .audience li {
-  padding: 7px 14px;
+  padding: 5px 12px;
   border: 1px solid var(--on-deep-line);
   border-radius: 999px;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.35;
 }
 
@@ -1017,9 +1042,9 @@ html:lang(fr) .hero h1 {
 
 .steps li {
   display: grid;
-  grid-template-columns: 40px minmax(0, 1fr);
-  column-gap: 16px;
-  padding: 16px 0;
+  grid-template-columns: 34px minmax(0, 1fr);
+  column-gap: 14px;
+  padding: 12px 0;
   border-top: 1px solid var(--on-deep-line);
 }
 
@@ -1031,49 +1056,35 @@ html:lang(fr) .hero h1 {
   grid-row: span 2;
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
   background: var(--kraft);
   color: var(--deep);
-  font-size: 19px;
+  font-size: 16px;
   font-weight: 600;
 }
 
 .steps h3 {
-  font-size: 20px;
-  line-height: 1.2;
+  font-size: 18px;
+  line-height: 1.25;
 }
 
 .steps p {
-  margin-top: 6px;
+  margin-top: 2px;
   color: var(--on-deep-soft);
   font-size: 15px;
   line-height: 1.45;
 }
 
-.steps .phrase + .phrase {
-  margin-top: 0.15em;
-}
-
-/* Панель организатора лежит на фото и выходит за его нижний край. */
-.panel-shot {
-  position: absolute;
-  left: 14px;
-  bottom: -72px;
-  width: 54%;
-  max-width: 270px;
-}
-
-.panel-shot img {
-  width: 100%;
-  height: auto;
-  max-height: 300px;
-  border-radius: 18px;
-  object-fit: cover;
-  object-position: top;
-  background: var(--card);
-  box-shadow: var(--shadow-deep);
+/* Целый экран телефона организатора лежит на фото и выходит за его
+   нижний край. Рамка та же, что у телефона в герое. */
+.org-phone {
+  left: 10px;
+  bottom: -64px;
+  width: 42%;
+  max-width: 220px;
+  box-shadow: var(--shadow-deep), inset 0 0 0 1px rgba(255, 255, 255, 0.4);
 }
 
 .mirror-who {
@@ -1558,6 +1569,58 @@ html:lang(fr) .hero h1 {
   }
 }
 
+/* Первый экран телефона: на 375×812 видны заголовок, основная кнопка и
+   уже начало фотографии. Кнопки встают в ряд, поля и кегли чуть плотнее;
+   десктоп не меняется — всё это только до 600 px. */
+@media (max-width: 599px) {
+  .hero {
+    padding-top: 22px;
+  }
+
+  .hero-grid {
+    gap: 26px;
+  }
+
+  .hero .kicker {
+    margin-bottom: 12px;
+  }
+
+  .hero h1 {
+    font-size: clamp(32px, 9.4vw, 40px);
+  }
+
+  .hero-lead {
+    margin-top: 14px;
+    font-size: 16px;
+  }
+
+  .hero-actions {
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  /* Подпись кнопки — одной строкой; не помещаются две в ряд — кнопки
+     сами встают друг под другом. */
+  .hero-actions .btn {
+    flex: 1 1 auto;
+    min-height: 50px;
+    padding: 10px 14px;
+    font-size: 15px;
+    white-space: nowrap;
+  }
+
+  .hero-note {
+    margin-top: 10px;
+    font-size: 13px;
+  }
+
+  /* Плитки — фон, а не содержание: под текстом на узком экране они
+     почти прозрачны. Мотив и анимация те же. */
+  .edge-tile {
+    opacity: 0.12;
+  }
+}
+
 @media (min-width: 600px) {
   :root {
     --pad: 36px;
@@ -1659,7 +1722,12 @@ html:lang(fr) .hero h1 {
   }
 
   .org-head h2 {
-    font-size: clamp(34px, 3.6vw, 46px);
+    font-size: clamp(32px, 3.4vw, 44px);
+  }
+
+  .organizers .section-lead {
+    margin-top: 12px;
+    font-size: 17px;
   }
 
   .org-top {
@@ -1669,7 +1737,7 @@ html:lang(fr) .hero h1 {
       "steps visual";
     align-items: start;
     column-gap: 64px;
-    row-gap: 28px;
+    row-gap: 20px;
   }
 
   .org-head {
@@ -1686,18 +1754,13 @@ html:lang(fr) .hero h1 {
   }
 
   .org-photo img {
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 1;
   }
 
-  .panel-shot {
-    left: -36px;
-    bottom: -28px;
-    width: 52%;
-    max-width: 280px;
-  }
-
-  .panel-shot img {
-    max-height: 340px;
+  .org-phone {
+    left: -44px;
+    bottom: -48px;
+    width: 44%;
   }
 
   .role-art {

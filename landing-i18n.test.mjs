@@ -119,13 +119,20 @@ const allFrames = [...index.matchAll(/<img\b[^>]*?data-localized-screenshot="([^
 }));
 // Карточки событий в ролевых карточках — украшение: alt="" внутри
 // aria-hidden. Остальные кадры — содержание со своим переведённым alt.
-const cardFrames = allFrames.filter(({ tag }) => /\balt=""/.test(tag));
+const decorative = allFrames.filter(({ tag }) => /\balt=""/.test(tag));
+const cardFrames = decorative.filter(({ name }) => name.startsWith("card-"));
 const screenshots = allFrames.filter(({ tag }) => !/\balt=""/.test(tag));
 assert.deepEqual(
   cardFrames.map((shot) => shot.name),
-  ["card-t2.webp", "card-t5.webp", "card-t1.webp", "card-t3.webp", "card-t7.webp", "card-t6.webp"],
+  ["card-t2.webp", "card-t5.webp", "card-t1.webp", "card-t3.webp"],
 );
-assert.equal((index.match(/<span class="role-art" aria-hidden="true">/g) || []).length, 3, "card fans are decorative");
+// «Участвую» иллюстрирует гостевой экран, а не те же карточки, что «Организую».
+assert.deepEqual(
+  decorative.filter(({ name }) => !name.startsWith("card-")).map((shot) => shot.name),
+  ["role-guest-info.webp"],
+);
+assert.match(index, /<span class="role-art role-art-screen" aria-hidden="true">\s*<img class="role-screen"[^>]*role-guest-info\.webp/);
+assert.equal((index.match(/<span class="role-art[^"]*" aria-hidden="true">/g) || []).length, 3, "role illustrations are decorative");
 for (const { tag, name } of cardFrames) {
   assert.match(tag, /loading="lazy"/, `${name} loads lazily`);
   assert.deepEqual(webpSize(new URL(`./assets/screenshots/en/${name}`, import.meta.url)), [360, 432], `${name} is a whole event card`);
@@ -139,7 +146,7 @@ assert.deepEqual(
   screenshots.map((shot) => shot.name),
   [
     "role-plan.webp",
-    "role-organizer.webp",
+    "role-organizer-phone.webp",
     "role-organizer-program.webp",
     "role-guest-info.webp",
     "role-guest-days.webp",
@@ -256,12 +263,12 @@ for (const locale of api.SUPPORTED_LOCALES) {
   assert.match(T[locale]["org.howto"], /→/, `${locale} organizer how-to`);
 }
 
-// Немецкий лендинг говорит на «du». Единственное «Sie» — цитата подписи
-// кнопки приложения в подсказке про режим организатора.
+// Немецкий лендинг обращается на «Sie», как приложение Clavelo.
 for (const [key, value] of Object.entries(T.de)) {
-  if (key === "org.howto") continue;
-  assert.doesNotMatch(value, /\b(?:Sie|Ihnen|Ihre|Ihren|Ihrer|Ihrem|Ihres)\b/, `de.${key}`);
+  assert.doesNotMatch(value, /\b(?:du|dein|deine|deinen|deiner|deinem|deines|dir|dich)\b/i, `de.${key} uses the formal Sie`);
 }
+assert.match(T.de["hero.lead"], /\bPlanen Sie\b/);
+assert.equal(T.de["closing.pilot.cta"], "Schreiben Sie uns");
 
 // Чего продукт не умеет, того лендинг не обещает.
 const NOT_PROMISED = {
@@ -294,8 +301,8 @@ assert.equal(api.typograph("Un horaire bouge ?", "fr"), `Un${NBSP}horaire bouge$
 assert.equal(api.typograph("One link to the program", "en"), `One link to${NBSP}the${NBSP}program`);
 assert.equal(api.typograph("行程已就绪。每个人都知道", "zh"), "行程已就绪。每个人都知道");
 assert.deepEqual(
-  [...api.splitPhrases(T.ru["org.step3.body"])],
-  ["Сдвинулось время или поменялось место?", "Поправьте программу.", "По той же ссылке участник откроет актуальную версию и увидит дату обновления."],
+  [...api.splitPhrases(T.ru["guest.note"])],
+  ["Посмотреть программу по ссылке можно без регистрации.", "Чтобы присоединиться к группе и сохранить программу у себя, нужны email и имя."],
 );
 assert.equal(api.splitPhrases(T.hy["hero.lead"]).length, 2, "Armenian full stop splits phrases");
 assert.equal(api.splitPhrases(T.zh["hero.title"]).length, 2, "Chinese full stop splits phrases");
