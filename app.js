@@ -17,6 +17,15 @@
   const esc = (value) =>
     String(value ?? "").replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch]);
   const prefersReducedMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // Jump without animation. `behavior: "instant"` is not accepted by every browser, so
+  // the page's smooth scrolling is switched off for the jump instead.
+  function jumpTo(y) {
+    const root = document.documentElement;
+    const previous = root.style.scrollBehavior;
+    root.style.scrollBehavior = "auto";
+    window.scrollTo(0, y);
+    root.style.scrollBehavior = previous;
+  }
 
   // ---------- language ----------
   const isLang = (code) => LANGS.some((l) => l.code === code);
@@ -102,6 +111,11 @@
     $('meta[name="description"]').setAttribute("content", t("meta.description"));
     for (const el of $$("[data-i18n]")) el.textContent = t(el.dataset.i18n);
     for (const el of $$("[data-i18n-aria]")) el.setAttribute("aria-label", t(el.dataset.i18nAria));
+    // Logos are plain links to the home page in the current language: an ordinary page
+    // load, not intercepted by script, so they work whatever state the page is in.
+    const home = urlWith({ tour: null });
+    home.hash = "";
+    for (const el of $$("a[data-logo]")) el.setAttribute("href", home.pathname + home.search);
 
     $("#langs").innerHTML = LANGS.map(
       (l) => `<a href="${esc(urlWith({ lang: l.code, tour: page === "tour" ? tour.id : null }).toString())}" data-lang="${l.code}" lang="${l.html}" hreflang="${l.html}" title="${esc(l.name)}"${l.code === lang ? ' aria-current="true"' : ""}>${l.label}</a>`,
@@ -418,7 +432,7 @@
     const realign = () => {
       const anchor = keep.anchor && document.getElementById(keep.anchor.id);
       const y = anchor ? anchor.getBoundingClientRect().top + window.scrollY - keep.anchor.top : keep.scrollY;
-      window.scrollTo({ top: y, behavior: "instant" });
+      jumpTo(y);
       return window.scrollY;
     };
     realign();
@@ -464,22 +478,28 @@
     if (!tour || tour.id !== id) loadTour(id);
     if (push) history.pushState(null, "", urlWith({ tour: id }));
     showPage("tour");
-    window.scrollTo({ top: 0, behavior: "instant" });
+    jumpTo(0);
   }
-  // The logo returns to the top of the home page; "All journeys" to the tour cards.
-  function goHome({ push = true, top = false } = {}) {
+  // "All journeys" and the nav link return to the tour cards (the logos are plain links).
+  function goHome({ push = true } = {}) {
     if (push) history.pushState(null, "", urlWith({ tour: null }));
     showPage("home");
-    if (top) window.scrollTo({ top: 0, behavior: "instant" });
-    else $("#journeys").scrollIntoView({ behavior: "instant" });
+    jumpTo($("#journeys").getBoundingClientRect().top + window.scrollY - ($(".topbar")?.offsetHeight || 0));
   }
   document.addEventListener("click", (event) => {
     const open = event.target.closest("a[data-tour]");
     const home = event.target.closest("a[data-home]");
     if (!open && !home) return;
+    if (event.ctrlKey || event.metaKey || event.shiftKey || event.button !== 0) return; // new tab / window
     event.preventDefault();
-    if (open) openTour(open.dataset.tour);
-    else goHome({ top: home.dataset.home === "top" });
+    try {
+      if (open) openTour(open.dataset.tour);
+      else goHome();
+    } catch (error) {
+      // Never leave a link dead: fall back to an ordinary page load.
+      console.error(error);
+      location.href = (open || home).href;
+    }
   });
   // A pin in the hero opens the tour at that stop: day open, activity selected, map on the place.
   $("#heroPins").addEventListener("click", (event) => {

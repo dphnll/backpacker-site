@@ -121,7 +121,13 @@ node tests/data-check.mjs
 # with the server running (PLAYWRIGHT_CHROMIUM may point to a Chromium binary):
 node tests/smoke.mjs http://127.0.0.1:4300/
 node tests/i18n.mjs  http://127.0.0.1:4300/ [screenshot-dir]
+node tests/navigation.mjs http://127.0.0.1:4300/
 ```
+
+- `navigation.mjs` — from an open Journey (deep link and tour card), EN/KA/RU, desktop and phone:
+  the header and footer logos open the home page at the top, `tour` leaves the URL, `lang` stays,
+  browser Back returns to the Journey. The logos are plain links (a normal page load), not
+  intercepted by script.
 
 - `smoke.mjs` — the acceptance list: tour cards and statuses, home vs tour page (card, back link,
   browser Back/Forward), See wine and the wine card, days and activities, dialogs

@@ -1,37 +1,56 @@
-# WIWI Tours v0.3.1 — verification
+# WIWI Tours v0.3.2 — verification
 
-Date: 11 November 2026. Local static server, Chromium (Playwright 1.56), map tiles blocked in every
-run on purpose (the page must work without them). Not tested: Safari, Firefox, real phones, live map tiles,
-a real UVAMO! wine page inside the wine card (no public URL supplied yet).
+Date: 11 November 2026. Local static server, Chromium (Playwright 1.56), map tiles blocked in every run on
+purpose. Not tested: Safari, Firefox, real phones, live map tiles.
 
-## Changes since v0.3
-- Hero: an outline map of Georgia (Natural Earth, public domain) with the route's pins, fading into the background.
-- Every activity with a wine has a **See wine** chip (and a clickable WINE tile). It opens a wine card:
-  with a public UVAMO! URL — the UVAMO! wine page inside the card and "This wine in UVAMO!";
-  without one (today) — what the draft says, and a note that the UVAMO! card will appear once WIWI shares the link.
-- Hosts block moved above the days; the highlights block and the open-questions section removed.
-- Hero pins are clickable and open the tour at that stop (day, activity, map).
-- All text set in Inter (bundled); Georgian in Noto Sans Georgian.
-- Home page = hero + tour cards; the day-by-day route opens only from a tour card (`?tour=west`),
-  with "← All journeys", browser Back/Forward, and the WIWI Tours logo (header and footer) leading home.
-
-## Results
+## Logo → home page fix
+- Header and footer "WIWI Tours" logos are now plain links to the home page in the current language
+  (`/?lang=ka`), rebuilt on every language switch. Clicking performs an ordinary page load — no click
+  handler, client-side routing or page state is involved, so nothing can swallow the click.
+- The same "real mouse click from an open Journey" scenarios were also run against the previously
+  deployed code (9d4fc0b) in Chromium — normal tab, file://, with map tiles loading, inside a sandboxed
+  iframe — and passed there too: the reported failure could not be reproduced in Chromium.
 
 | Suite | Result |
 |---|---|
-| `node tests/data-check.mjs` — data, links and translations | OK: 2 tours, 6 days, 31 activities, 12 places, 5 people; 122 interface keys × 3 languages |
+| `node tests/data-check.mjs` | OK |
+| `node tests/navigation.mjs` — logo → home from an open Journey, 3 languages × desktop/phone × 2 entries × 2 logos | **24 / 24 passed** |
 | `node tests/smoke.mjs` — acceptance list, English | **25 / 25 passed** |
-| `node tests/i18n.mjs` — EN / KA / RU × 1440, 390, 320 px (now also: Inter loaded and used) | **54 / 54 passed** |
-
-`i18n.mjs` covers in each language and width: `<html lang>`, the home page (both tour cards, Eastern Georgia
-"in development", no route, no untranslated words), entering the tour with the language kept, no untranslated
-words with every day open, Georgian fonts loaded, the wine card, person and place dialogs, map popup and zoom
-buttons, switching EN → KA → RU → EN keeping tour, open days, selection, map view and position, deep links.
+| `node tests/i18n.mjs` — EN / KA / RU × 1440, 390, 320 px | **54 / 54 passed** |
 
 ## Full output
 ```
 $ node tests/data-check.mjs
 data.js OK: 2 tours, 6 days, 31 activities, 12 places, 5 people; i18n.js OK: 122 keys × 3 languages (en, ka, ru)
+exit 0
+
+$ node tests/navigation.mjs
+PASS  EN desktop, Journey via deep link, header logo
+PASS  EN desktop, Journey via deep link, footer logo
+PASS  EN desktop, Journey via tour card, header logo
+PASS  EN desktop, Journey via tour card, footer logo
+PASS  EN phone, Journey via deep link, header logo
+PASS  EN phone, Journey via deep link, footer logo
+PASS  EN phone, Journey via tour card, header logo
+PASS  EN phone, Journey via tour card, footer logo
+PASS  KA desktop, Journey via deep link, header logo
+PASS  KA desktop, Journey via deep link, footer logo
+PASS  KA desktop, Journey via tour card, header logo
+PASS  KA desktop, Journey via tour card, footer logo
+PASS  KA phone, Journey via deep link, header logo
+PASS  KA phone, Journey via deep link, footer logo
+PASS  KA phone, Journey via tour card, header logo
+PASS  KA phone, Journey via tour card, footer logo
+PASS  RU desktop, Journey via deep link, header logo
+PASS  RU desktop, Journey via deep link, footer logo
+PASS  RU desktop, Journey via tour card, header logo
+PASS  RU desktop, Journey via tour card, footer logo
+PASS  RU phone, Journey via deep link, header logo
+PASS  RU phone, Journey via deep link, footer logo
+PASS  RU phone, Journey via tour card, header logo
+PASS  RU phone, Journey via tour card, footer logo
+
+24/24 passed
 exit 0
 
 $ node tests/smoke.mjs
