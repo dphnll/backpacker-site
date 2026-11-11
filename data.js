@@ -81,7 +81,7 @@ window.WIWI_DATA = {
       // Optional "Explore in Clavelo": a published, read-only Clavelo share of a sample
       // programme, e.g. "https://app.clavelo.cc/?share=<token>". Shown only when set to such
       // a URL; null hides it. Use an ordinary share (not Organizer mode, which offers Join).
-      clavelo: { url: null },
+      clavelo: { url: "https://app.clavelo.cc/?share=ff358b0d2fbd9340c235238236a7857b04956a460f3f5ab0ab89d682cb22db9c" },
 
 
       // Questions WIWI must answer — working notes. Not listed on the site; a day with
