@@ -14,7 +14,7 @@
  *   i18n.js (topic.*, flag.*, region.*) for recurring terms.
  *
  * Structure
- *   tours[]   — each tour carries its own days, highlights and open questions.
+ *   tours[]   — each tour carries its own days and open questions.
  *               A tour without `days` is shown as a concept card only.
  *               To add the second tour, fill `days` of the "east" tour.
  *   places{}  — shared directory, referenced by id from activities (any tour).
@@ -79,41 +79,9 @@ window.WIWI_DATA = {
         ru: "Черновик маршрута: Манана Ахвледиани",
       },
 
-      highlights: [
-        {
-          id: "chkhaveri",
-          title: { en: "Chkhaveri: Adjara and Guria", ka: "ჩხავერი: აჭარა და გურია", ru: "Чхавери: Аджария и Гурия" },
-          text: {
-            en: "The same grape at two wineries on one day, each with its own regional dishes.",
-            ka: "ერთი ჯიში ორ მარანში ერთსა და იმავე დღეს — თითოეულში თავისი რეგიონული კერძებით.",
-            ru: "Один сорт в двух винодельнях за один день — и у каждой свои региональные блюда.",
-          },
-          activities: ["d2-chkhavalley", "d2-sarishvili"],
-        },
-        {
-          id: "tsolikouri",
-          title: { en: "Tsolikouri: Tvishi and Imereti", ka: "ცოლიკაური: ტვიში და იმერეთი", ru: "Цоликоури: Твиши и Имерети" },
-          text: {
-            en: "Mountain Tsolikouri in Lechkhumi, then Imeretian Tsolikouri a day later.",
-            ka: "მთის ცოლიკაური ლეჩხუმში, ერთი დღის შემდეგ კი — იმერული ცოლიკაური.",
-            ru: "Горное цоликоури в Лечхуми, а днём позже — имеретинское.",
-          },
-          activities: ["d3-tvishi", "d4-chkheidze"],
-        },
-        {
-          id: "autumn",
-          title: { en: "Autumn Edition (proposed)", ka: "შემოდგომის ვერსია (შემოთავაზება)", ru: "Осенняя версия (предложение)" },
-          text: {
-            en: "Wine, Women & Mandarin Harvest — an October visit to an Adjarian mandarin orchard, depending on the harvest.",
-            ka: "„ღვინო, ქალები და მანდარინის მოსავალი“ — ოქტომბერში აჭარის მანდარინის ბაღში სტუმრობა, მოსავლის მიხედვით.",
-            ru: "«Вино, женщины и сбор мандаринов» — в октябре визит в аджарский мандариновый сад, если позволит урожай.",
-          },
-          activities: ["d2-chkhavalley"],
-          status: "to-confirm",
-        },
-      ],
 
-      // Questions WIWI must answer. Shown in the "Draft status" panel.
+      // Questions WIWI must answer — working notes. Not listed on the site; a day with
+      // `review: "<id>"` shows that question as its "section under review" banner.
       openQuestions: [
         {
           id: "length",
@@ -725,7 +693,6 @@ window.WIWI_DATA = {
         { label: { en: "Hosts to be confirmed", ka: "მასპინძლები დასაზუსტებელია", ru: "Хозяева уточняются" } },
       ],
       author: null,
-      highlights: [],
       openQuestions: [
         {
           id: "east-route",
@@ -743,6 +710,7 @@ window.WIWI_DATA = {
 
   places: {
     batumi: {
+      heroLabel: "left", // named on the hero illustration, label left of the pin
       name: { en: "Batumi", ka: "ბათუმი", ru: "Батуми" },
       region: "adjara",
       description: {
@@ -780,6 +748,7 @@ window.WIWI_DATA = {
       locationLabel: { en: "Lanchkhuti area", ka: "ლანჩხუთის მიდამოები", ru: "Окрестности Ланчхути" },
     },
     kutaisi: {
+      heroLabel: "left", // named on the hero illustration, label left of the pin
       name: { en: "Kutaisi", ka: "ქუთაისი", ru: "Кутаиси" },
       region: "imereti",
       description: {
@@ -818,6 +787,7 @@ window.WIWI_DATA = {
       locationLabel: { en: "Tvishi area", ka: "ტვიშის მიდამოები", ru: "Окрестности Твиши" },
     },
     khvanchkara: {
+      heroLabel: true, // named on the hero illustration
       name: { en: "Khvanchkara", ka: "ხვანჭკარა", ru: "Хванчкара" },
       region: "racha",
       description: {
@@ -866,6 +836,7 @@ window.WIWI_DATA = {
       locationLabel: { en: "Obcha area", ka: "ობჩის მიდამოები", ru: "Окрестности Обчи" },
     },
     tbilisi: {
+      heroLabel: true, // named on the hero illustration
       name: { en: "Tbilisi", ka: "თბილისი", ru: "Тбилиси" },
       region: "tbilisi",
       description: {

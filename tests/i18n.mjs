@@ -48,9 +48,9 @@ const ALLOWED_LATIN = /WIWI|Tours|UVAMO!?|Clavelo|ChkhaValley|Winery|Women in Wi
 const latinWords = (s) => (s.replace(ALLOWED_LATIN, "").match(/\b[A-Za-z]{3,}\b/g) || []);
 
 const EXPECT = {
-  en: { html: "en", west: "Guests of Women Winemakers", east: "In development", maka: "Maka Tedoradze", tvishi: "Tvishi", day: "Day 3", popup: "Approximate location", zoom: "Zoom in" },
-  ka: { html: "ka", west: "ქალი მეღვინეების სტუმრად", east: "მზადდება", maka: "მაკა თედორაძე", tvishi: "ტვიში", day: "დღე 3", popup: "მიახლოებითი ადგილი", zoom: "გადიდება" },
-  ru: { html: "ru", west: "В гостях у женщин-виноделов", east: "Готовится", maka: "Мака Тедорадзе", tvishi: "Твиши", day: "День 3", popup: "Приблизительное место", zoom: "Приблизить" },
+  en: { html: "en", west: "Guests of Women Winemakers", east: "In development", maka: "Maka Tedoradze", tvishi: "Tvishi", day: "Day 3", popup: "Approximate location", zoom: "Zoom in", wine: "Chkhaveri, Adjarian style", seeWine: "See wine" },
+  ka: { html: "ka", west: "ქალი მეღვინეების სტუმრად", east: "მზადდება", maka: "მაკა თედორაძე", tvishi: "ტვიში", day: "დღე 3", popup: "მიახლოებითი ადგილი", zoom: "გადიდება", wine: "ჩხავერი, აჭარული სტილი", seeWine: "ღვინის ნახვა" },
+  ru: { html: "ru", west: "В гостях у женщин-виноделов", east: "Готовится", maka: "Мака Тедорадзе", tvishi: "Твиши", day: "День 3", popup: "Приблизительное место", zoom: "Приблизить", wine: "Чхавери, аджарский стиль", seeWine: "Смотреть вино" },
 };
 
 for (const [code, e] of Object.entries(EXPECT)) {
@@ -59,14 +59,23 @@ for (const [code, e] of Object.entries(EXPECT)) {
     const label = `${code.toUpperCase()} ${vp}`;
 
     await check(`${label}: language, both tour cards, unfinished east tour`, async () => {
+      // Home first: the same URL without ?tour shows the tour cards.
+      await page.goto(`${BASE}${code === "en" ? "" : `?lang=${code}`}`, { waitUntil: "load" });
+      await settle(page, 300);
       assert.equal(await page.evaluate(() => document.documentElement.lang), e.html);
       assert.equal(await page.locator(`#langs [data-lang="${code}"]`).getAttribute("aria-current"), "true");
       assert.equal(await page.locator(".tour").count(), 2);
       assert.equal(await page.locator(".tour-west h3").innerText(), e.west);
       assert.equal((await page.locator(".tour-east .status").innerText()).toLowerCase(), e.east.toLowerCase());
       assert.equal(await page.locator(".tour-east [data-tour]").count(), 0, "east has no itinerary");
-      assert.equal(await page.locator("#status-east .question").count(), 1);
+      assert.ok(await page.locator("#route").isHidden(), "no day-by-day route on the home page");
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), 0, "no horizontal scroll");
+      if (code !== "en") assert.deepEqual([...new Set(latinWords(await page.locator("body").innerText()))], [], "home page translated");
+      // Then into the tour, keeping the language.
+      await page.locator(".tour-west [data-tour]").click();
+      await settle(page, 500);
+      assert.equal(new URL(page.url()).searchParams.get("lang"), code === "en" ? null : code);
+      assert.equal(new URL(page.url()).searchParams.get("tour"), "west");
     });
 
     if (code !== "en") {
@@ -92,9 +101,17 @@ for (const [code, e] of Object.entries(EXPECT)) {
       });
     }
 
-    await check(`${label}: person and place dialogs`, async () => {
+    await check(`${label}: wine, person and place dialogs`, async () => {
       if (w < 1000) await page.locator("#tab-itinerary").click();
       if (await page.locator("#day-2-body").isHidden()) await page.locator("#day-2 .day-toggle").click();
+      const seeWine = page.locator("#activity-d2-chkhavalley .action-see-wine");
+      assert.equal((await seeWine.innerText()).trim(), e.seeWine);
+      await seeWine.click();
+      assert.equal(await page.locator("#detail-title").innerText(), e.wine);
+      if (code !== "en") assert.deepEqual([...new Set(latinWords(await page.locator("#detail").innerText()))], []);
+      assert.ok((await page.locator("#detail").boundingBox()).width <= w, "wine card fits");
+      if (SHOTS) await page.screenshot({ path: `${SHOTS}/${code}-${vp}-wine.png` });
+      await page.keyboard.press("Escape");
       await page.locator("#activity-d2-chkhavalley [data-person]").click();
       assert.equal(await page.locator("#detail-title").innerText(), e.maka);
       if (code !== "en") assert.deepEqual([...new Set(latinWords(await page.locator("#detail").innerText()))], []);
@@ -135,7 +152,7 @@ for (const [vp, w, h] of [["desktop", 1440, 900], ["390", 390, 844]]) {
   const { page, context, errors } = await open(w, h, "?tour=west");
   await check(`${vp}: EN → KA → RU keeps tour, open days, selection and place on page`, async () => {
     await page.locator("#day-3 .day-toggle").click();
-    await page.locator('.highlight [data-go="d3-tvishi"]').click();
+    await page.evaluate(() => window.WIWI_PROTOTYPE.selectActivity("d3-tvishi"));
     await settle(page);
     const before = await page.locator("#activity-d3-tvishi").boundingBox();
     for (const code of ["ka", "ru"]) {
@@ -180,11 +197,10 @@ for (const [vp, w, h] of [["desktop", 1440, 900], ["390", 390, 844]]) {
 // ---------- deep links ----------
 {
   const { page, context } = await open(1440, 900, "?tour=east&lang=ka");
-  await check("?tour=east&lang=ka: Georgian page, east shown as unfinished, route falls back to the published tour", async () => {
+  await check("?tour=east&lang=ka: Georgian home page, east shown as unfinished (no route to open yet)", async () => {
     assert.equal(await page.evaluate(() => document.documentElement.lang), "ka");
     assert.equal((await page.locator(".tour-east .status").innerText()), "მზადდება");
-    assert.match(await page.locator("#status-east").innerText(), /კახეთის მარშრუტი/);
-    assert.equal(await page.locator("#route-title").innerText(), EXPECT.ka.west);
+    assert.ok(await page.locator("#route").isHidden());
   });
   await context.close();
 }

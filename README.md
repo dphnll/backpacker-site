@@ -1,4 +1,4 @@
-# WIWI Tours — prototype v0.3
+# WIWI Tours — prototype v0.3.1
 
 A standalone, static prototype of a future `tours.wiwi.ge` for founder and WIWI partner review
 (Manana, Ketino) ahead of the Bordeaux presentation on 3 December 2026.
@@ -22,10 +22,11 @@ map background needs internet.
 
 | URL | Shows |
 |---|---|
-| `/` | English, Western Georgia route |
-| `/?lang=ka` · `/?lang=ru` | Georgian · Russian |
+| `/` | Home: hero and the two tour cards (English) |
+| `/?lang=ka` · `/?lang=ru` | Home in Georgian · Russian |
+| `/?tour=west` | Tour page: the Western Georgia route day by day |
 | `/?tour=west&lang=ka` | a tour in a language |
-| `/?tour=east&lang=ru` | the Kakheti tour once it has days; until then the page opens the published route and shows Kakheti as "in development" |
+| `/?tour=east&lang=ru` | the Kakheti tour page once it has days; until then the home page, with Kakheti marked "in development" |
 
 The EN / KA / RU switch in the header changes the language in place: the selected tour, open days,
 selected activity, map view and the reader's position on the page stay as they were, and the URL is
@@ -35,7 +36,7 @@ updated so the link can be shared.
 
 | File | What it is |
 |---|---|
-| `data.js` | **All content**: tours (each with days, highlights, open questions), shared places and people. Every visitor-facing text is written once as `{ en, ka, ru }`. |
+| `data.js` | **All content**: tours (each with days and open questions), shared places and people. Every visitor-facing text is written once as `{ en, ka, ru }`. |
 | `i18n.js` | Interface text in three languages, plus shared terms: `topic.*`, `flag.*`, `region.*`. |
 | `index.html`, `styles.css`, `app.js` | Page, design and behaviour. No per-language pages or files. |
 | `vendor/leaflet/`, `vendor/fonts/` | Map library; Noto Sans/Serif Georgian (Georgian subset only, loaded only for Georgian text). |
@@ -82,8 +83,12 @@ between them exist once; only the texts carry three versions, side by side:
 
 ### Tours, days, activities
 
-- **Tours.** Each entry in `tours` carries its own `days`, `highlights` and `openQuestions`.
-  A tour with no `days` shows as a concept card ("Itinerary not published yet") and its open questions.
+- **Pages.** The home page shows the hero and the tour cards; the day-by-day route opens only from a
+  tour card (its own URL, `?tour=<id>`, with "← All journeys" and browser Back to return).
+- **Tours.** Each entry in `tours` carries its own `days` and `openQuestions`.
+  A tour with no `days` shows as a concept card ("Itinerary not published yet") only.
+  `openQuestions` are working notes for WIWI and are not listed on the site; a day with
+  `review: "<id>"` shows that question as its "section under review" banner.
   **Adding the second tour** = filling `days` of the `east` tour, texts as `{ en, ka, ru }`, plus any new
   places and people. Its card then gets "Explore day by day", and the route, map, stops and hosts switch
   to it. This is covered by a test.
@@ -95,9 +100,16 @@ between them exist once; only the texts carry three versions, side by side:
   Do not add photographs of real people without consent.
 - **Places**: `coord: [lat, lng]` — all current ones are approximate and the page says so.
   `coord: null` hides the map action for that place.
-- **Wine links**: `links: { uvamoWine, uvamoSet }`. Only complete public UVAMO! URLs of the form
-  `https://<host>/tasting/<snapshotId>/wine/<index>` and `https://<host>/tasting/<snapshotId>` are shown.
-  All are `null` now, so no wine buttons appear.
+- **Wine**: every activity with a `wine` text gets a **See wine** chip (the WINE tile opens it too).
+  It opens a wine card. With `links.uvamoWine` set to a complete public UVAMO! URL
+  (`https://<host>/tasting/<snapshotId>/wine/<index>`), the card shows that UVAMO! wine page inside it
+  plus "This wine in UVAMO!"; `links.uvamoSet` (`https://<host>/tasting/<snapshotId>`) adds the full set.
+  Without a URL — the case today — the card shows only what the draft says (grape and style, winery,
+  host, region, day) and states that the UVAMO! card will appear once WIWI shares the link. No wine
+  names, vintages or notes are invented. If UVAMO! refuses to be shown inside another site, the
+  "This wine in UVAMO!" button still opens it.
+- **Hero illustration**: `assets/hero-map.svg` (Natural Earth 1:50m outlines, public domain) with pins
+  from the selected tour. Places with `heroLabel: true` (or `"left"`) are named on it.
 
 ## Tests
 
@@ -108,7 +120,8 @@ node tests/smoke.mjs http://127.0.0.1:4300/
 node tests/i18n.mjs  http://127.0.0.1:4300/ [screenshot-dir]
 ```
 
-- `smoke.mjs` — the v0.2 acceptance list: tour cards and statuses, days and activities, dialogs
+- `smoke.mjs` — the acceptance list: tour cards and statuses, home vs tour page (card, back link,
+  browser Back/Forward), See wine and the wine card, days and activities, dialogs
   (Escape, focus return), activity → map, place → map, pin → activity, full route, wine links only for
   valid URLs, a second tour added by data only, 320 / 390 / 1440 px, map without tiles or library.
 - `i18n.mjs` — EN, KA, RU × 1440 / 390 / 320 px: document language, both tour cards, the unfinished
@@ -119,5 +132,5 @@ node tests/i18n.mjs  http://127.0.0.1:4300/ [screenshot-dir]
 ## Sources
 
 - **UVAMO × WIWI spreadsheet** (Itinerary, Concept & copy, Website fields) — editorial source.
-- **Meeting of 9 November 2026** (protocol and transcript) — used for open questions only.
+- **Meeting of 9 November 2026** (protocol and transcript) — used for the working open questions only.
 - `WIWI_Tours_Prototype_2026-11-10.html` — the earlier wireframe: UX reference and approximate coordinates.

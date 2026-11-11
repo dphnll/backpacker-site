@@ -104,7 +104,7 @@
     for (const el of $$("[data-i18n-aria]")) el.setAttribute("aria-label", t(el.dataset.i18nAria));
 
     $("#langs").innerHTML = LANGS.map(
-      (l) => `<a href="${esc(urlWith({ lang: l.code, tour: tour?.id }).toString())}" data-lang="${l.code}" lang="${l.html}" hreflang="${l.html}" title="${esc(l.name)}"${l.code === lang ? ' aria-current="true"' : ""}>${l.label}</a>`,
+      (l) => `<a href="${esc(urlWith({ lang: l.code, tour: page === "tour" ? tour.id : null }).toString())}" data-lang="${l.code}" lang="${l.html}" hreflang="${l.html}" title="${esc(l.name)}"${l.code === lang ? ' aria-current="true"' : ""}>${l.label}</a>`,
     ).join("");
 
     $("#tours").innerHTML = DATA.tours.map(tourCard).join("");
@@ -119,17 +119,6 @@
       .map(([cls, label]) => `<li><span class="${cls}" aria-hidden="true"></span>${esc(label)}</li>`)
       .join("");
 
-    // All tours' open questions, grouped by tour: reviewers see the whole picture.
-    $("#questions").innerHTML = DATA.tours
-      .filter((x) => (x.openQuestions || []).length)
-      .map((x) => `
-        <section class="question-group" id="status-${esc(x.id)}" aria-labelledby="status-${esc(x.id)}-title">
-          <h3 class="question-tour" id="status-${esc(x.id)}-title">${esc(L(x.region))} — ${esc(L(x.title))} ${statusChip(x.status)}</h3>
-          <div class="questions-grid">${x.openQuestions
-            .map((q) => `<article class="question"><h4>${esc(L(q.title))}</h4><p>${esc(L(q.text))}</p></article>`)
-            .join("")}</div>
-        </section>`)
-      .join("");
 
     $("#partners").innerHTML = DATA.partners
       .map((p) => `
@@ -154,7 +143,7 @@
       .join("");
     const action = hasRoute
       ? `<a class="btn" href="${esc(urlWith({ tour: x.id }).search)}#route" data-tour="${esc(x.id)}">${esc(t("tours.open"))}</a>`
-      : `<a class="btn btn-ghost" href="#status-${esc(x.id)}">${esc(t("tours.notYet"))}</a>`;
+      : `<span class="btn btn-ghost btn-disabled" aria-disabled="true">${esc(t("tours.notYet"))}</span>`;
     return `
       <article class="tour tour-${esc(x.id)}" id="tour-${esc(x.id)}" aria-labelledby="tour-${esc(x.id)}-title">
         <div class="tour-art" aria-hidden="true">${icon(hasRoute ? "wine" : "leaf", "tour-art-icon")}</div>
@@ -177,17 +166,22 @@
   // =====================================================================
   // Route of the selected tour.
   // =====================================================================
-  function linkActions(a) {
+  // UVAMO! links of an activity, kept only when they are complete public tasting URLs.
+  const uvamoLinks = (a) => {
     const links = a.links || {};
-    const out = [];
-    if (links.uvamoWine && UVAMO_WINE.test(links.uvamoWine)) {
-      out.push(`<a class="action action-wine" href="${esc(links.uvamoWine)}" target="_blank" rel="noopener">${icon("wine")}${esc(t("action.wine"))}</a>`);
-    }
-    if (links.uvamoSet && UVAMO_SET.test(links.uvamoSet)) {
-      out.push(`<a class="action action-wine" href="${esc(links.uvamoSet)}" target="_blank" rel="noopener">${icon("wine")}${esc(t("action.set"))}</a>`);
-    }
-    return out.join("");
-  }
+    return {
+      wine: links.uvamoWine && UVAMO_WINE.test(links.uvamoWine) ? links.uvamoWine : null,
+      set: links.uvamoSet && UVAMO_SET.test(links.uvamoSet) ? links.uvamoSet : null,
+    };
+  };
+
+  // Every activity with a wine gets "See wine"; the card shows UVAMO! when its link exists.
+  const seeWine = (a) =>
+    a.wine ? `<button type="button" class="action action-see-wine" data-wine="${esc(a.id)}">${icon("wine")}${esc(t("action.seeWine"))}</button>` : "";
+  const typeTile = (a) =>
+    a.wine
+      ? `<button type="button" class="activity-tile" data-wine="${esc(a.id)}" aria-label="${esc(t("action.seeWine"))}">${icon(a.type)}<small>${esc(t(`type.${a.type}`))}</small></button>`
+      : `<div class="activity-tile" aria-hidden="true">${icon(a.type)}<small>${esc(t(`type.${a.type}`))}</small></div>`;
 
   const mapAction = (a, place) =>
     place && place.coord
@@ -235,17 +229,16 @@
     const flags = flagLines(a);
     if (a.seasonal) flags.unshift(`<li class="flag-line flag-line-seasonal"><strong>${esc(t("activity.seasonal"))}:</strong> ${esc(L(a.seasonal))}</li>`);
 
-    const actions = [];
+    const actions = [seeWine(a)];
     for (const p of people) {
       actions.push(`<button type="button" class="action" data-person="${esc(p.id)}">${icon("person")}${esc(t("action.person"))}${people.length > 1 ? ` · ${esc(L(p.name))}` : ""}</button>`);
     }
     if (place) actions.push(`<button type="button" class="action" data-place="${esc(a.place)}">${icon("pin")}${esc(t("action.place"))}</button>`);
     actions.push(mapAction(a, place));
-    const links = linkActions(a);
 
     return `
       <article class="activity type-${esc(a.type)}" id="activity-${esc(a.id)}" tabindex="-1" aria-labelledby="activity-${esc(a.id)}-title">
-        <div class="activity-tile" aria-hidden="true">${icon(a.type)}<small>${esc(t(`type.${a.type}`))}</small></div>
+        ${typeTile(a)}
         <div class="activity-body">
           <div class="activity-top">
             <span class="activity-time${a.time ? "" : " is-tbc"}">${esc(timeText(a))}</span>
@@ -256,7 +249,7 @@
           <ul class="topics">${(a.topics || []).map((topic) => `<li>${esc(term("topic", topic))}</li>`).join("")}</ul>
           ${rows.length ? `<dl class="facts">${rows.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${v}</dd></div>`).join("")}</dl>` : ""}
           ${flags.length ? `<ul class="flag-lines">${flags.join("")}</ul>` : ""}
-          ${actions.join("") || links ? `<div class="actions">${actions.join("")}${links}</div>` : ""}
+          ${actions.join("") ? `<div class="actions">${actions.join("")}</div>` : ""}
         </div>
       </article>`;
   }
@@ -340,15 +333,16 @@
     .map((id) => `<button type="button" class="stop" data-stop="${esc(id)}"><span class="stop-days">${esc(daysLabel(id))}</span>${esc(L(DATA.places[id].name))}</button>`)
     .join("");
 
-  const renderHighlights = () => (tour.highlights || [])
-    .map((h) => `
-      <li class="highlight${h.status ? ` highlight-${esc(h.status)}` : ""}">
-        <button type="button" data-go="${esc(h.activities[0])}">
-          <strong>${esc(L(h.title))}</strong>
-          <span>${esc(L(h.text))}</span>
-          ${h.status ? statusChip(h.status) : ""}
-        </button>
-      </li>`)
+  // Hero illustration: assets/hero-map.svg is drawn for these bounds (plain lon/lat scaling).
+  const HERO_MAP = { west: 39.6, east: 47.0, south: 40.9, north: 44.1 };
+  const renderHeroPins = () => mappedPlaces
+    .map((id) => {
+      const p = DATA.places[id];
+      const x = ((p.coord[1] - HERO_MAP.west) / (HERO_MAP.east - HERO_MAP.west)) * 100;
+      const y = ((HERO_MAP.north - p.coord[0]) / (HERO_MAP.north - HERO_MAP.south)) * 100;
+      const label = p.heroLabel ? `<span class="hero-pin-label${p.heroLabel === "left" ? " is-left" : ""}">${esc(L(p.name))}</span>` : "";
+      return `<span class="hero-pin" style="left:${x.toFixed(2)}%;top:${y.toFixed(2)}%"><span class="pin-dot">${esc(daysLabel(id))}</span>${label}</span>`;
+    })
     .join("");
 
   // Renders the route of a tour. `keep` restores open days, selection and map after a language switch.
@@ -364,13 +358,12 @@
 
     $("#route-eyebrow").textContent = t("route.eyebrow", { region: L(tour.region) });
     $("#route-title").textContent = L(tour.title);
-    $("#highlights").innerHTML = renderHighlights();
-    $("#highlights").hidden = !(tour.highlights || []).length;
     $("#days").innerHTML = renderDays(keep ? keep.openDays : OPEN_BY_DEFAULT);
     syncToggleAll();
     $("#people").innerHTML = renderPeople();
     $(".people").hidden = !$("#people").children.length;
     $("#stops").innerHTML = renderStops();
+    $("#heroPins").innerHTML = renderHeroPins();
     markActive(keep && byId.has(keep.activeId) ? keep.activeId : null);
     renderMarkers();
     if (keep && keep.mapView && map) {
@@ -417,7 +410,7 @@
     if (!isLang(code) || code === lang) return;
     const keep = captureContext();
     lang = code;
-    history.replaceState(null, "", urlWith({ lang: code, tour: tour.id }));
+    history.replaceState(null, "", urlWith({ lang: code, tour: page === "tour" ? tour.id : null }));
     renderChrome();
     loadTour(tour.id, keep);
     setView(keep.view);
@@ -453,14 +446,42 @@
     setLanguage(link.dataset.lang);
   });
 
-  $("#tours").addEventListener("click", (event) => {
-    const link = event.target.closest("[data-tour]");
-    if (!link) return;
+  // ---------- two pages: home (hero + tour cards) and a tour's day-by-day route ----------
+  let page = "home";
+  function showPage(next) {
+    page = next;
+    document.body.dataset.page = next;
+    $(".hero").hidden = next === "tour";
+    $("#journeys").hidden = next === "tour";
+    $("#route").hidden = next !== "tour";
+    $(".skip").setAttribute("href", next === "tour" ? "#route" : "#journeys");
+    renderChrome(); // language links carry the tour only on a tour page
+    if (next === "tour") ensureMapSized();
+  }
+  function openTour(id, { push = true } = {}) {
+    if (!routable.some((x) => x.id === id)) return;
+    if (!tour || tour.id !== id) loadTour(id);
+    if (push) history.pushState(null, "", urlWith({ tour: id }));
+    showPage("tour");
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }
+  function goHome({ push = true } = {}) {
+    if (push) history.pushState(null, "", urlWith({ tour: null }));
+    showPage("home");
+    $("#journeys").scrollIntoView({ behavior: "instant" });
+  }
+  document.addEventListener("click", (event) => {
+    const open = event.target.closest("a[data-tour]");
+    const home = event.target.closest("a[data-home]");
+    if (!open && !home) return;
     event.preventDefault();
-    loadTour(link.dataset.tour);
-    history.replaceState(null, "", `${urlWith({ tour: link.dataset.tour }).search}#route`);
-    renderChrome(); // language links now carry the selected tour
-    $("#route").scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth" });
+    if (open) openTour(open.dataset.tour);
+    else goHome();
+  });
+  addEventListener("popstate", () => {
+    const id = new URLSearchParams(location.search).get("tour");
+    if (routable.some((x) => x.id === id)) openTour(id, { push: false });
+    else goHome({ push: false });
   });
 
   $("#days").addEventListener("click", (event) => {
@@ -471,6 +492,8 @@
       syncToggleAll();
       return;
     }
+    const wine = event.target.closest("[data-wine]");
+    if (wine) return openWine(wine.dataset.wine, wine);
     const person = event.target.closest("[data-person]");
     if (person) return openPerson(person.dataset.person, person);
     const place = event.target.closest("[data-place]");
@@ -483,11 +506,6 @@
     const open = !allOpen();
     for (const d of tour.days) setDayOpen(d.n, open);
     syncToggleAll();
-  });
-
-  $("#highlights").addEventListener("click", (event) => {
-    const go = event.target.closest("[data-go]");
-    if (go) selectActivity(go.dataset.go);
   });
 
   $("#people").addEventListener("click", (event) => {
@@ -516,6 +534,8 @@
     }
     const placeBtn = event.target.closest("[data-place]");
     if (placeBtn) openPlace(placeBtn.dataset.place, returnFocus);
+    const personBtn = event.target.closest("[data-person]");
+    if (personBtn) openPerson(personBtn.dataset.person, returnFocus);
   });
   dialog.addEventListener("close", () => {
     if (returnFocus && document.contains(returnFocus) && !dialog.open) returnFocus.focus({ preventScroll: true });
@@ -582,6 +602,40 @@
       </dl>
       ${p.coord ? `<div class="actions"><button type="button" class="action action-strong" data-map-place="${esc(id)}">${icon("map")}${esc(t("action.map"))}</button></div>` : `<p class="detail-note">${esc(t("place.noCoord"))}</p>`}
       ${here.length ? `<h4 class="detail-sub">${esc(t("place.activities"))}</h4>${activityLinks(here)}` : ""}
+      `,
+      opener,
+    );
+  }
+
+  function openWine(activityId, opener) {
+    const a = byId.get(activityId);
+    if (!a || !a.wine) return;
+    const place = DATA.places[a.place];
+    const people = (a.people || []).map((id) => ({ id, ...DATA.people[id] }));
+    const links = uvamoLinks(a);
+    const facts = [];
+    if (place) facts.push([t("wine.winery"), esc(L(place.name))]);
+    if (people.length) facts.push([t("activity.host"), people.map((p) => esc(L(p.name))).join(", ")]);
+    if (place) facts.push([t("place.region"), esc(region(place.region))]);
+    if (a.food) facts.push([t("activity.food"), esc(L(a.food))]);
+    showDialog(
+      `${t("wine.kicker")} · UVAMO!`,
+      L(a.wine),
+      `
+      ${links.wine
+        ? `<div class="wine-frame"><iframe src="${esc(links.wine)}" title="${esc(t("wine.frame"))}" loading="lazy" referrerpolicy="no-referrer"></iframe></div>`
+        : `<div class="detail-photo detail-photo-wine">${icon("wine", "icon detail-icon")}<span>${esc(t("wine.photo"))}</span></div>
+           <div class="detail-row">${statusChip("to-confirm")}</div>
+           <p class="detail-note">${esc(t("wine.pending"))}</p>`}
+      <dl class="facts detail-facts">${facts.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${v}</dd></div>`).join("")}</dl>
+      <h4 class="detail-sub">${esc(t("wine.when"))}</h4>
+      ${activityLinks([a])}
+      <div class="actions">
+        ${links.wine ? `<a class="action action-strong action-wine" href="${esc(links.wine)}" target="_blank" rel="noopener">${icon("wine")}${esc(t("action.wine"))}</a>` : ""}
+        ${links.set ? `<a class="action action-wine" href="${esc(links.set)}" target="_blank" rel="noopener">${icon("wine")}${esc(t("action.set"))}</a>` : ""}
+        ${people.map((p) => `<button type="button" class="action" data-person="${esc(p.id)}">${icon("person")}${esc(t("action.person"))}</button>`).join("")}
+        ${place ? `<button type="button" class="action" data-place="${esc(a.place)}">${icon("pin")}${esc(t("action.place"))}</button>` : ""}
+      </div>
       `,
       opener,
     );
@@ -759,12 +813,14 @@
 
   // ---------- start ----------
   createMap();
-  loadTour(new URLSearchParams(location.search).get("tour"));
-  renderChrome();
+  const startTour = new URLSearchParams(location.search).get("tour");
+  loadTour(startTour);
+  showPage(routable.some((x) => x.id === startTour) ? "tour" : "home");
   window.WIWI_PROTOTYPE = {
     get map() { return map; },
     get lang() { return lang; },
     get tour() { return tour.id; },
+    get page() { return page; },
     selectActivity,
     showOnMap,
     fullRoute,

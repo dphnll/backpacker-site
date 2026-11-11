@@ -76,12 +76,6 @@ for (const tour of D.tours) {
     text(`${tw} question ${q.id} title`, q.title);
     text(`${tw} question ${q.id} text`, q.text);
   }
-  const tourActivities = new Set((tour.days || []).flatMap((d) => d.activities.map((a) => a.id)));
-  for (const h of tour.highlights || []) {
-    text(`${tw} highlight ${h.id} title`, h.title);
-    text(`${tw} highlight ${h.id} text`, h.text);
-    for (const id of h.activities || []) if (!tourActivities.has(id)) problems.push(`${tw} highlight ${h.id}: unknown activity "${id}"`);
-  }
   (tour.days || []).forEach((day, i) => {
     dayCount += 1;
     const dw = `${tour.id} day ${day.n}`;

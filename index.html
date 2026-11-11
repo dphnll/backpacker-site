@@ -19,9 +19,7 @@
           <span class="brand-sub" data-i18n="brand.sub">Women in Wine Industry Georgia</span>
         </a>
         <nav class="topnav" aria-label="Sections" data-i18n-aria="nav.label">
-          <a href="#journeys" data-i18n="nav.journeys">Journeys</a>
-          <a href="#route" data-i18n="nav.route">Route</a>
-          <a href="#status" data-i18n="nav.status">Draft status</a>
+          <a href="./" data-home data-i18n="nav.journeys">Journeys</a>
         </nav>
         <span class="preview-chip" data-i18n="nav.preview">Concept preview · not bookable</span>
         <nav class="langs" id="langs" aria-label="Language" data-i18n-aria="lang.label"></nav>
@@ -30,12 +28,19 @@
 
     <main id="top">
       <section class="hero">
+        <!-- Decorative overview of the route (approximate stop positions); the interactive map is below. -->
+        <a class="hero-map" href="?tour=west" data-tour="west" tabindex="-1" aria-hidden="true">
+          <span class="hero-map-frame">
+            <img src="./assets/hero-map.svg" alt="" />
+            <span id="heroPins"></span>
+          </span>
+        </a>
         <div class="wrap">
           <p class="eyebrow" data-i18n="hero.eyebrow">Wine · Women · Gastronomy · Heritage</p>
           <h1 data-i18n="hero.title">Discover Georgia through the women who make its wines</h1>
           <p class="hero-lead" data-i18n="hero.lead"></p>
           <div class="hero-actions">
-            <a class="btn btn-light" href="#route" data-i18n="hero.cta">Explore the Western Georgia draft</a>
+            <a class="btn btn-light" href="?tour=west" data-tour="west" data-i18n="hero.cta">Explore the Western Georgia draft</a>
           </div>
           <p class="hero-notice" data-i18n="hero.notice"></p>
         </div>
@@ -49,8 +54,9 @@
         </div>
       </section>
 
-      <section class="route" id="route" aria-labelledby="route-title">
+      <section class="route" id="route" aria-labelledby="route-title" hidden>
         <div class="wrap">
+          <a class="back-link" href="./" data-home>← <span data-i18n="route.back">All journeys</span></a>
           <div class="route-head">
             <div>
               <p class="eyebrow eyebrow-wine" id="route-eyebrow"></p>
@@ -59,7 +65,12 @@
             </div>
             <ul class="legend" id="legend" aria-label="How to read this draft" data-i18n-aria="legend.label"></ul>
           </div>
-          <ul class="highlights" id="highlights" aria-label="Highlights" data-i18n-aria="route.highlights"></ul>
+
+          <section class="people" aria-labelledby="people-title">
+            <h3 id="people-title" data-i18n="people.title">Hosts named in the draft</h3>
+            <p class="people-lead" data-i18n="people.lead"></p>
+            <div class="people-grid" id="people"></div>
+          </section>
 
           <div class="view-switch" role="tablist" aria-label="View" data-i18n-aria="view.label">
             <button type="button" role="tab" id="tab-itinerary" aria-controls="itinerary-pane" aria-selected="true" data-view="itinerary" data-i18n="view.itinerary">Itinerary</button>
@@ -92,21 +103,9 @@
             </aside>
           </div>
 
-          <section class="people" aria-labelledby="people-title">
-            <h3 id="people-title" data-i18n="people.title">Hosts named in the draft</h3>
-            <p class="people-lead" data-i18n="people.lead"></p>
-            <div class="people-grid" id="people"></div>
-          </section>
         </div>
       </section>
 
-      <section class="section draft-status" id="status" aria-labelledby="status-title">
-        <div class="wrap">
-          <h2 id="status-title" data-i18n="status.title">Draft status and open questions</h2>
-          <p class="status-lead" data-i18n="status.lead"></p>
-          <div class="questions" id="questions"></div>
-        </div>
-      </section>
 
       <section class="section partners" aria-labelledby="partners-title">
         <div class="wrap">
