@@ -10,6 +10,8 @@ a real UVAMO! wine page inside the wine card (no public URL supplied yet).
   with a public UVAMO! URL — the UVAMO! wine page inside the card and "This wine in UVAMO!";
   without one (today) — what the draft says, and a note that the UVAMO! card will appear once WIWI shares the link.
 - Hosts block moved above the days; the highlights block and the open-questions section removed.
+- Hero pins are clickable and open the tour at that stop (day, activity, map).
+- All text set in Inter (bundled); Georgian in Noto Sans Georgian.
 - Home page = hero + tour cards; the day-by-day route opens only from a tour card (`?tour=west`),
   with "← All journeys", browser Back/Forward, and the WIWI Tours logo (header and footer) leading home.
 
@@ -18,8 +20,8 @@ a real UVAMO! wine page inside the wine card (no public URL supplied yet).
 | Suite | Result |
 |---|---|
 | `node tests/data-check.mjs` — data, links and translations | OK: 2 tours, 6 days, 31 activities, 12 places, 5 people; 122 interface keys × 3 languages |
-| `node tests/smoke.mjs` — acceptance list, English | **24 / 24 passed** |
-| `node tests/i18n.mjs` — EN / KA / RU × 1440, 390, 320 px | **45 / 45 passed** |
+| `node tests/smoke.mjs` — acceptance list, English | **25 / 25 passed** |
+| `node tests/i18n.mjs` — EN / KA / RU × 1440, 390, 320 px (now also: Inter loaded and used) | **54 / 54 passed** |
 
 `i18n.mjs` covers in each language and width: `<html lang>`, the home page (both tour cards, Eastern Georgia
 "in development", no route, no untranslated words), entering the tour with the language kept, no untranslated
@@ -35,6 +37,7 @@ exit 0
 $ node tests/smoke.mjs
 PASS  1. two tour cards with honest statuses
 PASS  home has no day-by-day route; a tour card opens the tour page; back returns home
+PASS  hero pin opens the tour at that stop
 PASS  2. Western Georgia by day and activity
 PASS  3a. person modal opens, Escape closes, focus returns
 PASS  3b. uncertain host is labelled, not presented as confirmed
@@ -58,45 +61,54 @@ PASS  6. 320px: modal fits the screen
 PASS  no script errors (320px)
 PASS  map library missing: itinerary and stops still work
 
-24/24 passed
+25/25 passed
 exit 0
 
 $ node tests/i18n.mjs
 PASS  EN desktop: language, both tour cards, unfinished east tour
 PASS  EN desktop: wine, person and place dialogs
+PASS  EN desktop: Inter is the typeface, loaded from the prototype
 PASS  EN desktop: no script errors
 PASS  EN 390: language, both tour cards, unfinished east tour
 PASS  EN 390: wine, person and place dialogs
+PASS  EN 390: Inter is the typeface, loaded from the prototype
 PASS  EN 390: no script errors
 PASS  EN 320: language, both tour cards, unfinished east tour
 PASS  EN 320: wine, person and place dialogs
+PASS  EN 320: Inter is the typeface, loaded from the prototype
 PASS  EN 320: no script errors
 PASS  KA desktop: language, both tour cards, unfinished east tour
 PASS  KA desktop: no untranslated text (all days open)
 PASS  KA desktop: Georgian font loaded and used
 PASS  KA desktop: wine, person and place dialogs
+PASS  KA desktop: Inter is the typeface, loaded from the prototype
 PASS  KA desktop: no script errors
 PASS  KA 390: language, both tour cards, unfinished east tour
 PASS  KA 390: no untranslated text (all days open)
 PASS  KA 390: Georgian font loaded and used
 PASS  KA 390: wine, person and place dialogs
+PASS  KA 390: Inter is the typeface, loaded from the prototype
 PASS  KA 390: no script errors
 PASS  KA 320: language, both tour cards, unfinished east tour
 PASS  KA 320: no untranslated text (all days open)
 PASS  KA 320: Georgian font loaded and used
 PASS  KA 320: wine, person and place dialogs
+PASS  KA 320: Inter is the typeface, loaded from the prototype
 PASS  KA 320: no script errors
 PASS  RU desktop: language, both tour cards, unfinished east tour
 PASS  RU desktop: no untranslated text (all days open)
 PASS  RU desktop: wine, person and place dialogs
+PASS  RU desktop: Inter is the typeface, loaded from the prototype
 PASS  RU desktop: no script errors
 PASS  RU 390: language, both tour cards, unfinished east tour
 PASS  RU 390: no untranslated text (all days open)
 PASS  RU 390: wine, person and place dialogs
+PASS  RU 390: Inter is the typeface, loaded from the prototype
 PASS  RU 390: no script errors
 PASS  RU 320: language, both tour cards, unfinished east tour
 PASS  RU 320: no untranslated text (all days open)
 PASS  RU 320: wine, person and place dialogs
+PASS  RU 320: Inter is the typeface, loaded from the prototype
 PASS  RU 320: no script errors
 PASS  desktop: EN → KA → RU keeps tour, open days, selection and place on page
 PASS  desktop: language links carry the tour
@@ -108,6 +120,6 @@ PASS  390: no script errors while switching
 PASS  ?tour=east&lang=ka: Georgian home page, east shown as unfinished (no route to open yet)
 PASS  unknown language falls back to English
 
-45/45 passed
+54/54 passed
 exit 0
 ```

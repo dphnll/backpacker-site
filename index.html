@@ -28,13 +28,13 @@
 
     <main id="top">
       <section class="hero">
-        <!-- Decorative overview of the route (approximate stop positions); the interactive map is below. -->
-        <a class="hero-map" href="?tour=west" data-tour="west" tabindex="-1" aria-hidden="true">
+        <!-- Overview of the route (approximate stop positions). Each pin opens the tour at that stop. -->
+        <div class="hero-map" role="group" aria-label="Map of approximate stop locations" data-i18n-aria="map.label">
           <span class="hero-map-frame">
             <img src="./assets/hero-map.svg" alt="" />
             <span id="heroPins"></span>
           </span>
-        </a>
+        </div>
         <div class="wrap">
           <p class="eyebrow" data-i18n="hero.eyebrow">Wine · Women · Gastronomy · Heritage</p>
           <h1 data-i18n="hero.title">Discover Georgia through the women who make its wines</h1>

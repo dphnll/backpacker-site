@@ -96,8 +96,7 @@ for (const [code, e] of Object.entries(EXPECT)) {
           await document.fonts.ready;
           return [...document.fonts].filter((f) => f.family.includes("Georgian") && f.status === "loaded").map((f) => f.family);
         });
-        assert.ok(loaded.some((f) => f.includes("Sans")), `sans: ${loaded}`);
-        assert.ok(loaded.some((f) => f.includes("Serif")), `serif: ${loaded}`);
+        assert.ok(loaded.some((f) => f.includes("Sans")), `Georgian: ${loaded}`);
       });
     }
 
@@ -142,6 +141,16 @@ for (const [code, e] of Object.entries(EXPECT)) {
       await page.evaluate(() => window.scrollTo(0, 0));
       await page.screenshot({ path: `${SHOTS}/${code}-${vp}-full.png`, fullPage: true });
     }
+    await check(`${label}: Inter is the typeface, loaded from the prototype`, async () => {
+      const fonts = await page.evaluate(async () => {
+        await document.fonts.ready;
+        return { loaded: [...document.fonts].filter((f) => f.family.replace(/"/g, "") === "Inter" && f.status === "loaded").length,
+          h1: getComputedStyle(document.querySelector("h1, h2")).fontFamily, body: getComputedStyle(document.body).fontFamily };
+      });
+      assert.ok(fonts.loaded >= 1, "Inter loaded");
+      assert.match(fonts.body, /^Inter/);
+      assert.match(fonts.h1, /^Inter/);
+    });
     await check(`${label}: no script errors`, async () => assert.deepEqual(errors, []));
     await context.close();
   }

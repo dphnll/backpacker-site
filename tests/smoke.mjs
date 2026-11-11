@@ -118,6 +118,23 @@ async function tapPin(page, placeName) {
     assert.ok(await page.locator("#route").isVisible(), "browser Forward reopens the tour");
   });
 
+  await check("hero pin opens the tour at that stop", async () => {
+    await page.goto(BASE, { waitUntil: "load" }); // home page
+    await page.waitForTimeout(300);
+    await page.locator('.hero-pin[data-hero-place="tvishi"]').click();
+    await settle(page);
+    assert.equal(new URL(page.url()).searchParams.get("tour"), "west");
+    assert.equal(await page.locator("#day-3 .day-toggle").getAttribute("aria-expanded"), "true");
+    assert.ok(await page.locator("#activity-d3-tvishi").evaluate((el) => el.classList.contains("is-active")));
+    assert.ok(await page.locator("#activity-d3-tvishi").isVisible());
+    const [lat, lng] = await mapCenter(page);
+    assert.ok(near(lat, 42.54) && near(lng, 42.73), `map at ${lat},${lng}`);
+    // Reload the tour page so the next checks start with days 1–2 open, as on a first visit.
+    await page.goto(BASE + "?tour=west", { waitUntil: "load" });
+    await page.waitForTimeout(300);
+    assert.equal(await page.locator("#day-3 .day-toggle").getAttribute("aria-expanded"), "false");
+  });
+
   await check("2. Western Georgia by day and activity", async () => {
     assert.equal(await page.locator(".day").count(), 6);
     assert.equal(await page.locator(".activity").count(), 31);

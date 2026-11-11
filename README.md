@@ -15,7 +15,7 @@ python3 -m http.server 4300 --bind 127.0.0.1
 ```
 
 Any static server works. Nothing to install or build: plain HTML, CSS and JavaScript.
-Leaflet 1.9.4 (BSD-2) and the Georgian Noto fonts (SIL OFL 1.1) are bundled in `vendor/`, so only the
+Leaflet 1.9.4 (BSD-2), the Inter typeface and Noto Sans Georgian (both SIL OFL 1.1) are bundled in `vendor/`, so only the
 map background needs internet.
 
 ### Links
@@ -39,7 +39,7 @@ updated so the link can be shared.
 | `data.js` | **All content**: tours (each with days and open questions), shared places and people. Every visitor-facing text is written once as `{ en, ka, ru }`. |
 | `i18n.js` | Interface text in three languages, plus shared terms: `topic.*`, `flag.*`, `region.*`. |
 | `index.html`, `styles.css`, `app.js` | Page, design and behaviour. No per-language pages or files. |
-| `vendor/leaflet/`, `vendor/fonts/` | Map library; Noto Sans/Serif Georgian (Georgian subset only, loaded only for Georgian text). |
+| `vendor/leaflet/`, `vendor/fonts/` | Map library; Inter (Latin, Cyrillic) for all text and Noto Sans Georgian for Georgian, which Inter does not cover. Each file loads only when its characters are on the page. |
 | `tests/data-check.mjs` | Checks data and translations after editing — no browser needed. |
 | `tests/smoke.mjs`, `tests/i18n.mjs` | Browser checks (Playwright + Chromium). |
 | `VERIFICATION.md` | What was tested for v0.3 and the results. |
@@ -108,8 +108,11 @@ between them exist once; only the texts carry three versions, side by side:
   host, region, day) and states that the UVAMO! card will appear once WIWI shares the link. No wine
   names, vintages or notes are invented. If UVAMO! refuses to be shown inside another site, the
   "This wine in UVAMO!" button still opens it.
-- **Hero illustration**: `assets/hero-map.svg` (Natural Earth 1:50m outlines, public domain) with pins
-  from the selected tour. Places with `heroLabel: true` (or `"left"`) are named on it.
+- **Hero map**: `assets/hero-map.svg` (Natural Earth 1:50m outlines, public domain) with pins from the
+  published tour. Each pin is clickable: it opens the tour page at that stop (day open, activity
+  selected, interactive map on the place). Places with `heroLabel: true` (or `"left"`) are always named;
+  the others show their name on hover.
+- **Type**: Inter for all text; Georgian falls back to Noto Sans Georgian (Inter has no Georgian).
 
 ## Tests
 

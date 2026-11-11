@@ -340,8 +340,9 @@
       const p = DATA.places[id];
       const x = ((p.coord[1] - HERO_MAP.west) / (HERO_MAP.east - HERO_MAP.west)) * 100;
       const y = ((HERO_MAP.north - p.coord[0]) / (HERO_MAP.north - HERO_MAP.south)) * 100;
-      const label = p.heroLabel ? `<span class="hero-pin-label${p.heroLabel === "left" ? " is-left" : ""}">${esc(L(p.name))}</span>` : "";
-      return `<span class="hero-pin" style="left:${x.toFixed(2)}%;top:${y.toFixed(2)}%"><span class="pin-dot">${esc(daysLabel(id))}</span>${label}</span>`;
+      const side = p.heroLabel === "left" ? " is-left" : "";
+      const shown = p.heroLabel ? " is-shown" : ""; // other names appear on hover / focus
+      return `<button type="button" class="hero-pin" data-hero-place="${esc(id)}" style="left:${x.toFixed(2)}%;top:${y.toFixed(2)}%" aria-label="${esc(L(p.name))} · ${esc(t("day.label", { n: daysLabel(id) }))}"><span class="pin-dot">${esc(daysLabel(id))}</span><span class="hero-pin-label${side}${shown}">${esc(L(p.name))}</span></button>`;
     })
     .join("");
 
@@ -430,7 +431,7 @@
     inputs.forEach((type) => addEventListener(type, moved, { once: true, passive: true }));
     const sample = "ქართული";
     const fonts = lang === "ka"
-      ? Promise.all(['16px "Noto Sans Georgian"', '16px "Noto Serif Georgian"'].map((f) => document.fonts.load(f, sample)))
+      ? Promise.all(['16px "Noto Sans Georgian"', '600 16px "Noto Sans Georgian"'].map((f) => document.fonts.load(f, sample)))
       : Promise.resolve();
     fonts.catch(() => {}).then(() => requestAnimationFrame(() => {
       inputs.forEach((type) => removeEventListener(type, moved));
@@ -479,6 +480,21 @@
     event.preventDefault();
     if (open) openTour(open.dataset.tour);
     else goHome({ top: home.dataset.home === "top" });
+  });
+  // A pin in the hero opens the tour at that stop: day open, activity selected, map on the place.
+  $("#heroPins").addEventListener("click", (event) => {
+    const pin = event.target.closest("[data-hero-place]");
+    if (!pin) return;
+    const placeId = pin.dataset.heroPlace;
+    const first = activitiesAt(placeId)[0];
+    openTour(tour.id);
+    if (!first) return;
+    selectActivity(first.id);
+    if (map && !narrow.matches) {
+      map.setView(DATA.places[placeId].coord, 10, { animate: false });
+      highlightPin(placeId);
+      markers.get(placeId)?.openPopup();
+    }
   });
   addEventListener("popstate", () => {
     const id = new URLSearchParams(location.search).get("tour");
@@ -675,7 +691,7 @@
   function ensureMapSized() {
     if (!map || !$("#map").offsetWidth) return false;
     map.invalidateSize({ animate: false });
-    if (!fitted) fullRoute();
+    if (!fitted) fullRoute({ animate: false }); // first fit is instant, so a following flyTo/setView wins
     return true;
   }
 
@@ -741,12 +757,12 @@
     markers.get(placeId)?.openPopup();
   }
 
-  function fullRoute() {
+  function fullRoute({ animate = true } = {}) {
     if (!map || !$("#map").offsetWidth || !mappedPlaces.length) return;
     fitted = true;
     map.closePopup();
     highlightPin(null);
-    map.fitBounds(L_.latLngBounds(mappedPlaces.map((id) => DATA.places[id].coord)), { padding: [28, 28], maxZoom: 9 });
+    map.fitBounds(L_.latLngBounds(mappedPlaces.map((id) => DATA.places[id].coord)), { padding: [28, 28], maxZoom: 9, animate });
   }
   $("#fullRoute").addEventListener("click", () => {
     fullRoute();
