@@ -11,7 +11,7 @@ a real UVAMO! wine page inside the wine card (no public URL supplied yet).
   without one (today) — what the draft says, and a note that the UVAMO! card will appear once WIWI shares the link.
 - Hosts block moved above the days; the highlights block and the open-questions section removed.
 - Home page = hero + tour cards; the day-by-day route opens only from a tour card (`?tour=west`),
-  with "← All journeys" and browser Back/Forward.
+  with "← All journeys", browser Back/Forward, and the WIWI Tours logo (header and footer) leading home.
 
 ## Results
 

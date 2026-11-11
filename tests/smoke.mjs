@@ -91,6 +91,23 @@ async function tapPin(page, placeName) {
     await settle(page);
     assert.equal(new URL(page.url()).searchParams.get("tour"), null);
     assert.ok(await page.locator("#route").isHidden());
+    // The logo leads home too, to the top of the page.
+    await page.locator(".tour-west [data-tour]").click();
+    await settle(page);
+    await page.locator(".brand").click();
+    await settle(page);
+    assert.equal(new URL(page.url()).searchParams.get("tour"), null);
+    assert.ok(await page.locator(".hero").isVisible());
+    assert.ok(await page.locator("#route").isHidden());
+    assert.equal(await page.evaluate(() => window.scrollY), 0);
+    // …and so does the logo in the footer.
+    await page.locator(".tour-west [data-tour]").click();
+    await settle(page);
+    await page.locator(".footer-brand").click();
+    await settle(page);
+    assert.equal(new URL(page.url()).searchParams.get("tour"), null);
+    assert.ok(await page.locator(".hero").isVisible());
+    assert.equal(await page.evaluate(() => window.scrollY), 0);
     await page.locator(".tour-west [data-tour]").click();
     await settle(page);
     await page.goBack();

@@ -465,10 +465,12 @@
     showPage("tour");
     window.scrollTo({ top: 0, behavior: "instant" });
   }
-  function goHome({ push = true } = {}) {
+  // The logo returns to the top of the home page; "All journeys" to the tour cards.
+  function goHome({ push = true, top = false } = {}) {
     if (push) history.pushState(null, "", urlWith({ tour: null }));
     showPage("home");
-    $("#journeys").scrollIntoView({ behavior: "instant" });
+    if (top) window.scrollTo({ top: 0, behavior: "instant" });
+    else $("#journeys").scrollIntoView({ behavior: "instant" });
   }
   document.addEventListener("click", (event) => {
     const open = event.target.closest("a[data-tour]");
@@ -476,7 +478,7 @@
     if (!open && !home) return;
     event.preventDefault();
     if (open) openTour(open.dataset.tour);
-    else goHome();
+    else goHome({ top: home.dataset.home === "top" });
   });
   addEventListener("popstate", () => {
     const id = new URLSearchParams(location.search).get("tour");
