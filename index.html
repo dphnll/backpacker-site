@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WIWI Tours — Journeys with Georgian women winemakers</title>
+    <meta name="description" content="Prototype for partner review. Proposed small-group wine and food journeys across Georgia with women winemakers." />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="stylesheet" href="./vendor/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip" href="#route" data-i18n="nav.route">Western Georgia route</a>
+
+    <header class="topbar">
+      <div class="wrap topbar-inner">
+        <a class="brand" href="#top">
+          <span class="brand-mark">WIWI <span>Tours</span></span>
+          <span class="brand-sub" data-i18n="brand.sub">Women in Wine Industry Georgia</span>
+        </a>
+        <nav class="topnav" aria-label="Sections">
+          <a href="#journeys" data-i18n="nav.journeys">Journeys</a>
+          <a href="#route" data-i18n="nav.route">Western Georgia route</a>
+          <a href="#status" data-i18n="nav.status">Draft status</a>
+        </nav>
+        <span class="preview-chip" data-i18n="nav.preview">Concept preview · not bookable</span>
+        <label class="lang" hidden>
+          <span class="sr-only" data-i18n="lang.label">Language</span>
+          <select id="lang"></select>
+        </label>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="wrap">
+          <p class="eyebrow" data-i18n="hero.eyebrow">Wine · Women · Gastronomy · Heritage</p>
+          <h1 data-i18n="hero.title">Discover Georgia through the women who make its wines</h1>
+          <p class="hero-lead" data-i18n="hero.lead"></p>
+          <div class="hero-actions">
+            <a class="btn btn-light" href="#route" data-i18n="hero.cta">Explore the Western Georgia draft</a>
+          </div>
+          <p class="hero-notice" data-i18n="hero.notice"></p>
+        </div>
+      </section>
+
+      <section class="section" id="journeys" aria-labelledby="journeys-title">
+        <div class="wrap">
+          <p class="eyebrow eyebrow-wine" data-i18n="tours.eyebrow">Two journeys in preparation</p>
+          <h2 id="journeys-title" data-i18n="tours.title">Choose a journey</h2>
+          <div class="tour-grid" id="tours"></div>
+        </div>
+      </section>
+
+      <section class="route" id="route" aria-labelledby="route-title">
+        <div class="wrap">
+          <div class="route-head">
+            <div>
+              <p class="eyebrow eyebrow-wine" id="route-eyebrow"></p>
+              <h2 id="route-title"></h2>
+              <p class="route-lead" data-i18n="route.lead"></p>
+            </div>
+            <ul class="legend" id="legend" aria-label="How to read this draft"></ul>
+          </div>
+          <ul class="highlights" id="highlights" aria-label="Highlights"></ul>
+
+          <div class="view-switch" role="tablist" aria-label="View">
+            <button type="button" role="tab" id="tab-itinerary" aria-controls="itinerary-pane" aria-selected="true" data-view="itinerary" data-i18n="view.itinerary">Itinerary</button>
+            <button type="button" role="tab" id="tab-map" aria-controls="map-pane" aria-selected="false" data-view="map" data-i18n="view.map">Map</button>
+          </div>
+
+          <div class="route-grid" data-view="itinerary">
+            <div class="itinerary-pane" id="itinerary-pane" role="tabpanel" aria-labelledby="tab-itinerary">
+              <div class="days-tools">
+                <button type="button" class="link-btn" id="toggleAll" data-i18n="route.expandAll">Open all days</button>
+              </div>
+              <div id="days"></div>
+            </div>
+            <aside class="map-pane" id="map-pane" role="tabpanel" aria-labelledby="tab-map">
+              <div class="map-card">
+                <div class="map-top">
+                  <strong data-i18n="map.title">Route overview</strong>
+                  <button type="button" class="btn btn-ghost btn-small" id="fullRoute" data-i18n="action.fullRoute">Show full route</button>
+                </div>
+                <div class="map-frame">
+                  <div id="map" aria-label="Map of approximate stop locations"></div>
+                  <p class="map-notice" id="mapNotice" hidden></p>
+                </div>
+                <p class="map-note" data-i18n="map.approx"></p>
+                <div class="stops">
+                  <span class="stops-label" data-i18n="map.stops">Stops</span>
+                  <div class="stops-list" id="stops"></div>
+                </div>
+              </div>
+            </aside>
+          </div>
+
+          <section class="people" aria-labelledby="people-title">
+            <h3 id="people-title" data-i18n="people.title">Hosts named in the draft</h3>
+            <p class="people-lead" data-i18n="people.lead"></p>
+            <div class="people-grid" id="people"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="section draft-status" id="status" aria-labelledby="status-title">
+        <div class="wrap">
+          <h2 id="status-title" data-i18n="status.title">Draft status and open questions</h2>
+          <p class="status-lead" data-i18n="status.lead"></p>
+          <div class="questions" id="questions"></div>
+        </div>
+      </section>
+
+      <section class="section partners" aria-labelledby="partners-title">
+        <div class="wrap">
+          <h2 id="partners-title" data-i18n="partners.title">How the three products fit together</h2>
+          <div class="partner-grid" id="partners"></div>
+          <p class="partners-note" data-i18n="partners.note"></p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="wrap footer-inner">
+        <span class="brand-mark">WIWI <span>Tours</span></span>
+        <p data-i18n="footer.note">Prototype for partner review · not a published travel offer</p>
+      </div>
+    </footer>
+
+    <dialog id="detail" aria-labelledby="detail-title">
+      <div class="detail">
+        <div class="detail-head">
+          <div>
+            <p class="detail-kicker" id="detail-kicker"></p>
+            <h3 class="detail-title" id="detail-title"></h3>
+          </div>
+          <button type="button" class="detail-close" id="detail-close" aria-label="Close">×</button>
+        </div>
+        <div id="detail-body"></div>
+      </div>
+    </dialog>
+
+    <script src="./vendor/leaflet/leaflet.js"></script>
+    <script src="./data.js"></script>
+    <script src="./i18n.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
