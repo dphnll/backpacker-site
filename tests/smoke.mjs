@@ -216,8 +216,11 @@ async function tapPin(page, placeName) {
   // Test-only dummy content: proves the page needs no code change for tour two.
   const patch = `
     const east = window.WIWI_DATA.tours.find((x) => x.id === "east");
-    east.days = [{ n: 1, title: "Test day", route: "Tbilisi", activities: [
-      { id: "test-east-1", time: null, type: "excursion", title: "Test activity", summary: null, topics: ["Test"], place: "mtskheta", status: "placeholder" },
+    // Same shape as the real data: texts in place as { en, ka, ru }, recurring terms by key.
+    east.days = [{ n: 1, title: { en: "Test day", ka: "სატესტო დღე", ru: "Тестовый день" },
+      route: { en: "Tbilisi", ka: "თბილისი", ru: "Тбилиси" }, activities: [
+      { id: "test-east-1", time: null, type: "excursion", status: "placeholder", place: "mtskheta", topics: ["heritage"],
+        title: { en: "Test activity", ka: "სატესტო აქტივობა", ru: "Тестовое событие" } },
     ] }];`;
   const { page, context, errors } = await open(1440, 900, { patchData: patch });
   await check("second tour: card links to its own route, map and stops switch", async () => {
@@ -228,6 +231,14 @@ async function tapPin(page, placeName) {
     assert.equal(await page.locator(".pin").count(), 1);
     assert.equal(await page.locator(".stop").count(), 1);
     assert.equal(await page.locator(".highlight").count(), 0);
+    // The new tour is localized by its data alone.
+    await page.evaluate(() => window.WIWI_PROTOTYPE.setLanguage("ka"));
+    await settle(page);
+    assert.equal(await page.locator("#route-title").innerText(), "კახეთისა და აღმოსავლეთ საქართველოს ქალები");
+    assert.equal(await page.locator("#activity-test-east-1 h4").innerText(), "სატესტო აქტივობა");
+    assert.equal(new URL(page.url()).searchParams.get("tour"), "east");
+    await page.evaluate(() => window.WIWI_PROTOTYPE.setLanguage("en"));
+    await settle(page);
     await page.locator(".tour-west [data-tour]").click();
     await settle(page);
     assert.equal(await page.locator(".activity").count(), 31);

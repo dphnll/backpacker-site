@@ -1,4 +1,23 @@
 /* WIWI Tours prototype. Tokens first; components below in page order. */
+
+/* Georgian script (Mkhedruli). Loaded only when Georgian characters are on the page;
+   Latin and Cyrillic keep the system / Inter stack. Noto fonts, SIL OFL 1.1. */
+@font-face {
+  font-family: "Noto Sans Georgian";
+  src: url("./vendor/fonts/noto-sans-georgian-georgian-wght-normal.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0589, U+10A0-10FF, U+1C90-1CBA, U+1CBD-1CBF, U+205A, U+2D00-2D2F, U+2E31;
+}
+@font-face {
+  font-family: "Noto Serif Georgian";
+  src: url("./vendor/fonts/noto-serif-georgian-georgian-wght-normal.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0589, U+10A0-10FF, U+1C90-1CBA, U+1CBD-1CBF, U+205A, U+2D00-2D2F, U+2E31;
+}
 :root {
   --cream: #f6f2ea;
   --paper: #fffdf9;
@@ -14,8 +33,8 @@
   --focus: #b5602c;
   --shadow: 0 14px 40px rgba(34, 32, 28, 0.08);
   --radius: 16px;
-  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
-  --sans: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif Georgian", "Times New Roman", serif;
+  --sans: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Georgian", sans-serif;
   --topbar: 64px;
 
   /* Activity types — same idea as Clavelo's item taxonomy, toned to the WIWI palette. */
@@ -85,7 +104,10 @@ h1, h2, h3, h4 { margin: 0; }
 .topnav a { text-decoration: none; color: #e4ede8; }
 .topnav a:hover { text-decoration: underline; text-underline-offset: 4px; }
 .preview-chip { font-size: 11px; font-weight: 650; letter-spacing: 0.04em; padding: 6px 10px; border: 1px solid rgba(255, 255, 255, 0.35); border-radius: 99px; white-space: nowrap; }
-.lang select { background: transparent; color: #fff; border: 1px solid rgba(255, 255, 255, 0.35); border-radius: 8px; padding: 4px 6px; }
+.langs { display: flex; flex: none; gap: 2px; padding: 3px; border-radius: 10px; background: rgba(255, 255, 255, 0.1); }
+.langs a { min-width: 34px; min-height: 30px; display: grid; place-items: center; padding: 0 6px; border-radius: 7px; font-size: 12px; font-weight: 750; letter-spacing: 0.04em; color: #d6e4dc; text-decoration: none; }
+.langs a:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
+.langs a[aria-current="true"] { background: var(--paper); color: var(--deep); }
 
 /* ---------- hero ---------- */
 .hero {
@@ -322,6 +344,31 @@ h1, h2, h3, h4 { margin: 0; }
 .detail-list { list-style: none; margin: -4px 0 0; padding: 0; display: grid; gap: 2px; }
 .detail-list .link-btn { font-size: 14px; }
 
+/* ---------- Georgian typography ----------
+   Mkhedruli has no capitals: uppercase would switch labels to Mtavruli, which
+   reads as shouting. Labels stay in normal script; long words may break. */
+:lang(ka) .eyebrow,
+:lang(ka) .tour-region,
+:lang(ka) .status,
+:lang(ka) .day-num,
+:lang(ka) .activity-tile small,
+:lang(ka) .facts dt,
+:lang(ka) .approx-tag,
+:lang(ka) .stops-label,
+:lang(ka) .detail-kicker,
+:lang(ka) .detail-sub,
+:lang(ka) .preview-chip { text-transform: none; letter-spacing: 0.01em; }
+:lang(ka) h1, :lang(ka) h2, :lang(ka) h3, :lang(ka) h4,
+:lang(ka) .day-title, :lang(ka) .highlight strong, :lang(ka) .popup strong { overflow-wrap: break-word; }
+:lang(ka) .hero h1 { max-width: 20ch; font-size: clamp(32px, 4.6vw, 58px); line-height: 1.15; }
+:lang(ka) .section h2, :lang(ka) .route h2 { line-height: 1.25; }
+:lang(ka) body, :lang(ka) .activity-summary, :lang(ka) .detail-text { line-height: 1.6; }
+:lang(ka) .status { white-space: normal; text-align: left; }
+:lang(ka) .facts div { grid-template-columns: 82px minmax(0, 1fr); }
+:lang(ka) .activity-tile small { font-size: 9.5px; text-align: center; line-height: 1.15; padding: 0 2px; }
+:lang(ru) .facts div { grid-template-columns: 72px minmax(0, 1fr); }
+.activity-body, .tour-body, .detail, .question, .highlight button { overflow-wrap: break-word; }
+
 /* ---------- responsive ---------- */
 @media (max-width: 999px) {
   .topnav { display: none; }
@@ -351,7 +398,8 @@ h1, h2, h3, h4 { margin: 0; }
   .wrap { padding: 0 16px; }
   .brand-mark { font-size: 16px; }
   .brand-sub { display: none; }
-  .preview-chip { font-size: 10px; padding: 5px 8px; }
+  .preview-chip { display: none; } /* the hero notice says the same */
+  .langs { margin-left: auto; }
   .hero { padding: 56px 0 52px; }
   .hero-lead { font-size: 16px; }
   .section, .route { padding: 44px 0; }
@@ -368,7 +416,8 @@ h1, h2, h3, h4 { margin: 0; }
   .detail-title { font-size: 24px; }
 }
 @media (max-width: 360px) {
-  .preview-chip { white-space: normal; max-width: 128px; text-align: center; line-height: 1.2; }
+  .langs a { min-width: 30px; padding: 0 4px; }
+  :lang(ka) .hero h1 { font-size: 29px; }
   .day-num { padding: 5px 7px; font-size: 11px; }
   .facts div { grid-template-columns: 1fr; gap: 0; }
   .action { font-size: 12.5px; padding: 6px 9px; }

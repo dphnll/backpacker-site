@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <a class="skip" href="#route" data-i18n="nav.route">Western Georgia route</a>
+    <a class="skip" href="#route" data-i18n="skip">Skip to the route</a>
 
     <header class="topbar">
       <div class="wrap topbar-inner">
@@ -18,16 +18,13 @@
           <span class="brand-mark">WIWI <span>Tours</span></span>
           <span class="brand-sub" data-i18n="brand.sub">Women in Wine Industry Georgia</span>
         </a>
-        <nav class="topnav" aria-label="Sections">
+        <nav class="topnav" aria-label="Sections" data-i18n-aria="nav.label">
           <a href="#journeys" data-i18n="nav.journeys">Journeys</a>
-          <a href="#route" data-i18n="nav.route">Western Georgia route</a>
+          <a href="#route" data-i18n="nav.route">Route</a>
           <a href="#status" data-i18n="nav.status">Draft status</a>
         </nav>
         <span class="preview-chip" data-i18n="nav.preview">Concept preview · not bookable</span>
-        <label class="lang" hidden>
-          <span class="sr-only" data-i18n="lang.label">Language</span>
-          <select id="lang"></select>
-        </label>
+        <nav class="langs" id="langs" aria-label="Language" data-i18n-aria="lang.label"></nav>
       </div>
     </header>
 
@@ -60,11 +57,11 @@
               <h2 id="route-title"></h2>
               <p class="route-lead" data-i18n="route.lead"></p>
             </div>
-            <ul class="legend" id="legend" aria-label="How to read this draft"></ul>
+            <ul class="legend" id="legend" aria-label="How to read this draft" data-i18n-aria="legend.label"></ul>
           </div>
-          <ul class="highlights" id="highlights" aria-label="Highlights"></ul>
+          <ul class="highlights" id="highlights" aria-label="Highlights" data-i18n-aria="route.highlights"></ul>
 
-          <div class="view-switch" role="tablist" aria-label="View">
+          <div class="view-switch" role="tablist" aria-label="View" data-i18n-aria="view.label">
             <button type="button" role="tab" id="tab-itinerary" aria-controls="itinerary-pane" aria-selected="true" data-view="itinerary" data-i18n="view.itinerary">Itinerary</button>
             <button type="button" role="tab" id="tab-map" aria-controls="map-pane" aria-selected="false" data-view="map" data-i18n="view.map">Map</button>
           </div>
@@ -83,7 +80,7 @@
                   <button type="button" class="btn btn-ghost btn-small" id="fullRoute" data-i18n="action.fullRoute">Show full route</button>
                 </div>
                 <div class="map-frame">
-                  <div id="map" aria-label="Map of approximate stop locations"></div>
+                  <div id="map" aria-label="Map of approximate stop locations" data-i18n-aria="map.label"></div>
                   <p class="map-notice" id="mapNotice" hidden></p>
                 </div>
                 <p class="map-note" data-i18n="map.approx"></p>
