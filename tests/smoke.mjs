@@ -355,25 +355,34 @@ for (const [label, url, shown] of [
 // ---------- footer links appear only with a URL ----------
 {
   const { page, context } = await open(390, 844);
-  await check("footer: only links with a URL are shown (WIWI today), localized", async () => {
+  await check("footer: WIWI, UVAMO! and Datum Space links, localized, open in a new tab", async () => {
     const links = page.locator("#footerLinks a");
-    assert.equal(await links.count(), 1);
-    assert.equal(await links.first().getAttribute("href"), "https://wiwi.ge/");
-    assert.equal(await links.first().innerText(), "WIWI Association");
+    assert.equal(await links.count(), 3);
+    assert.deepEqual(
+      await links.evaluateAll((els) => els.map((a) => a.getAttribute("href"))),
+      ["https://wiwi.ge/en", "https://uvamo.cc/", "https://datumspace.cc/en/"],
+    );
+    assert.deepEqual(await links.allInnerTexts(), ["WIWI Association", "Wine experiences by UVAMO!", "Website by Datum Space"]);
+    assert.equal(await links.nth(1).getAttribute("target"), "_blank");
     await page.evaluate(() => window.WIWI_PROTOTYPE.setLanguage("ka"));
-    assert.equal(await links.first().innerText(), "ასოციაცია WIWI");
+    assert.deepEqual(await links.allInnerTexts(), ["ასოციაცია WIWI", "ღვინის გამოცდილება UVAMO!-სგან", "საიტი: Datum Space"]);
+    await page.evaluate(() => window.WIWI_PROTOTYPE.setLanguage("ru"));
+    assert.deepEqual(await links.allInnerTexts(), ["Ассоциация WIWI", "Винные впечатления от UVAMO!", "Сайт – Datum Space"]);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), 0);
   });
   await context.close();
 }
 {
-  const patch = 'window.WIWI_DATA.footerLinks[1].url = "https://uvamo.example/"; window.WIWI_DATA.footerLinks[2].url = "https://datum.example/web";';
+  // A per-language destination (as planned for the Datum Space page) and a link without URL.
+  const patch = 'window.WIWI_DATA.footerLinks[2].url = { en: "https://datum.example/en/websites/", ka: "https://datum.example/ka/websites/", ru: "https://datum.example/ru/websites/" }; window.WIWI_DATA.footerLinks[1].url = null;';
   for (const [w, h] of [[1440, 900], [390, 844]]) {
     const { page, context } = await open(w, h, { patchData: patch });
-    await check(`footer: all three links when URLs are set, ${w}px`, async () => {
+    await check(`footer: per-language URL follows the language; a link without URL is hidden, ${w}px`, async () => {
       const links = page.locator("#footerLinks a");
-      assert.equal(await links.count(), 3);
-      assert.deepEqual(await links.allInnerTexts(), ["WIWI Association", "Wine experiences by UVAMO!", "Website by Datum Space"]);
-      assert.equal(await links.nth(2).getAttribute("target"), "_blank");
+      assert.deepEqual(await links.allInnerTexts(), ["WIWI Association", "Website by Datum Space"]);
+      assert.equal(await links.nth(1).getAttribute("href"), "https://datum.example/en/websites/");
+      await page.evaluate(() => window.WIWI_PROTOTYPE.setLanguage("ka"));
+      assert.equal(await links.nth(1).getAttribute("href"), "https://datum.example/ka/websites/");
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), 0);
     });
     await context.close();

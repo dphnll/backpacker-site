@@ -132,7 +132,8 @@ for (const [id, p] of Object.entries(D.people)) {
 for (const p of D.partners) if (!(p.role in UI.en)) problems.push(`partner ${p.name}: role must be an i18n.js key`);
 for (const l of D.footerLinks || []) {
   if (!(l.label in UI.en)) problems.push(`footer link ${l.label}: label must be an i18n.js key`);
-  if (l.url != null && !/^https:\/\/[^\s"]+$/.test(l.url)) problems.push(`footer link ${l.label}: url must be https or null`);
+  const urls = l.url == null ? [] : typeof l.url === "string" ? [l.url] : LANGS.map((code) => l.url[code]);
+  if (urls.some((u) => !/^https:\/\/[^\s"]+$/.test(u || ""))) problems.push(`footer link ${l.label}: url must be https (or { en, ka, ru } of https), or null`);
 }
 
 if (problems.length) {

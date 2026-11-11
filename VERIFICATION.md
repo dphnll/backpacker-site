@@ -9,7 +9,7 @@ purpose. Not tested: Safari, Firefox, real phones, live map tiles; none of the e
   independent of script state. `tests/navigation.mjs` covers it from an open Journey.
 - **Explore in Clavelo** block on the tour page, shown only for a real public share link (none yet).
 - **Hero regions**: pin ↔ region highlight with localized region names (Natural Earth admin-1).
-- **Footer links**: WIWI Association (`wiwi.ge`); UVAMO! landing and Datum Space hidden until URLs are verified.
+- **Footer links**: WIWI Association (`https://wiwi.ge/en`), UVAMO! (`https://uvamo.cc/`), Datum Space (`https://datumspace.cc/en/`, temporary home page; credit on production subject to WIWI approval). Partners block now links UVAMO! to `https://uvamo.cc/`.
 
 | Suite | Result |
 |---|---|
@@ -74,9 +74,9 @@ PASS  no Clavelo link without a share URL (today)
 PASS  Clavelo CTA: valid share link is shown
 PASS  Clavelo CTA: non-share URL is dropped
 PASS  Clavelo CTA: other site is dropped
-PASS  footer: only links with a URL are shown (WIWI today), localized
-PASS  footer: all three links when URLs are set, 1440px
-PASS  footer: all three links when URLs are set, 390px
+PASS  footer: WIWI, UVAMO! and Datum Space links, localized, open in a new tab
+PASS  footer: per-language URL follows the language; a link without URL is hidden, 1440px
+PASS  footer: per-language URL follows the language; a link without URL is hidden, 390px
 PASS  second tour: card links to its own route, map and stops switch
 PASS  6. 390px: no horizontal scroll
 PASS  6. 390px: activity → map → pin popup → back to activity

@@ -143,7 +143,8 @@
       .join("");
 
     $("#footerLinks").innerHTML = (DATA.footerLinks || [])
-      .filter((l) => /^https:\/\/[^\s"]+$/.test(l.url || ""))
+      .map((l) => ({ ...l, url: L(l.url) }))
+      .filter((l) => /^https:\/\/[^\s"]+$/.test(l.url))
       .map((l) => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(t(l.label))}</a>`)
       .join("");
     $("#detail-close").setAttribute("aria-label", t("action.close"));

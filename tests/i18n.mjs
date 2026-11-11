@@ -44,7 +44,7 @@ async function open(width, height, query = "") {
 
 // Words allowed to stay in Latin script on KA / RU pages: brands, the Leaflet
 // credit, Manana's quoted English title and the source spelling of a name.
-const ALLOWED_LATIN = /WIWI|Tours|UVAMO!?|Clavelo|ChkhaValley|Winery|Women in Wine Industry Georgia|Leaflet|OpenStreetMap|contributors|A 7-Day Boutique Wine & Culinary Journey|Simonika|Simonica/gi;
+const ALLOWED_LATIN = /WIWI|Tours|UVAMO!?|Clavelo|ChkhaValley|Winery|Women in Wine Industry Georgia|Leaflet|OpenStreetMap|contributors|A 7-Day Boutique Wine & Culinary Journey|Simonika|Simonica|Datum Space/gi;
 const latinWords = (s) => (s.replace(ALLOWED_LATIN, "").match(/\b[A-Za-z]{3,}\b/g) || []);
 
 const EXPECT = {

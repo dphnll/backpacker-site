@@ -936,17 +936,19 @@ window.WIWI_DATA = {
   },
 
   // Product names are not translated; their one-line roles live in i18n.js.
-  // Footer links. A link appears only when `url` is set to a verified live page.
-  // Datum Space: the credit needs WIWI's approval before any production publication.
+  // Footer links. A link appears only when `url` is set. `url` may also be per language,
+  // { en, ka, ru }, like any text. Datum Space: the credit needs WIWI's approval before
+  // production publication; its destination moves to the website-development page
+  // (/en/websites/ and the localized equivalents) once that page is published.
   footerLinks: [
-    { label: "footer.wiwi", url: "https://wiwi.ge/" },
-    { label: "footer.uvamo", url: null }, // UVAMO! public landing — to be confirmed
-    { label: "footer.datum", url: null }, // Datum Space website-development page — not yet published
+    { label: "footer.wiwi", url: "https://wiwi.ge/en" },
+    { label: "footer.uvamo", url: "https://uvamo.cc/" },
+    { label: "footer.datum", url: "https://datumspace.cc/en/" }, // temporary: home page
   ],
 
   partners: [
     { name: "WIWI Tours", role: "partner.wiwi" },
-    { name: "UVAMO!", role: "partner.uvamo", url: "https://app.uvamo.cc/" },
+    { name: "UVAMO!", role: "partner.uvamo", url: "https://uvamo.cc/" },
     { name: "Clavelo", role: "partner.clavelo", url: "https://app.clavelo.cc/" },
   ],
 };
