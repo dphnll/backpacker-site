@@ -5,10 +5,13 @@
   const STORAGE_KEY = "backpacker.landing.locale";
   const APP_URL = "https://app.clavelo.cc/";
   const CONTACT_EMAIL = "hello@clavelo.cc";
+  // Страница услуги Datum Space. Пустая строка — подпись в подвале скрыта: ссылка
+  // появляется только после публикации страницы и согласования выпуска.
+  const DATUM_SPACE_URL = "";
   // Версия изменяемых файлов (CSS, JS, снимки). Ставит node version-assets.mjs;
   // адрес снимка меняется вместе с содержимым, поэтому кэш браузера не
   // смешивает выпуски.
-  const ASSET_VERSION = "b7a3a3997c";
+  const ASSET_VERSION = "2bfb84613c";
 
   const TRANSLATIONS = {
     en: {
@@ -96,6 +99,7 @@
       "photo.cafe.alt": "A woman at a street café writes trip ideas in her notebook",
       "action.open": "Open Clavelo",
       "footer.privacy": "Privacy Policy",
+      "footer.credit": "Designed & developed by Datum Space",
       "travel.collect.linkAria": "Open Clavelo and create a trip draft",
       "travel.collect.imageAlt": "Trip draft screen with a text field and voice input action.",
       "travel.arrange.linkAria": "Open Clavelo and plan the trip by day",
@@ -188,6 +192,7 @@
       "photo.cafe.alt": "Женщина в уличном кафе записывает идеи для поездки в блокнот",
       "action.open": "Открыть Clavelo",
       "footer.privacy": "Политика конфиденциальности",
+      "footer.credit": "Дизайн и разработка – Datum Space",
       "travel.collect.linkAria": "Открыть Clavelo и собрать черновик поездки",
       "travel.collect.imageAlt": "Фрагмент экрана AI-черновика: поле для описания поездки своими словами и кнопка «Надиктовать».",
       "travel.arrange.linkAria": "Открыть Clavelo и разложить поездку по дням",
@@ -280,6 +285,7 @@
       "photo.cafe.alt": "Une femme à la terrasse d’un café note des idées de voyage dans son carnet",
       "action.open": "Ouvrir Clavelo",
       "footer.privacy": "Politique de confidentialité",
+      "footer.credit": "Conception et développement : Datum Space",
       "travel.collect.linkAria": "Ouvrir Clavelo et créer un brouillon de voyage",
       "travel.collect.imageAlt": "Écran de brouillon de voyage avec un champ de texte et une saisie vocale.",
       "travel.arrange.linkAria": "Ouvrir Clavelo et organiser le voyage par jour",
@@ -372,6 +378,7 @@
       "photo.cafe.alt": "ქალი ქუჩის კაფეში მოგზაურობის იდეებს რვეულში იწერს",
       "action.open": "Clavelo-ის გახსნა",
       "footer.privacy": "კონფიდენციალურობის პოლიტიკა",
+      "footer.credit": "დიზაინი და შემუშავება – Datum Space",
       "travel.collect.linkAria": "Clavelo-ის გახსნა და მოგზაურობის მონახაზის შექმნა",
       "travel.collect.imageAlt": "მოგზაურობის მონახაზის ეკრანი ტექსტის ველითა და ხმოვანი შეყვანით.",
       "travel.arrange.linkAria": "Clavelo-ის გახსნა და მოგზაურობის დღეების მიხედვით დაგეგმვა",
@@ -464,6 +471,7 @@
       "photo.cafe.alt": "Eine Frau in einem Straßencafé notiert Reiseideen in ihr Notizbuch",
       "action.open": "Clavelo öffnen",
       "footer.privacy": "Datenschutzerklärung",
+      "footer.credit": "Design und Entwicklung: Datum Space",
       "travel.collect.linkAria": "Clavelo öffnen und einen Reiseentwurf erstellen",
       "travel.collect.imageAlt": "Reiseentwurf mit Textfeld und Spracheingabe.",
       "travel.arrange.linkAria": "Clavelo öffnen und die Reise nach Tagen planen",
@@ -556,6 +564,7 @@
       "photo.cafe.alt": "Կինը փողոցային սրճարանում ճամփորդության գաղափարներ է գրում տետրում",
       "action.open": "Բացել Clavelo-ն",
       "footer.privacy": "Գաղտնիության քաղաքականություն",
+      "footer.credit": "Դիզայն և մշակում՝ Datum Space",
       "travel.collect.linkAria": "Բացել Clavelo-ն և ստեղծել ճանապարհորդության սևագիր",
       "travel.collect.imageAlt": "Ճանապարհորդության սևագրի էկրանը՝ տեքստային դաշտով և ձայնային մուտքով։",
       "travel.arrange.linkAria": "Բացել Clavelo-ն և պլանավորել ճանապարհորդությունն ըստ օրերի",
@@ -648,6 +657,7 @@
       "photo.cafe.alt": "一位女士在街边咖啡馆把旅行想法记在笔记本上",
       "action.open": "打开 Clavelo",
       "footer.privacy": "隐私政策",
+      "footer.credit": "设计与开发：Datum Space",
       "travel.collect.linkAria": "打开 Clavelo 并创建行程草稿",
       "travel.collect.imageAlt": "行程草稿界面，包含文字输入框和语音输入按钮。",
       "travel.arrange.linkAria": "打开 Clavelo 并按天规划行程",
@@ -758,6 +768,7 @@
     STORAGE_KEY,
     APP_URL,
     CONTACT_EMAIL,
+    DATUM_SPACE_URL,
     ASSET_VERSION,
     TRANSLATIONS,
     normalizeLocale,
@@ -857,6 +868,10 @@
     }
     for (const link of document.querySelectorAll("[data-pilot-link]")) {
       link.setAttribute("href", pilotMailto(normalized));
+    }
+    for (const credit of document.querySelectorAll("[data-credit]")) {
+      credit.hidden = !DATUM_SPACE_URL;
+      credit.querySelector("a")?.setAttribute("href", DATUM_SPACE_URL || "#");
     }
 
     if (persist) saveLocale(normalized);

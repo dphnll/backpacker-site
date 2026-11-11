@@ -1286,6 +1286,17 @@ html:lang(fr) .hero h1 {
   font-size: 13px;
 }
 
+.credit {
+  color: var(--ink-soft);
+  font-size: 12.5px;
+}
+
+.credit a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 /* ============================================================
    Брейкпоинты
    ============================================================ */
