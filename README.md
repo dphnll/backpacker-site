@@ -1,4 +1,4 @@
-# WIWI Tours — prototype v0.3.1
+# WIWI Tours — prototype v0.3.3
 
 A standalone, static prototype of a future `tours.wiwi.ge` for founder and WIWI partner review
 (Manana, Ketino) ahead of the Bordeaux presentation on 3 December 2026.
@@ -113,6 +113,17 @@ between them exist once; only the texts carry three versions, side by side:
   selected, interactive map on the place). Places with `heroLabel: true` (or `"left"`) are always named;
   the others show their name on hover.
 - **Type**: Inter for all text; Georgian falls back to Noto Sans Georgian (Inter has no Georgian).
+- **Hero regions**: hovering or focusing a pin highlights its administrative region and shows the
+  region's name (EN/KA/RU); hovering a region highlights its pins. Outlines come from
+  `hero-regions.js`, generated once by `tools/make-hero-regions.py` from Natural Earth 1:10m
+  Admin-1 (public domain; via the npm package `geojson-places`, ISC). Re-run the script if stops
+  move to a new region. No geometry is computed in the browser.
+- **Explore in Clavelo**: `tours[].clavelo.url` — a published ordinary Clavelo share link
+  (`https://app.clavelo.cc/?share=…`). Only such a link is shown, labelled sample/draft/not a
+  booking. `null` today.
+- **Footer links**: `footerLinks` in `data.js`; a link appears only with a URL. WIWI (`wiwi.ge`) is
+  set; the UVAMO! landing and the Datum Space page wait for verified URLs (the Datum Space credit
+  also needs WIWI's approval before production).
 
 ## Tests
 

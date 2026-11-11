@@ -78,6 +78,10 @@ window.WIWI_DATA = {
         ka: "მარშრუტის სამუშაო ვერსია: მანანა ახვლედიანი",
         ru: "Черновик маршрута: Манана Ахвледиани",
       },
+      // Optional "Explore in Clavelo": a published, read-only Clavelo share of a sample
+      // programme, e.g. "https://app.clavelo.cc/?share=<token>". Shown only when set to such
+      // a URL; null hides it. Use an ordinary share (not Organizer mode, which offers Join).
+      clavelo: { url: null },
 
 
       // Questions WIWI must answer — working notes. Not listed on the site; a day with
@@ -932,6 +936,14 @@ window.WIWI_DATA = {
   },
 
   // Product names are not translated; their one-line roles live in i18n.js.
+  // Footer links. A link appears only when `url` is set to a verified live page.
+  // Datum Space: the credit needs WIWI's approval before any production publication.
+  footerLinks: [
+    { label: "footer.wiwi", url: "https://wiwi.ge/" },
+    { label: "footer.uvamo", url: null }, // UVAMO! public landing — to be confirmed
+    { label: "footer.datum", url: null }, // Datum Space website-development page — not yet published
+  ],
+
   partners: [
     { name: "WIWI Tours", role: "partner.wiwi" },
     { name: "UVAMO!", role: "partner.uvamo", url: "https://app.uvamo.cc/" },

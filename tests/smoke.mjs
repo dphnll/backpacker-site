@@ -118,6 +118,54 @@ async function tapPin(page, placeName) {
     assert.ok(await page.locator("#route").isVisible(), "browser Forward reopens the tour");
   });
 
+  await check("hero regions: pin → region + name, region → its pins, leave → reset, keyboard, 3 languages", async () => {
+    await page.goto(BASE, { waitUntil: "load" });
+    await page.waitForTimeout(300);
+    const state = () => page.evaluate(() => ({
+      label: document.querySelector("#heroRegionLabel").hidden ? null : document.querySelector("#heroRegionLabel").textContent,
+      regions: [...document.querySelectorAll(".hero-regions path.is-region")].map((e) => e.dataset.region),
+      pins: [...document.querySelectorAll(".hero-pin.is-region")].map((e) => e.dataset.heroPlace).sort(),
+    }));
+    // Pin → its region and name
+    await page.locator('.hero-pin[data-hero-place="obcha"]').hover();
+    await page.waitForTimeout(150);
+    let st = await state();
+    assert.deepEqual(st.regions, ["imereti"]);
+    assert.equal(st.label, "Imereti");
+    assert.deepEqual(st.pins, ["kutaisi", "obcha"]);
+    // Region territory (away from pins) → its pins
+    const box = await page.locator('#heroRegions path[data-region="racha-lechkhumi-kvemo-svaneti"]').boundingBox();
+    await page.mouse.move(box.x + box.width * 0.85, box.y + box.height * 0.45);
+    await page.waitForTimeout(150);
+    st = await state();
+    assert.deepEqual(st.regions, ["racha-lechkhumi-kvemo-svaneti"]);
+    assert.deepEqual(st.pins, ["khvanchkara", "nikortsminda", "shaori", "tvishi"]);
+    assert.equal(st.label, "Racha-Lechkhumi and Kvemo Svaneti");
+    // Leave → original appearance
+    await page.mouse.move(5, 500);
+    await page.waitForTimeout(150);
+    st = await state();
+    assert.deepEqual(st, { label: null, regions: [], pins: [] });
+    // Keyboard focus on a pin tells the region too
+    await page.locator('.hero-pin[data-hero-place="mtskheta"]').focus();
+    st = await state();
+    assert.equal(st.label, "Mtskheta-Mtianeti");
+    await page.locator('.hero-pin[data-hero-place="mtskheta"]').blur();
+    assert.equal((await state()).label, null);
+    // Localized names
+    for (const [code, name] of [["ka", "რაჭა-ლეჩხუმი და ქვემო სვანეთი"], ["ru", "Рача-Лечхуми и Квемо-Сванети"], ["en", "Racha-Lechkhumi and Kvemo Svaneti"]]) {
+      await page.evaluate((c) => window.WIWI_PROTOTYPE.setLanguage(c), code);
+      await page.locator('.hero-pin[data-hero-place="tvishi"]').hover();
+      await page.waitForTimeout(150);
+      assert.equal((await state()).label, name, code);
+      await page.mouse.move(5, 500);
+    }
+    // Regions never sit over the hero button
+    const cta = await page.locator(".hero-actions .btn").boundingBox();
+    const hit = await page.evaluate(([x, y]) => document.elementFromPoint(x, y)?.closest(".btn")?.className || "", [cta.x + cta.width / 2, cta.y + cta.height / 2]);
+    assert.match(hit, /btn/);
+  });
+
   await check("hero pin opens the tour at that stop", async () => {
     await page.goto(BASE, { waitUntil: "load" }); // home page
     await page.waitForTimeout(300);
@@ -268,6 +316,68 @@ async function tapPin(page, placeName) {
     assert.equal(await page.locator(".activity .action-wine").count(), 0, "external links only inside the card");
   });
   await context.close();
+}
+
+// ---------- "Explore in Clavelo" only with a real public share link ----------
+{
+  const { page, context } = await open(1440, 900, { query: "?tour=west" });
+  await check("no Clavelo link without a share URL (today)", async () => {
+    assert.equal(await page.locator(".clavelo-preview").count(), 0);
+  });
+  await context.close();
+}
+for (const [label, url, shown] of [
+  ["valid share link is shown", "https://app.clavelo.cc/?share=abc_123-XYZ", true],
+  ["non-share URL is dropped", "https://app.clavelo.cc/", false],
+  ["other site is dropped", "https://example.com/?share=abc", false],
+]) {
+  const patch = `window.WIWI_DATA.tours[0].clavelo = { url: ${JSON.stringify(url)} };`;
+  const { page, context, errors } = await open(390, 844, { patchData: patch, query: "?tour=west" });
+  await check(`Clavelo CTA: ${label}`, async () => {
+    assert.equal(await page.locator(".clavelo-preview").count(), shown ? 1 : 0);
+    if (shown) {
+      const a = page.locator(".clavelo-preview a");
+      assert.equal(await a.getAttribute("href"), url);
+      assert.equal(await a.getAttribute("target"), "_blank");
+      assert.match(await page.locator(".clavelo-preview").innerText(), /sample/i);
+      assert.match(await page.locator(".clavelo-preview").innerText(), /not a booking/i);
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), 0, "phone layout intact");
+      await page.evaluate(() => window.WIWI_PROTOTYPE.setLanguage("ka"));
+      assert.equal((await a.innerText()).replace(" ↗", ""), "ნახვა Clavelo-ში");
+      await page.evaluate(() => window.WIWI_PROTOTYPE.setLanguage("ru"));
+      assert.equal((await a.innerText()).replace(" ↗", ""), "Открыть в Clavelo");
+    }
+    assert.deepEqual(errors, []);
+  });
+  await context.close();
+}
+
+// ---------- footer links appear only with a URL ----------
+{
+  const { page, context } = await open(390, 844);
+  await check("footer: only links with a URL are shown (WIWI today), localized", async () => {
+    const links = page.locator("#footerLinks a");
+    assert.equal(await links.count(), 1);
+    assert.equal(await links.first().getAttribute("href"), "https://wiwi.ge/");
+    assert.equal(await links.first().innerText(), "WIWI Association");
+    await page.evaluate(() => window.WIWI_PROTOTYPE.setLanguage("ka"));
+    assert.equal(await links.first().innerText(), "ასოციაცია WIWI");
+  });
+  await context.close();
+}
+{
+  const patch = 'window.WIWI_DATA.footerLinks[1].url = "https://uvamo.example/"; window.WIWI_DATA.footerLinks[2].url = "https://datum.example/web";';
+  for (const [w, h] of [[1440, 900], [390, 844]]) {
+    const { page, context } = await open(w, h, { patchData: patch });
+    await check(`footer: all three links when URLs are set, ${w}px`, async () => {
+      const links = page.locator("#footerLinks a");
+      assert.equal(await links.count(), 3);
+      assert.deepEqual(await links.allInnerTexts(), ["WIWI Association", "Wine experiences by UVAMO!", "Website by Datum Space"]);
+      assert.equal(await links.nth(2).getAttribute("target"), "_blank");
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), 0);
+    });
+    await context.close();
+  }
 }
 
 // ---------- a second tour appears by adding days in data.js only ----------

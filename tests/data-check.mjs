@@ -67,6 +67,9 @@ for (const tour of D.tours) {
   text(`${tw} summary`, tour.summary);
   text(`${tw} tagline`, tour.tagline, { optional: true });
   text(`${tw} author`, tour.author, { optional: true });
+  if (tour.clavelo?.url && !/^https:\/\/app\.(clavelo\.cc|backpackerapp\.cc)\/(\?share=|#share=)[A-Za-z0-9._~%-]+$/.test(tour.clavelo.url)) {
+    problems.push(`${tw}: clavelo.url must be a public Clavelo share link (https://app.clavelo.cc/?share=…)`);
+  }
   for (const r of tour.focus || []) dictKey(`${tw} focus`, "region", r);
   (tour.facts || []).forEach((f, i) => {
     text(`${tw} fact ${i + 1}`, f.label);
@@ -127,6 +130,10 @@ for (const [id, p] of Object.entries(D.people)) {
   dictKey(where, "region", p.region);
 }
 for (const p of D.partners) if (!(p.role in UI.en)) problems.push(`partner ${p.name}: role must be an i18n.js key`);
+for (const l of D.footerLinks || []) {
+  if (!(l.label in UI.en)) problems.push(`footer link ${l.label}: label must be an i18n.js key`);
+  if (l.url != null && !/^https:\/\/[^\s"]+$/.test(l.url)) problems.push(`footer link ${l.label}: url must be https or null`);
+}
 
 if (problems.length) {
   console.log(`data.js / i18n.js: ${problems.length} problem(s)\n- ${problems.join("\n- ")}`);

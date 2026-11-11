@@ -142,6 +142,10 @@
         </article>`)
       .join("");
 
+    $("#footerLinks").innerHTML = (DATA.footerLinks || [])
+      .filter((l) => /^https:\/\/[^\s"]+$/.test(l.url || ""))
+      .map((l) => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(t(l.label))}</a>`)
+      .join("");
     $("#detail-close").setAttribute("aria-label", t("action.close"));
     if (noticeKey) notice.textContent = t(noticeKey);
     if (map) {
@@ -347,6 +351,39 @@
     .map((id) => `<button type="button" class="stop" data-stop="${esc(id)}"><span class="stop-days">${esc(daysLabel(id))}</span>${esc(L(DATA.places[id].name))}</button>`)
     .join("");
 
+  // Hero regions (hero-regions.js, generated from Natural Earth admin-1): highlight the
+  // region of a pin, or the pins of a region, with its name in the current language.
+  const HERO_REGIONS = window.WIWI_HERO_REGIONS || [];
+  const regionOfPlace = (placeId) => HERO_REGIONS.find((r) => r.places.includes(placeId))?.id;
+  const renderHeroRegions = () => HERO_REGIONS
+    .filter((r) => r.places.some((p) => mappedPlaces.includes(p)))
+    .map((r) => `<path data-region="${esc(r.id)}" d="${r.d}"></path>`)
+    .join("");
+  function highlightRegion(id) {
+    const frame = $(".hero-map-frame");
+    const region = HERO_REGIONS.find((r) => r.id === id);
+    for (const el of frame.querySelectorAll("[data-region]")) el.classList.toggle("is-region", !!id && el.dataset.region === id);
+    const label = $("#heroRegionLabel");
+    label.hidden = !region;
+    if (!region) return;
+    label.textContent = region ? t(`region.${region.id}`) : "";
+    label.style.left = `${region.label[0]}%`;
+    label.style.top = `${region.label[1]}%`;
+  }
+  const heroFrame = $(".hero-map-frame");
+  heroFrame.addEventListener("pointerover", (event) => {
+    const el = event.target.closest("[data-region]");
+    if (el) highlightRegion(el.dataset.region);
+  });
+  heroFrame.addEventListener("pointerout", (event) => {
+    if (!event.relatedTarget || !heroFrame.contains(event.relatedTarget) || !event.relatedTarget.closest("[data-region]")) highlightRegion(null);
+  });
+  heroFrame.addEventListener("focusin", (event) => {
+    const pin = event.target.closest(".hero-pin");
+    if (pin) highlightRegion(pin.dataset.region);
+  });
+  heroFrame.addEventListener("focusout", () => highlightRegion(null));
+
   // Hero illustration: assets/hero-map.svg is drawn for these bounds (plain lon/lat scaling).
   const HERO_MAP = { west: 39.6, east: 47.0, south: 40.9, north: 44.1 };
   const renderHeroPins = () => mappedPlaces
@@ -356,9 +393,24 @@
       const y = ((HERO_MAP.north - p.coord[0]) / (HERO_MAP.north - HERO_MAP.south)) * 100;
       const side = p.heroLabel === "left" ? " is-left" : "";
       const shown = p.heroLabel ? " is-shown" : ""; // other names appear on hover / focus
-      return `<button type="button" class="hero-pin" data-hero-place="${esc(id)}" style="left:${x.toFixed(2)}%;top:${y.toFixed(2)}%" aria-label="${esc(L(p.name))} · ${esc(t("day.label", { n: daysLabel(id) }))}"><span class="pin-dot">${esc(daysLabel(id))}</span><span class="hero-pin-label${side}${shown}">${esc(L(p.name))}</span></button>`;
+      return `<button type="button" class="hero-pin" data-hero-place="${esc(id)}" data-region="${esc(regionOfPlace(id) || "")}" style="left:${x.toFixed(2)}%;top:${y.toFixed(2)}%" aria-label="${esc(L(p.name))} · ${esc(t("day.label", { n: daysLabel(id) }))}"><span class="pin-dot">${esc(daysLabel(id))}</span><span class="hero-pin-label${side}${shown}">${esc(L(p.name))}</span></button>`;
     })
     .join("");
+
+  // Optional sample programme in Clavelo: only a published public share link is shown.
+  const CLAVELO_SHARE = /^https:\/\/app\.(clavelo\.cc|backpackerapp\.cc)\/(\?share=|#share=)[A-Za-z0-9._~%-]+$/;
+  const renderClaveloPreview = () => {
+    const url = tour.clavelo?.url;
+    if (!url || !CLAVELO_SHARE.test(url)) return "";
+    return `
+      <div class="clavelo-preview">
+        <div>
+          <span class="status status-draft">${esc(t("clavelo.badge"))}</span>
+          <p>${esc(t("clavelo.text"))}</p>
+        </div>
+        <a class="btn" href="${esc(url)}" target="_blank" rel="noopener">${esc(t("clavelo.cta"))} ↗</a>
+      </div>`;
+  };
 
   // Renders the route of a tour. `keep` restores open days, selection and map after a language switch.
   function loadTour(id, keep = null) {
@@ -373,12 +425,15 @@
 
     $("#route-eyebrow").textContent = t("route.eyebrow", { region: L(tour.region) });
     $("#route-title").textContent = L(tour.title);
+    $("#claveloPreview").innerHTML = renderClaveloPreview();
     $("#days").innerHTML = renderDays(keep ? keep.openDays : OPEN_BY_DEFAULT);
     syncToggleAll();
     $("#people").innerHTML = renderPeople();
     $(".people").hidden = !$("#people").children.length;
     $("#stops").innerHTML = renderStops();
+    $("#heroRegions").innerHTML = renderHeroRegions();
     $("#heroPins").innerHTML = renderHeroPins();
+    highlightRegion(null);
     markActive(keep && byId.has(keep.activeId) ? keep.activeId : null);
     renderMarkers();
     if (keep && keep.mapView && map) {

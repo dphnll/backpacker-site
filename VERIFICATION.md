@@ -1,27 +1,27 @@
-# WIWI Tours v0.3.2 — verification
+# WIWI Tours v0.3.3 — verification
 
 Date: 11 November 2026. Local static server, Chromium (Playwright 1.56), map tiles blocked in every run on
-purpose. Not tested: Safari, Firefox, real phones, live map tiles.
+purpose. Not tested: Safari, Firefox, real phones, live map tiles; none of the external destinations
+(wiwi.ge, UVAMO!, Datum Space, Clavelo) could be opened from the build environment.
 
-## Logo → home page fix
-- Header and footer "WIWI Tours" logos are now plain links to the home page in the current language
-  (`/?lang=ka`), rebuilt on every language switch. Clicking performs an ordinary page load — no click
-  handler, client-side routing or page state is involved, so nothing can swallow the click.
-- The same "real mouse click from an open Journey" scenarios were also run against the previously
-  deployed code (9d4fc0b) in Chromium — normal tab, file://, with map tiles loading, inside a sandboxed
-  iframe — and passed there too: the reported failure could not be reproduced in Chromium.
+## Changes since v0.3.2
+- **Logo → home page** (header and footer): plain links to `/?lang=<current>`, an ordinary page load
+  independent of script state. `tests/navigation.mjs` covers it from an open Journey.
+- **Explore in Clavelo** block on the tour page, shown only for a real public share link (none yet).
+- **Hero regions**: pin ↔ region highlight with localized region names (Natural Earth admin-1).
+- **Footer links**: WIWI Association (`wiwi.ge`); UVAMO! landing and Datum Space hidden until URLs are verified.
 
 | Suite | Result |
 |---|---|
-| `node tests/data-check.mjs` | OK |
+| `node tests/data-check.mjs` | OK — 130 interface keys × 3 languages |
 | `node tests/navigation.mjs` — logo → home from an open Journey, 3 languages × desktop/phone × 2 entries × 2 logos | **24 / 24 passed** |
-| `node tests/smoke.mjs` — acceptance list, English | **25 / 25 passed** |
+| `node tests/smoke.mjs` — acceptance list incl. hero regions, Clavelo CTA, footer links | **33 / 33 passed** |
 | `node tests/i18n.mjs` — EN / KA / RU × 1440, 390, 320 px | **54 / 54 passed** |
 
 ## Full output
 ```
 $ node tests/data-check.mjs
-data.js OK: 2 tours, 6 days, 31 activities, 12 places, 5 people; i18n.js OK: 122 keys × 3 languages (en, ka, ru)
+data.js OK: 2 tours, 6 days, 31 activities, 12 places, 5 people; i18n.js OK: 130 keys × 3 languages (en, ka, ru)
 exit 0
 
 $ node tests/navigation.mjs
@@ -56,6 +56,7 @@ exit 0
 $ node tests/smoke.mjs
 PASS  1. two tour cards with honest statuses
 PASS  home has no day-by-day route; a tour card opens the tour page; back returns home
+PASS  hero regions: pin → region + name, region → its pins, leave → reset, keyboard, 3 languages
 PASS  hero pin opens the tour at that stop
 PASS  2. Western Georgia by day and activity
 PASS  3a. person modal opens, Escape closes, focus returns
@@ -69,6 +70,13 @@ PASS  7. tentative, seasonal and review markers visible
 PASS  map works without tiles (tiles blocked)
 PASS  no script errors (desktop)
 PASS  5b. a valid UVAMO! URL shows the wine card from UVAMO!, an invalid one is dropped
+PASS  no Clavelo link without a share URL (today)
+PASS  Clavelo CTA: valid share link is shown
+PASS  Clavelo CTA: non-share URL is dropped
+PASS  Clavelo CTA: other site is dropped
+PASS  footer: only links with a URL are shown (WIWI today), localized
+PASS  footer: all three links when URLs are set, 1440px
+PASS  footer: all three links when URLs are set, 390px
 PASS  second tour: card links to its own route, map and stops switch
 PASS  6. 390px: no horizontal scroll
 PASS  6. 390px: activity → map → pin popup → back to activity
@@ -80,7 +88,7 @@ PASS  6. 320px: modal fits the screen
 PASS  no script errors (320px)
 PASS  map library missing: itinerary and stops still work
 
-25/25 passed
+33/33 passed
 exit 0
 
 $ node tests/i18n.mjs

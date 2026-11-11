@@ -32,7 +32,9 @@
         <div class="hero-map" role="group" aria-label="Map of approximate stop locations" data-i18n-aria="map.label">
           <span class="hero-map-frame">
             <img src="./assets/hero-map.svg" alt="" />
+            <svg class="hero-regions" id="heroRegions" viewBox="0 0 1000 587" aria-hidden="true"></svg>
             <span id="heroPins"></span>
+            <span class="hero-region-label" id="heroRegionLabel" aria-live="polite" hidden></span>
           </span>
         </div>
         <div class="wrap">
@@ -62,6 +64,7 @@
               <p class="eyebrow eyebrow-wine" id="route-eyebrow"></p>
               <h2 id="route-title"></h2>
               <p class="route-lead" data-i18n="route.lead"></p>
+              <div id="claveloPreview"></div>
             </div>
             <ul class="legend" id="legend" aria-label="How to read this draft" data-i18n-aria="legend.label"></ul>
           </div>
@@ -119,6 +122,7 @@
     <footer class="footer">
       <div class="wrap footer-inner">
         <a class="brand-mark footer-brand" href="./" data-logo>WIWI <span>Tours</span></a>
+        <nav class="footer-links" id="footerLinks" aria-label="Links" data-i18n-aria="footer.links"></nav>
         <p data-i18n="footer.note">Prototype for partner review · not a published travel offer</p>
       </div>
     </footer>
@@ -139,6 +143,7 @@
     <script src="./vendor/leaflet/leaflet.js"></script>
     <script src="./data.js"></script>
     <script src="./i18n.js"></script>
+    <script src="./hero-regions.js"></script>
     <script src="./app.js"></script>
   </body>
 </html>
