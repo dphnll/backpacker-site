@@ -943,7 +943,7 @@ window.WIWI_DATA = {
   footerLinks: [
     { label: "footer.wiwi", url: "https://wiwi.ge/en" },
     { label: "footer.uvamo", url: "https://uvamo.cc/" },
-    { label: "footer.datum", url: "https://datumspace.cc/en/" }, // temporary: home page
+    { label: "footer.datum", url: "https://digital.datumspace.cc/" }, // Datum Digital (website development)
   ],
 
   partners: [

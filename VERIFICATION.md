@@ -9,7 +9,7 @@ purpose. Not tested: Safari, Firefox, real phones, live map tiles; none of the e
   independent of script state. `tests/navigation.mjs` covers it from an open Journey.
 - **Explore in Clavelo** block on the tour page, shown only for a real public share link (none yet).
 - **Hero regions**: pin ↔ region highlight with localized region names (Natural Earth admin-1).
-- **Footer links**: WIWI Association (`https://wiwi.ge/en`), UVAMO! (`https://uvamo.cc/`), Datum Space (`https://datumspace.cc/en/`, temporary home page; credit on production subject to WIWI approval). Partners block now links UVAMO! to `https://uvamo.cc/`.
+- **Footer links**: WIWI Association (`https://wiwi.ge/en`), UVAMO! (`https://uvamo.cc/`), Datum Space (`https://digital.datumspace.cc/`; credit on production subject to WIWI approval). Partners block now links UVAMO! to `https://uvamo.cc/`.
 
 | Suite | Result |
 |---|---|

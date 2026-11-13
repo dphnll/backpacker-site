@@ -321,8 +321,12 @@ async function tapPin(page, placeName) {
 // ---------- "Explore in Clavelo" only with a real public share link ----------
 {
   const { page, context } = await open(1440, 900, { query: "?tour=west" });
-  await check("no Clavelo link without a share URL (today)", async () => {
-    assert.equal(await page.locator(".clavelo-preview").count(), 0);
+  await check("published Clavelo sample: one public share link, labelled sample, new tab", async () => {
+    const a = page.locator(".clavelo-preview a");
+    assert.equal(await a.count(), 1);
+    assert.match(await a.getAttribute("href"), /^https:\/\/app\.clavelo\.cc\/\?share=[0-9a-f]+$/);
+    assert.equal(await a.getAttribute("target"), "_blank");
+    assert.match(await page.locator(".clavelo-preview").innerText(), /not a booking/i);
   });
   await context.close();
 }
@@ -360,7 +364,7 @@ for (const [label, url, shown] of [
     assert.equal(await links.count(), 3);
     assert.deepEqual(
       await links.evaluateAll((els) => els.map((a) => a.getAttribute("href"))),
-      ["https://wiwi.ge/en", "https://uvamo.cc/", "https://datumspace.cc/en/"],
+      ["https://wiwi.ge/en", "https://uvamo.cc/", "https://digital.datumspace.cc/"],
     );
     assert.deepEqual(await links.allInnerTexts(), ["WIWI Association", "Wine experiences by UVAMO!", "Website by Datum Space"]);
     assert.equal(await links.nth(1).getAttribute("target"), "_blank");
