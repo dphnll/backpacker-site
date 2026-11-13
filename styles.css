@@ -1281,9 +1281,28 @@ html:lang(fr) .hero h1 {
   text-underline-offset: 3px;
 }
 
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 24px;
+}
+
 .copyright {
   color: var(--ink-soft);
   font-size: 13px;
+}
+
+.credit {
+  color: var(--ink-soft);
+  font-size: 12.5px;
+}
+
+.credit a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* ============================================================
