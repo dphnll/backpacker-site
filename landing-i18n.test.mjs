@@ -330,6 +330,10 @@ assert.match(notFound, /<link rel="stylesheet" href="\/styles\.css\?v=[0-9a-f]{1
 // Ссылка только на опубликованную страницу; пока адреса нет, подпись скрыта.
 assert.equal(api.DATUM_SPACE_URL, "https://digital.datumspace.cc/", "Datum Space credit links to Datum Digital");
 assert.ok(index.includes(`<p class="credit" data-credit><a href="${api.DATUM_SPACE_URL}" target="_blank" rel="noopener" data-i18n="footer.credit">`), "credit markup links to DATUM_SPACE_URL");
+// Подвал одинаковый на всех страницах: статичные страницы несут ту же подпись.
+for (const [name, html] of [["privacy", privacy], ["terms", terms], ["404", notFound]]) {
+  assert.ok(html.includes(`<p class="credit"><a href="${api.DATUM_SPACE_URL}" target="_blank" rel="noopener">`), `${name}: Datum Space credit in the footer`);
+}
 for (const locale of Object.keys(api.TRANSLATIONS)) {
   assert.match(api.TRANSLATIONS[locale]["footer.credit"], /Datum Space/, `${locale} footer.credit`);
 }
