@@ -328,8 +328,8 @@ assert.match(notFound, /<link rel="stylesheet" href="\/styles\.css\?v=[0-9a-f]{1
 
 // ---------- Подпись Datum Space ----------
 // Ссылка только на опубликованную страницу; пока адреса нет, подпись скрыта.
-assert.match(index, /<p class="credit" data-credit hidden><a href="#" target="_blank" rel="noopener" data-i18n="footer.credit">/);
-assert.ok(api.DATUM_SPACE_URL === "" || /^https:\/\/[^\s"]+$/.test(api.DATUM_SPACE_URL), "DATUM_SPACE_URL is empty or https");
+assert.equal(api.DATUM_SPACE_URL, "https://digital.datumspace.cc/", "Datum Space credit links to Datum Digital");
+assert.ok(index.includes(`<p class="credit" data-credit><a href="${api.DATUM_SPACE_URL}" target="_blank" rel="noopener" data-i18n="footer.credit">`), "credit markup links to DATUM_SPACE_URL");
 for (const locale of Object.keys(api.TRANSLATIONS)) {
   assert.match(api.TRANSLATIONS[locale]["footer.credit"], /Datum Space/, `${locale} footer.credit`);
 }

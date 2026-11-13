@@ -7,11 +7,11 @@
   const CONTACT_EMAIL = "hello@clavelo.cc";
   // Страница услуги Datum Space. Пустая строка — подпись в подвале скрыта: ссылка
   // появляется только после публикации страницы и согласования выпуска.
-  const DATUM_SPACE_URL = "";
+  const DATUM_SPACE_URL = "https://digital.datumspace.cc/";
   // Версия изменяемых файлов (CSS, JS, снимки). Ставит node version-assets.mjs;
   // адрес снимка меняется вместе с содержимым, поэтому кэш браузера не
   // смешивает выпуски.
-  const ASSET_VERSION = "2bfb84613c";
+  const ASSET_VERSION = "66e413c1de";
 
   const TRANSLATIONS = {
     en: {
