@@ -147,6 +147,11 @@
       .filter((l) => /^https:\/\/[^\s"]+$/.test(l.url))
       .map((l) => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(t(l.label))}</a>`)
       .join("");
+    const credit = DATA.footerCredit;
+    const creditUrl = credit && L(credit.url);
+    const creditOk = !!creditUrl && /^https:\/\/[^\s"]+$/.test(creditUrl);
+    $("#footerCredit").hidden = !creditOk;
+    $("#footerCredit").innerHTML = creditOk ? `<a href="${esc(creditUrl)}" target="_blank" rel="noopener">${esc(t(credit.label))}</a>` : "";
     $("#detail-close").setAttribute("aria-label", t("action.close"));
     if (noticeKey) notice.textContent = t(noticeKey);
     if (map) {

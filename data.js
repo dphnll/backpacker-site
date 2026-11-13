@@ -937,14 +937,14 @@ window.WIWI_DATA = {
 
   // Product names are not translated; their one-line roles live in i18n.js.
   // Footer links. A link appears only when `url` is set. `url` may also be per language,
-  // { en, ka, ru }, like any text. Datum Space: the credit needs WIWI's approval before
-  // production publication; its destination moves to the website-development page
-  // (/en/websites/ and the localized equivalents) once that page is published.
+  // { en, ka, ru }, like any text.
   footerLinks: [
     { label: "footer.wiwi", url: "https://wiwi.ge/en" },
     { label: "footer.uvamo", url: "https://uvamo.cc/" },
-    { label: "footer.datum", url: "https://digital.datumspace.cc/" }, // Datum Digital (website development)
   ],
+  // Developer credit, small on the right of the bottom footer row (as on UVAMO! and Clavelo).
+  // Approved by WIWI. Shown only while `url` is set; may be per language like footer links.
+  footerCredit: { label: "footer.credit", url: "https://digital.datumspace.cc/" }, // Datum Digital
 
   partners: [
     { name: "WIWI Tours", role: "partner.wiwi" },

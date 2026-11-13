@@ -123,7 +123,7 @@ window.WIWI_I18N = {
     "footer.links": "Links",
     "footer.wiwi": "WIWI Association",
     "footer.uvamo": "Wine experiences by UVAMO!",
-    "footer.datum": "Website by Datum Space",
+    "footer.credit": "Designed & developed by Datum Space",
 
     "topic.arrival": "Arrival",
     "topic.stay": "Stay",
@@ -259,7 +259,7 @@ window.WIWI_I18N = {
     "footer.links": "ბმულები",
     "footer.wiwi": "ასოციაცია WIWI",
     "footer.uvamo": "ღვინის გამოცდილება UVAMO!-სგან",
-    "footer.datum": "საიტი: Datum Space",
+    "footer.credit": "დიზაინი და შემუშავება – Datum Space",
 
     "topic.arrival": "ჩამოსვლა",
     "topic.stay": "ღამისთევა",
@@ -395,7 +395,7 @@ window.WIWI_I18N = {
     "footer.links": "Ссылки",
     "footer.wiwi": "Ассоциация WIWI",
     "footer.uvamo": "Винные впечатления от UVAMO!",
-    "footer.datum": "Сайт – Datum Space",
+    "footer.credit": "Дизайн и разработка – Datum Space",
 
     "topic.arrival": "Прибытие",
     "topic.stay": "Ночлег",

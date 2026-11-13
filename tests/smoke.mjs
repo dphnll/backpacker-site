@@ -356,37 +356,64 @@ for (const [label, url, shown] of [
   await context.close();
 }
 
-// ---------- footer links appear only with a URL ----------
+// ---------- footer links and the developer credit ----------
 {
   const { page, context } = await open(390, 844);
-  await check("footer: WIWI, UVAMO! and Datum Space links, localized, open in a new tab", async () => {
+  await check("footer: WIWI and UVAMO! links, localized, open in a new tab", async () => {
     const links = page.locator("#footerLinks a");
-    assert.equal(await links.count(), 3);
+    assert.equal(await links.count(), 2);
     assert.deepEqual(
       await links.evaluateAll((els) => els.map((a) => a.getAttribute("href"))),
-      ["https://wiwi.ge/en", "https://uvamo.cc/", "https://digital.datumspace.cc/"],
+      ["https://wiwi.ge/en", "https://uvamo.cc/"],
     );
-    assert.deepEqual(await links.allInnerTexts(), ["WIWI Association", "Wine experiences by UVAMO!", "Website by Datum Space"]);
+    assert.deepEqual(await links.allInnerTexts(), ["WIWI Association", "Wine experiences by UVAMO!"]);
     assert.equal(await links.nth(1).getAttribute("target"), "_blank");
     await page.evaluate(() => window.WIWI_PROTOTYPE.setLanguage("ka"));
-    assert.deepEqual(await links.allInnerTexts(), ["ასოციაცია WIWI", "ღვინის გამოცდილება UVAMO!-სგან", "საიტი: Datum Space"]);
+    assert.deepEqual(await links.allInnerTexts(), ["ასოციაცია WIWI", "ღვინის გამოცდილება UVAMO!-სგან"]);
     await page.evaluate(() => window.WIWI_PROTOTYPE.setLanguage("ru"));
-    assert.deepEqual(await links.allInnerTexts(), ["Ассоциация WIWI", "Винные впечатления от UVAMO!", "Сайт – Datum Space"]);
+    assert.deepEqual(await links.allInnerTexts(), ["Ассоциация WIWI", "Винные впечатления от UVAMO!"]);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), 0);
+  });
+  await context.close();
+}
+for (const [w, h] of [[1440, 900], [390, 844]]) {
+  const { page, context } = await open(w, h);
+  await check(`footer: Datum Space credit on the right of the bottom row, localized, ${w}px`, async () => {
+    const credit = page.locator("#footerCredit a");
+    assert.equal(await credit.count(), 1);
+    assert.equal(await credit.getAttribute("href"), "https://digital.datumspace.cc/");
+    assert.equal(await credit.getAttribute("target"), "_blank");
+    assert.equal(await credit.innerText(), "Designed & developed by Datum Space");
+    const geo = await page.evaluate(() => {
+      const c = document.querySelector("#footerCredit").getBoundingClientRect();
+      const note = document.querySelector(".footer-bottom [data-i18n='footer.note']").getBoundingClientRect();
+      const row = document.querySelector(".footer-bottom").getBoundingClientRect();
+      return { right: row.right - c.right, sameRow: Math.abs(c.top - note.top) < 6, under: c.top >= note.bottom - 2, overflow: document.documentElement.scrollWidth - innerWidth };
+    });
+    // Desktop: same row as the note, on the right. Phone: may wrap under the note.
+    if (w >= 900) assert.ok(geo.sameRow && geo.right < 2, "credit is on the right of the note row");
+    else assert.ok((geo.sameRow && geo.right < 2) || geo.under, "credit is on the right or under the note");
+    assert.equal(geo.overflow, 0);
+    await page.evaluate(() => window.WIWI_PROTOTYPE.setLanguage("ka"));
+    assert.equal(await credit.innerText(), "დიზაინი და შემუშავება – Datum Space");
+    await page.evaluate(() => window.WIWI_PROTOTYPE.setLanguage("ru"));
+    assert.equal(await credit.innerText(), "Дизайн и разработка – Datum Space");
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), 0);
   });
   await context.close();
 }
 {
-  // A per-language destination (as planned for the Datum Space page) and a link without URL.
-  const patch = 'window.WIWI_DATA.footerLinks[2].url = { en: "https://datum.example/en/websites/", ka: "https://datum.example/ka/websites/", ru: "https://datum.example/ru/websites/" }; window.WIWI_DATA.footerLinks[1].url = null;';
+  // A per-language destination, a link without URL, and a credit without URL.
+  const patch = 'window.WIWI_DATA.footerLinks[0].url = { en: "https://wiwi.example/en/", ka: "https://wiwi.example/ka/", ru: "https://wiwi.example/ru/" }; window.WIWI_DATA.footerLinks[1].url = null; window.WIWI_DATA.footerCredit.url = null;';
   for (const [w, h] of [[1440, 900], [390, 844]]) {
     const { page, context } = await open(w, h, { patchData: patch });
-    await check(`footer: per-language URL follows the language; a link without URL is hidden, ${w}px`, async () => {
+    await check(`footer: per-language URL follows the language; a link or credit without URL is hidden, ${w}px`, async () => {
       const links = page.locator("#footerLinks a");
-      assert.deepEqual(await links.allInnerTexts(), ["WIWI Association", "Website by Datum Space"]);
-      assert.equal(await links.nth(1).getAttribute("href"), "https://datum.example/en/websites/");
+      assert.deepEqual(await links.allInnerTexts(), ["WIWI Association"]);
+      assert.equal(await links.nth(0).getAttribute("href"), "https://wiwi.example/en/");
+      assert.ok(await page.locator("#footerCredit").isHidden(), "credit hidden without URL");
       await page.evaluate(() => window.WIWI_PROTOTYPE.setLanguage("ka"));
-      assert.equal(await links.nth(1).getAttribute("href"), "https://datum.example/ka/websites/");
+      assert.equal(await links.nth(0).getAttribute("href"), "https://wiwi.example/ka/");
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), 0);
     });
     await context.close();

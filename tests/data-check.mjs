@@ -135,6 +135,12 @@ for (const l of D.footerLinks || []) {
   const urls = l.url == null ? [] : typeof l.url === "string" ? [l.url] : LANGS.map((code) => l.url[code]);
   if (urls.some((u) => !/^https:\/\/[^\s"]+$/.test(u || ""))) problems.push(`footer link ${l.label}: url must be https (or { en, ka, ru } of https), or null`);
 }
+if (D.footerCredit) {
+  const c = D.footerCredit;
+  if (!(c.label in UI.en)) problems.push(`footer credit: label must be an i18n.js key`);
+  const urls = c.url == null ? [] : typeof c.url === "string" ? [c.url] : LANGS.map((code) => c.url[code]);
+  if (urls.some((u) => !/^https:\/\/[^\s"]+$/.test(u || ""))) problems.push(`footer credit: url must be https (or { en, ka, ru } of https), or null`);
+}
 
 if (problems.length) {
   console.log(`data.js / i18n.js: ${problems.length} problem(s)\n- ${problems.join("\n- ")}`);

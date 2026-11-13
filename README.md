@@ -121,10 +121,11 @@ between them exist once; only the texts carry three versions, side by side:
 - **Explore in Clavelo**: `tours[].clavelo.url` — a published ordinary Clavelo share link
   (`https://app.clavelo.cc/?share=…`). Only such a link is shown, labelled sample/draft/not a
   booking. `null` today.
-- **Footer links**: `footerLinks` in `data.js`: WIWI Association (`https://wiwi.ge/en`), UVAMO!
-  (`https://uvamo.cc/`), Datum Space (`https://datumspace.cc/en/`, temporarily the home page; to be
-  replaced by `/en/websites/` and its localized equivalents — `url` accepts `{ en, ka, ru }`). A link
-  appears only with a URL. The Datum Space credit on production WIWI Tours is subject to WIWI approval.
+- **Footer links**: `footerLinks` in `data.js`: WIWI Association (`https://wiwi.ge/en`) and UVAMO!
+  (`https://uvamo.cc/`). A link appears only with a URL; `url` accepts `{ en, ka, ru }`.
+- **Developer credit**: `footerCredit` in `data.js` — “Designed & developed by Datum Space”, linking to
+  Datum Digital (`https://digital.datumspace.cc/`), small on the right of the bottom footer row (under
+  the note on a phone), as on UVAMO! and Clavelo. Approved by WIWI. Hidden if `url` is cleared.
 
 ## Tests
 

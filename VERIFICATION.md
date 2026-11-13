@@ -9,13 +9,14 @@ purpose. Not tested: Safari, Firefox, real phones, live map tiles; none of the e
   independent of script state. `tests/navigation.mjs` covers it from an open Journey.
 - **Explore in Clavelo** block on the tour page, shown only for a real public share link (none yet).
 - **Hero regions**: pin ↔ region highlight with localized region names (Natural Earth admin-1).
-- **Footer links**: WIWI Association (`https://wiwi.ge/en`), UVAMO! (`https://uvamo.cc/`), Datum Space (`https://digital.datumspace.cc/`; credit on production subject to WIWI approval). Partners block now links UVAMO! to `https://uvamo.cc/`.
+- **Footer links**: WIWI Association (`https://wiwi.ge/en`), UVAMO! (`https://uvamo.cc/`). Partners block now links UVAMO! to `https://uvamo.cc/`.
+- **Developer credit** (13 Nov, approved by WIWI): “Designed & developed by Datum Space” → `https://digital.datumspace.cc/`, a separate line on the right of the bottom footer row, localized EN/KA/RU.
 
 | Suite | Result |
 |---|---|
 | `node tests/data-check.mjs` | OK — 130 interface keys × 3 languages |
 | `node tests/navigation.mjs` — logo → home from an open Journey, 3 languages × desktop/phone × 2 entries × 2 logos | **24 / 24 passed** |
-| `node tests/smoke.mjs` — acceptance list incl. hero regions, Clavelo CTA, footer links | **33 / 33 passed** |
+| `node tests/smoke.mjs` — acceptance list incl. hero regions, Clavelo CTA, footer links and credit | **35 / 35 passed** |
 | `node tests/i18n.mjs` — EN / KA / RU × 1440, 390, 320 px | **54 / 54 passed** |
 
 ## Full output
@@ -74,9 +75,11 @@ PASS  no Clavelo link without a share URL (today)
 PASS  Clavelo CTA: valid share link is shown
 PASS  Clavelo CTA: non-share URL is dropped
 PASS  Clavelo CTA: other site is dropped
-PASS  footer: WIWI, UVAMO! and Datum Space links, localized, open in a new tab
-PASS  footer: per-language URL follows the language; a link without URL is hidden, 1440px
-PASS  footer: per-language URL follows the language; a link without URL is hidden, 390px
+PASS  footer: WIWI and UVAMO! links, localized, open in a new tab
+PASS  footer: Datum Space credit on the right of the bottom row, localized, 1440px
+PASS  footer: Datum Space credit on the right of the bottom row, localized, 390px
+PASS  footer: per-language URL follows the language; a link or credit without URL is hidden, 1440px
+PASS  footer: per-language URL follows the language; a link or credit without URL is hidden, 390px
 PASS  second tour: card links to its own route, map and stops switch
 PASS  6. 390px: no horizontal scroll
 PASS  6. 390px: activity → map → pin popup → back to activity
