@@ -11,7 +11,7 @@
   // Версия изменяемых файлов (CSS, JS, снимки). Ставит node version-assets.mjs;
   // адрес снимка меняется вместе с содержимым, поэтому кэш браузера не
   // смешивает выпуски.
-  const ASSET_VERSION = "66e413c1de";
+  const ASSET_VERSION = "9f2fbe0b32";
 
   const TRANSLATIONS = {
     en: {
