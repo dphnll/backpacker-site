@@ -32,7 +32,8 @@ const dictKey = (where, kind, key) => {
 
 // ---------- localized text ----------
 // Names that stay the same in every language may be plain strings.
-const UNTRANSLATED = new Set(["ChkhaValley Winery", "WIWI Tours", "UVAMO!", "Clavelo"]);
+const UNTRANSLATED = new Set(["ChkhaValley Winery", "WIWI Tours", "UVAMO!", "Clavelo", "Exponati"]);
+const BRAND_WORDS = /WIWI|UVAMO!?|ChkhaValley(?: Winery)?|Clavelo|Simonica|Simonika|Argvani|Exponati|Sisters|Three Sisters|Baia.?s Wine|Sarishvili|Sarajishvili|Facebook|Instagram|A 7-Day Boutique Wine & Culinary Journey/g;
 function text(where, value, { optional = false } = {}) {
   if (value == null) {
     if (!optional) problems.push(`${where}: missing text`);
@@ -44,10 +45,10 @@ function text(where, value, { optional = false } = {}) {
   }
   for (const code of LANGS) if (!value[code]?.trim()) problems.push(`${where}: no ${code.toUpperCase()} text`);
   for (const code of Object.keys(value)) if (!LANGS.includes(code)) problems.push(`${where}: unknown language "${code}"`);
-  if (value.ka && /[A-Za-z]{4,}/.test(value.ka.replace(/WIWI|UVAMO!?|ChkhaValley Winery|Clavelo|Simonika|Simonica|A 7-Day Boutique Wine & Culinary Journey/g, ""))) {
+  if (value.ka && /[A-Za-z]{4,}/.test(value.ka.replace(BRAND_WORDS, ""))) {
     problems.push(`${where}: KA text contains Latin words: "${value.ka.slice(0, 40)}"`);
   }
-  if (value.ru && /[A-Za-z]{4,}/.test(value.ru.replace(/WIWI|UVAMO!?|ChkhaValley Winery|Clavelo|Simonika|Simonica|A 7-Day Boutique Wine & Culinary Journey/g, ""))) {
+  if (value.ru && /[A-Za-z]{4,}/.test(value.ru.replace(BRAND_WORDS, ""))) {
     problems.push(`${where}: RU text contains Latin words: "${value.ru.slice(0, 40)}"`);
   }
 }
@@ -127,7 +128,21 @@ for (const [id, p] of Object.entries(D.people)) {
   text(`${where} business`, p.business, { optional: true });
   text(`${where} note`, p.note, { optional: true });
   text(`${where} story`, p.story, { optional: true });
+  text(`${where} location`, p.location, { optional: true });
+  text(`${where} wines`, p.wines, { optional: true });
   dictKey(where, "region", p.region);
+  for (const field of ["photo", "logo"]) {
+    if (p[field] && !/^\.\/assets\/[A-Za-z0-9_./-]+\.(?:jpg|jpeg|png|webp|svg)$/i.test(p[field])) problems.push(`${where}: ${field} must be a local asset`);
+  }
+  for (const [i, item] of (p.gallery || []).entries()) {
+    if (!/^\.\/assets\/[A-Za-z0-9_./-]+\.(?:jpg|jpeg|png|webp|svg)$/i.test(item.src || "")) problems.push(`${where}: gallery ${i + 1} must be a local asset`);
+    if (!["wine", "atmosphere"].includes(item.kind)) problems.push(`${where}: gallery ${i + 1} has an unknown kind`);
+    text(`${where} gallery ${i + 1} alt`, item.alt);
+  }
+  for (const [kind, url] of Object.entries(p.links || {})) {
+    if (!["website", "instagram", "facebook", "wiwi"].includes(kind)) problems.push(`${where}: unknown link kind "${kind}"`);
+    if (!/^https:\/\/[^\s"]+$/.test(url || "")) problems.push(`${where}: ${kind} must be a complete https URL`);
+  }
 }
 for (const p of D.partners) if (!(p.role in UI.en)) problems.push(`partner ${p.name}: role must be an i18n.js key`);
 for (const l of D.footerLinks || []) {
@@ -141,6 +156,18 @@ if (D.footerCredit) {
   const urls = c.url == null ? [] : typeof c.url === "string" ? [c.url] : LANGS.map((code) => c.url[code]);
   if (urls.some((u) => !/^https:\/\/[^\s"]+$/.test(u || ""))) problems.push(`footer credit: url must be https (or { en, ka, ru } of https), or null`);
 }
+
+// 25 November route invariants: prevent a quiet return of the superseded base tour.
+const west = D.tours.find((tour) => tour.id === "west");
+const westText = JSON.stringify(west);
+for (const stale of ["Miranda", "Миранда", "მირანდა", "Lomtadze", "Ломтадзе", "ლომთაძე", "Khvanchkara", "Хванчкара", "ხვანჭკარა", "Lechkhumi", "Лечхуми", "ლეჩხუმი"]) {
+  if (westText.includes(stale)) problems.push(`west route: stale base-tour content "${stale}"`);
+}
+for (const id of ["d2-chkhavalley", "d2-sarishvili", "d3-argvani", "d4-simonica", "d5-exponati"]) {
+  if (!ids.has(id)) problems.push(`west route: missing required activity "${id}"`);
+}
+if (west?.days?.length !== 6) problems.push("west route: must remain a six-day working route");
+if (west?.clavelo?.url != null) problems.push("west route: stale Clavelo share must stay hidden until synchronized");
 
 if (problems.length) {
   console.log(`data.js / i18n.js: ${problems.length} problem(s)\n- ${problems.join("\n- ")}`);

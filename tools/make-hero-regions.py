@@ -30,7 +30,7 @@ REGIONS = {
     "GE-RK": "racha-lechkhumi-kvemo-svaneti",
     "GE-MM": "mtskheta-mtianeti",
     "GE-TB": "tbilisi",
-    "GE-SZ": "samegrelo-zemo-svaneti",
+    "GE-SZ": "samegrelo",
     "GE-SD": "shida-kartli",
     "GE-KK": "kvemo-kartli",
     "GE-KA": "kakheti",
@@ -40,8 +40,12 @@ REGIONS = {
 # Stops: read coordinates from data.js (the only source of truth for places).
 data = open(os.path.join(HERE, "data.js"), encoding="utf8").read()
 places = {}
-for m in re.finditer(r'\n    "?([a-z-]+)"?: \{\n(?:      [^\n]*\n)*?      coord: \[([\d.]+), ([\d.]+)\]', data):
-    places[m.group(1)] = (float(m.group(2)), float(m.group(3)))
+# Place objects may use either the expanded editorial style or compact fields on
+# one line. Read each four-space property block, then look for a coordinate in it.
+for m in re.finditer(r'^    "?([a-z-]+)"?:\s*\{(.*?)(?=^    \},?\s*$)', data, re.M | re.S):
+    coord = re.search(r'coord:\s*\[([\d.]+),\s*([\d.]+)\]', m.group(2))
+    if coord:
+        places[m.group(1)] = (float(coord.group(1)), float(coord.group(2)))
 
 
 def px(lon, lat):
