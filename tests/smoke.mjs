@@ -25,6 +25,12 @@ async function open(width, height, { patchData = "", blockLeaflet = false, query
   const page = await context.newPage();
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
+  page.on("requestfailed", (request) => {
+    if (!request.url().includes("tile.openstreetmap.org")) errors.push(`request failed: ${request.url()} · ${request.failure()?.errorText}`);
+  });
+  page.on("response", (response) => {
+    if (response.url().startsWith(BASE) && response.status() >= 400) errors.push(`HTTP ${response.status()}: ${response.url()}`);
+  });
   await page.route(/tile\.openstreetmap\.org/, (route) => route.abort());
   if (blockLeaflet) await page.route(/leaflet\.js$/, (route) => route.abort());
   if (patchData) {
@@ -71,7 +77,7 @@ async function tapPin(page, placeName) {
     assert.equal(await page.locator(".tour").count(), 2);
     assert.match(await page.locator(".tour-west .status").innerText(), /in draft/i);
     assert.match(await page.locator(".tour-east .status").innerText(), /in development/i);
-    assert.match(await page.locator(".tour-west").innerText(), /English text says 7 days/);
+    assert.match(await page.locator(".tour-west").innerText(), /6-day working route/);
     assert.equal(await page.locator(".tour-east [data-tour]").count(), 0, "no itinerary for the tour in development");
     assert.match(await page.locator(".hero-notice").innerText(), /not a commercial offer/i);
   });
@@ -86,7 +92,7 @@ async function tapPin(page, placeName) {
     assert.ok(await page.locator("#route").isVisible());
     assert.ok(await page.locator(".hero").isHidden());
     assert.ok(await page.locator("#journeys").isHidden());
-    assert.match(await page.locator("#route-title").innerText(), /Guests of Women Winemakers/);
+    assert.match(await page.locator("#route-title").innerText(), /Visiting Women Winemakers/);
     await page.locator(".back-link").click();
     await settle(page);
     assert.equal(new URL(page.url()).searchParams.get("tour"), null);
@@ -134,13 +140,13 @@ async function tapPin(page, placeName) {
     assert.equal(st.label, "Imereti");
     assert.deepEqual(st.pins, ["kutaisi", "obcha"]);
     // Region territory (away from pins) → its pins
-    const box = await page.locator('#heroRegions path[data-region="racha-lechkhumi-kvemo-svaneti"]').boundingBox();
-    await page.mouse.move(box.x + box.width * 0.85, box.y + box.height * 0.45);
+    const samegrelo = page.locator('#heroRegions path[data-region="samegrelo"]');
+    await samegrelo.dispatchEvent("pointerover");
     await page.waitForTimeout(150);
     st = await state();
-    assert.deepEqual(st.regions, ["racha-lechkhumi-kvemo-svaneti"]);
-    assert.deepEqual(st.pins, ["khvanchkara", "nikortsminda", "shaori", "tvishi"]);
-    assert.equal(st.label, "Racha-Lechkhumi and Kvemo Svaneti");
+    assert.deepEqual(st.regions, ["samegrelo"]);
+    assert.deepEqual(st.pins, ["argvani"]);
+    assert.equal(st.label, "Samegrelo");
     // Leave → original appearance
     await page.mouse.move(5, 500);
     await page.waitForTimeout(150);
@@ -153,9 +159,9 @@ async function tapPin(page, placeName) {
     await page.locator('.hero-pin[data-hero-place="mtskheta"]').blur();
     assert.equal((await state()).label, null);
     // Localized names
-    for (const [code, name] of [["ka", "რაჭა-ლეჩხუმი და ქვემო სვანეთი"], ["ru", "Рача-Лечхуми и Квемо-Сванети"], ["en", "Racha-Lechkhumi and Kvemo Svaneti"]]) {
+    for (const [code, name] of [["ka", "სამეგრელო"], ["ru", "Самегрело"], ["en", "Samegrelo"]]) {
       await page.evaluate((c) => window.WIWI_PROTOTYPE.setLanguage(c), code);
-      await page.locator('.hero-pin[data-hero-place="tvishi"]').hover();
+      await page.locator('.hero-pin[data-hero-place="argvani"]').hover();
       await page.waitForTimeout(150);
       assert.equal((await state()).label, name, code);
       await page.mouse.move(5, 500);
@@ -169,30 +175,44 @@ async function tapPin(page, placeName) {
   await check("hero pin opens the tour at that stop", async () => {
     await page.goto(BASE, { waitUntil: "load" }); // home page
     await page.waitForTimeout(300);
-    await page.locator('.hero-pin[data-hero-place="tvishi"]').click();
+    await page.locator('.hero-pin[data-hero-place="argvani"]').click();
     await settle(page);
     assert.equal(new URL(page.url()).searchParams.get("tour"), "west");
     assert.equal(await page.locator("#day-3 .day-toggle").getAttribute("aria-expanded"), "true");
-    assert.ok(await page.locator("#activity-d3-tvishi").evaluate((el) => el.classList.contains("is-active")));
-    assert.ok(await page.locator("#activity-d3-tvishi").isVisible());
+    assert.ok(await page.locator("#activity-d3-argvani").evaluate((el) => el.classList.contains("is-active")));
+    assert.ok(await page.locator("#activity-d3-argvani").isVisible());
     const [lat, lng] = await mapCenter(page);
-    assert.ok(near(lat, 42.54) && near(lng, 42.73), `map at ${lat},${lng}`);
-    // Reload the tour page so the next checks start with days 1–2 open, as on a first visit.
+    assert.ok(near(lat, 42.39) && near(lng, 42.36), `map at ${lat},${lng}`);
+    // Reload the tour page so the next checks start from the calm collapsed overview.
     await page.goto(BASE + "?tour=west", { waitUntil: "load" });
     await page.waitForTimeout(300);
-    assert.equal(await page.locator("#day-3 .day-toggle").getAttribute("aria-expanded"), "false");
+    assert.equal(await page.locator('.day-toggle[aria-expanded="true"]').count(), 0);
+    assert.equal(await page.locator("#legend").count(), 0, "the redundant draft legend is removed");
   });
 
   await check("2. Western Georgia by day and activity", async () => {
     assert.equal(await page.locator(".day").count(), 6);
-    assert.equal(await page.locator(".activity").count(), 31);
+    assert.equal(await page.locator(".activity").count(), 15);
     const day3 = page.locator("#day-3 .day-toggle");
     assert.equal(await day3.getAttribute("aria-expanded"), "false");
     await day3.click();
     assert.equal(await day3.getAttribute("aria-expanded"), "true");
-    assert.ok(await page.locator("#activity-d3-tvishi").isVisible());
+    assert.ok(await page.locator("#activity-d3-argvani").isVisible());
     await day3.click();
     assert.equal(await page.locator("#day-3-body").isHidden(), true);
+  });
+
+  await check("2b. an open day is one card with an internal timeline", async () => {
+    await page.locator("#day-2 .day-toggle").click();
+    assert.equal(await page.locator("#day-2 .day-timeline").count(), 1);
+    const styles = await page.locator("#activity-d2-chkhavalley").evaluate((el) => {
+      const css = getComputedStyle(el);
+      return { background: css.backgroundColor, radius: css.borderRadius, shadow: css.boxShadow, borderLeft: css.borderLeftWidth };
+    });
+    assert.equal(styles.background, "rgba(0, 0, 0, 0)");
+    assert.equal(styles.radius, "0px");
+    assert.equal(styles.shadow, "none");
+    assert.equal(styles.borderLeft, "0px");
   });
 
   await check("3a. person modal opens, Escape closes, focus returns", async () => {
@@ -200,41 +220,59 @@ async function tapPin(page, placeName) {
     await btn.click();
     assert.equal(await page.locator("#detail").getAttribute("open"), "");
     assert.equal(await page.locator("#detail-title").innerText(), "Maka Tedoradze");
-    assert.equal(await page.locator("#detail img").count(), 0, "no photograph is invented");
+    assert.equal(await page.locator("#detail img").count(), 3, "supplied portrait, logo and atmosphere image are shown");
+    assert.equal(await page.locator("#detail .profile-links a").count(), 3, "three official ChkhaValley links are visible");
     await page.keyboard.press("Escape");
     assert.equal(await page.locator("#detail").getAttribute("open"), null);
     assert.ok(await btn.evaluate((el) => el === document.activeElement));
   });
 
+  await check("3a. profile cards show only available assets and verified links", async () => {
+    assert.equal(await page.locator(".profile-card").count(), 5);
+    const maka = page.locator('.profile-card[data-profile="maka-tedoradze"]');
+    assert.equal(await maka.locator("img").count(), 3, "portrait, logo and atmosphere image");
+    assert.deepEqual(await maka.locator(".profile-links a").allInnerTexts(), ["Website", "Instagram", "Facebook"]);
+    for (const link of await maka.locator(".profile-links a").all()) {
+      assert.equal(await link.getAttribute("target"), "_blank");
+      assert.match(await link.getAttribute("rel"), /noopener/);
+      assert.match(await link.getAttribute("rel"), /noreferrer/);
+    }
+    const sarishvili = page.locator('.profile-card[data-profile="sarishvili"]');
+    assert.equal(await sarishvili.locator("img").count(), 1, "only the supplied wine image is shown");
+    assert.equal(await sarishvili.locator(".profile-links a").count(), 0, "no invented channels");
+    assert.equal(await page.locator('.profile-card[data-profile="khatia-jakhua"] img').count(), 0, "no fabricated portrait");
+    assert.equal(await page.locator('.profile-card[data-profile="exponati-host"] img').count(), 0, "no fabricated Exponati media");
+  });
+
   await check("3b. uncertain host is labelled, not presented as confirmed", async () => {
-    await page.locator('.person-card[data-person="lomtadze"]').click();
+    await page.locator('.profile-card[data-profile="exponati-host"] [data-person]').click();
     const text = await page.locator("#detail").innerText();
     assert.match(text, /to confirm/i);
-    assert.match(text, /woman winemaker or host .* still to be confirmed/i);
+    assert.match(text, /Manana must supply the host/i);
     await page.locator("#detail-close").click();
   });
 
   await check("3c. place modal → Show on map focuses the place", async () => {
     await page.locator("#day-3 .day-toggle").click();
-    await page.locator('#activity-d3-tvishi [data-place="tvishi"]').click();
-    assert.equal(await page.locator("#detail-title").innerText(), "Tvishi");
+    await page.locator('#activity-d3-argvani [data-place="argvani"]').click();
+    assert.equal(await page.locator("#detail-title").innerText(), "Family Winery Argvani");
     assert.match(await page.locator("#detail").innerText(), /approximate/i);
     await page.locator("#detail [data-map-place]").click();
     await settle(page);
     assert.equal(await page.locator("#detail").getAttribute("open"), null);
     const [lat, lng, zoom] = await mapCenter(page);
-    assert.ok(near(lat, 42.54) && near(lng, 42.73) && zoom >= 10, `center ${lat},${lng} z${zoom}`);
+    assert.ok(near(lat, 42.39) && near(lng, 42.36) && zoom >= 10, `center ${lat},${lng} z${zoom}`);
     assert.equal(await page.locator(".pin.is-active").count(), 1);
     assert.ok(await page.locator(".leaflet-popup").isVisible());
   });
 
   await check("4a. activity → Show on map", async () => {
     await page.locator("#day-4 .day-toggle").click();
-    await page.locator("#activity-d4-chkheidze [data-map]").click();
+    await page.locator("#activity-d4-simonica [data-map]").click();
     await settle(page);
     const [lat, lng] = await mapCenter(page);
     assert.ok(near(lat, 42.2) && near(lng, 42.8), `center ${lat},${lng}`);
-    assert.ok(await page.locator("#activity-d4-chkheidze").evaluate((el) => el.classList.contains("is-active")));
+    assert.ok(await page.locator("#activity-d4-simonica").evaluate((el) => el.classList.contains("is-active")));
   });
 
   await check("4b. Show full route returns to overview", async () => {
@@ -250,21 +288,21 @@ async function tapPin(page, placeName) {
     await page.locator("#toggleAll").click(); // close all
     assert.equal(await page.locator("#day-3-body").isHidden(), true);
     const zoomBefore = (await mapCenter(page))[2];
-    const extraTaps = await tapPin(page, "Khvanchkara");
-    if (extraTaps) assert.ok((await mapCenter(page))[2] > zoomBefore, "crowded pin zooms in");
+    const extraTaps = await tapPin(page, "Family Winery Argvani");
+    if (extraTaps) assert.ok((await mapCenter(page))[2] > zoomBefore, "overlapping pin zooms in");
     assert.equal(await page.locator("#day-3 .day-toggle").getAttribute("aria-expanded"), "true");
-    const active = page.locator("#activity-d3-lomtadze");
+    const active = page.locator("#activity-d3-argvani");
     assert.ok(await active.evaluate((el) => el.classList.contains("is-active")));
     assert.ok(await active.isVisible());
   });
 
   await check("5. every wine has See wine; without a UVAMO! URL the card says so and links nowhere", async () => {
-    assert.equal(await page.locator(".action-see-wine").count(), 5);
-    assert.equal(await page.locator("button.activity-tile[data-wine]").count(), 5);
+    assert.equal(await page.locator(".action-see-wine").count(), 4);
+    assert.equal(await page.locator("button.activity-tile[data-wine]").count(), 4);
     assert.equal(await page.locator(".action-wine").count(), 0);
     if (await page.locator("#day-2-body").isHidden()) await page.locator("#day-2 .day-toggle").click();
     await page.locator("#activity-d2-chkhavalley .action-see-wine").click();
-    assert.equal(await page.locator("#detail-title").innerText(), "Chkhaveri, Adjarian style");
+    assert.equal(await page.locator("#detail-title").innerText(), "Chkhaveri and Tsolikouri");
     const text = await page.locator("#detail").innerText();
     assert.match(text, /will appear here once WIWI shares its public tasting link/);
     assert.match(text, /ChkhaValley Winery/);
@@ -272,20 +310,20 @@ async function tapPin(page, placeName) {
     assert.equal(await page.locator('#detail a[href*="tasting"]').count(), 0);
     await page.keyboard.press("Escape");
     await page.locator("#activity-d2-sarishvili button.activity-tile").click();
-    assert.equal(await page.locator("#detail-title").innerText(), "Chkhaveri, Gurian style");
+    assert.equal(await page.locator("#detail-title").innerText(), "Chkhaveri");
     await page.keyboard.press("Escape");
   });
 
   await check("7. tentative, seasonal and review markers visible", async () => {
     assert.ok((await page.locator(".activity .status-to-confirm").count()) >= 8);
     assert.match(await page.locator("#activity-d2-chkhavalley .flag-line-seasonal").innerText(), /mandarin/i);
-    assert.equal(await page.locator(".review-note").count(), 2);
+    assert.equal(await page.locator(".review-note").count(), 4);
     assert.match(await page.locator(".map-note").innerText(), /approximate/i);
   });
 
   await check("map works without tiles (tiles blocked)", async () => {
     assert.ok(await page.locator("#mapNotice").isVisible());
-    assert.equal(await page.locator(".pin").count(), 11);
+    assert.equal(await page.locator(".pin").count(), 8);
   });
 
   await check("no script errors (desktop)", async () => assert.deepEqual(errors, []));
@@ -296,12 +334,13 @@ async function tapPin(page, placeName) {
 {
   const patch = `
     const days = window.WIWI_DATA.tours[0].days;
-    const a = days[1].activities[1];
+    const a = days[1].activities[0];
     a.links = { uvamoWine: "https://uvamo.example/tasting/snap_01/wine/2", uvamoSet: "https://uvamo.example/tasting/snap_01" };
-    days[1].activities[3].links = { uvamoWine: "https://uvamo.example/somewhere-else", uvamoSet: "javascript:alert(1)" };`;
+    days[1].activities[1].links = { uvamoWine: "https://uvamo.example/somewhere-else", uvamoSet: "javascript:alert(1)" };`;
   const { page, context } = await open(1440, 900, { patchData: patch, query: "?tour=west" });
   await check("5b. a valid UVAMO! URL shows the wine card from UVAMO!, an invalid one is dropped", async () => {
     await page.route(/uvamo\.example/, (route) => route.fulfill({ contentType: "text/html", body: "<h1>UVAMO wine card</h1>" }));
+    await page.locator("#day-2 .day-toggle").click();
     await page.locator("#activity-d2-chkhavalley .action-see-wine").click();
     assert.equal(await page.locator("#detail iframe").getAttribute("src"), "https://uvamo.example/tasting/snap_01/wine/2");
     const links = page.locator("#detail .action-wine");
@@ -321,12 +360,8 @@ async function tapPin(page, placeName) {
 // ---------- "Explore in Clavelo" only with a real public share link ----------
 {
   const { page, context } = await open(1440, 900, { query: "?tour=west" });
-  await check("published Clavelo sample: one public share link, labelled sample, new tab", async () => {
-    const a = page.locator(".clavelo-preview a");
-    assert.equal(await a.count(), 1);
-    assert.match(await a.getAttribute("href"), /^https:\/\/app\.clavelo\.cc\/\?share=[0-9a-f]+$/);
-    assert.equal(await a.getAttribute("target"), "_blank");
-    assert.match(await page.locator(".clavelo-preview").innerText(), /not a booking/i);
+  await check("outdated Clavelo sample is hidden", async () => {
+    assert.equal(await page.locator(".clavelo-preview").count(), 0);
   });
   await context.close();
 }
@@ -347,9 +382,9 @@ for (const [label, url, shown] of [
       assert.match(await page.locator(".clavelo-preview").innerText(), /not a booking/i);
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), 0, "phone layout intact");
       await page.evaluate(() => window.WIWI_PROTOTYPE.setLanguage("ka"));
-      assert.equal((await a.innerText()).replace(" ↗", ""), "ნახვა Clavelo-ში");
+      assert.equal(await a.innerText(), "ნახვა Clavelo-ში");
       await page.evaluate(() => window.WIWI_PROTOTYPE.setLanguage("ru"));
-      assert.equal((await a.innerText()).replace(" ↗", ""), "Открыть в Clavelo");
+      assert.equal(await a.innerText(), "Открыть в Clavelo");
     }
     assert.deepEqual(errors, []);
   });
@@ -451,8 +486,8 @@ for (const [w, h] of [[1440, 900], [390, 844]]) {
     await settle(page);
     await page.locator(".tour-west [data-tour]").click();
     await settle(page);
-    assert.equal(await page.locator(".activity").count(), 31);
-    assert.equal(await page.locator(".pin").count(), 11);
+    assert.equal(await page.locator(".activity").count(), 15);
+    assert.equal(await page.locator(".pin").count(), 8);
     assert.deepEqual(errors, []);
   });
   await context.close();
@@ -467,6 +502,7 @@ for (const [w, h] of [[390, 844], [320, 640]]) {
   await check(`6. ${w}px: activity → map → pin popup → back to activity`, async () => {
     assert.ok(await page.locator(".view-switch").isVisible());
     assert.ok(await page.locator("#map-pane").isHidden());
+    await page.locator("#day-2 .day-toggle").click();
     await page.locator("#activity-d2-sarishvili [data-map]").click();
     await settle(page);
     assert.ok(await page.locator("#map-pane").isVisible());
@@ -486,7 +522,7 @@ for (const [w, h] of [[390, 844], [320, 640]]) {
     assert.ok(box.y >= 0 && box.y < h, `card y=${box.y}`);
   });
   await check(`6. ${w}px: modal fits the screen`, async () => {
-    await page.locator('.person-card[data-person="miranda"]').click();
+    await page.locator('.profile-card[data-profile="khatia-jakhua"] [data-person]').click();
     const box = await page.locator("#detail").boundingBox();
     assert.ok(box.x >= 0 && box.x + box.width <= w, `dialog ${box.x}+${box.width}`);
     await page.keyboard.press("Escape");
@@ -500,7 +536,7 @@ for (const [w, h] of [[390, 844], [320, 640]]) {
   const { page, context } = await open(1440, 900, { blockLeaflet: true, query: "?tour=west" });
   await check("map library missing: itinerary and stops still work", async () => {
     assert.ok(await page.locator("#mapNotice").isVisible());
-    assert.equal(await page.locator(".activity").count(), 31);
+    assert.equal(await page.locator(".activity").count(), 15);
     await page.locator('.stop[data-stop="mtskheta"]').click();
     await settle(page);
     assert.ok(await page.locator("#activity-d5-mtskheta").evaluate((el) => el.classList.contains("is-active")));

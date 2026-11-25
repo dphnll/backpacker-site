@@ -41,6 +41,7 @@
   // Recurring terms may be a dictionary key (topic.*, flag.*) or an inline { en, ka, ru }.
   const term = (kind, value) => (typeof value === "string" ? t(`${kind}.${value}`) : L(value));
   const region = (key) => t(`region.${key}`);
+  const externalUrl = (value) => (typeof value === "string" && /^https:\/\/[^\s"']+$/.test(value) ? value : null);
 
   function urlWith(changes) {
     const url = new URL(location.href);
@@ -122,25 +123,6 @@
     ).join("");
 
     $("#tours").innerHTML = DATA.tours.map(tourCard).join("");
-
-    $("#legend").innerHTML = [
-      ["status status-draft", t("legend.draft")],
-      ["status status-to-confirm", t("legend.toConfirm")],
-      ["flag flag-seasonal", t("legend.seasonal")],
-      ["flag flag-review", t("legend.review")],
-      ["flag flag-approx", t("legend.approx")],
-    ]
-      .map(([cls, label]) => `<li><span class="${cls}" aria-hidden="true"></span>${esc(label)}</li>`)
-      .join("");
-
-
-    $("#partners").innerHTML = DATA.partners
-      .map((p) => `
-        <article class="partner">
-          <h3>${p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.name)}</a>` : esc(p.name)}</h3>
-          <p>${esc(t(p.role))}</p>
-        </article>`)
-      .join("");
 
     $("#footerLinks").innerHTML = (DATA.footerLinks || [])
       .map((l) => ({ ...l, url: L(l.url) }))
@@ -279,7 +261,9 @@
   }
 
   const question = (id) => (tour.openQuestions || []).find((q) => q.id === id);
-  const OPEN_BY_DEFAULT = [1, 2];
+  // The detailed route opens as a calm overview; readers expand only the days
+  // they want to inspect. Language changes preserve their current choices.
+  const OPEN_BY_DEFAULT = [];
 
   function renderDays(openDays) {
     return tour.days
@@ -300,7 +284,9 @@
             </h3>
             <div class="day-body" id="day-${day.n}-body"${open ? "" : " hidden"}>
               ${review ? `<p class="review-note"><strong>${esc(L(review.title))}.</strong> ${esc(L(review.text))}</p>` : ""}
-              ${day.activities.map((a) => activityCard({ ...a, day: day.n })).join("")}
+              <div class="day-timeline">
+                ${day.activities.map((a) => activityCard({ ...a, day: day.n })).join("")}
+              </div>
             </div>
           </section>`;
       })
@@ -340,17 +326,62 @@
     }
   }
 
+  const PROFILE_LINK_LABELS = {
+    website: "profile.website",
+    instagram: "profile.instagram",
+    facebook: "profile.facebook",
+    wiwi: "profile.wiwi",
+  };
+
+  function profileLinks(p) {
+    const links = Object.entries(p.links || {})
+      .map(([kind, url]) => [kind, externalUrl(url)])
+      .filter(([kind, url]) => url && PROFILE_LINK_LABELS[kind]);
+    if (!links.length) return `<p class="profile-links-empty">${esc(t("profile.linksPending"))}</p>`;
+    return `<nav class="profile-links" aria-label="${esc(t("profile.linksLabel"))}">${links
+      .map(([kind, url]) => `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(t(PROFILE_LINK_LABELS[kind]))}</a>`)
+      .join("")}</nav>`;
+  }
+
+  function profileMedia(p, name, { dialog = false } = {}) {
+    const gallery = (p.gallery || []).filter((item) => item.src);
+    const photo = p.photo
+      ? `<img class="profile-portrait" src="${esc(p.photo)}" alt="${esc(name)}" />`
+      : `<div class="profile-fallback"><span class="detail-initials">${esc(initials(name))}</span><span>${esc(t("profile.portraitPending"))}</span></div>`;
+    const logo = p.logo
+      ? `<div class="profile-logo"><img src="${esc(p.logo)}" alt="${esc(t("profile.logoAlt", { winery: L(p.business) || name }))}" /></div>`
+      : `<div class="profile-logo profile-logo-missing"><span>${esc(t("profile.logoPending"))}</span></div>`;
+    const support = gallery.length
+      ? `<div class="profile-support${dialog ? " profile-support-dialog" : ""}">${gallery
+        .map((item) => `<figure class="profile-support-${esc(item.kind)}"><img src="${esc(item.src)}" alt="${esc(L(item.alt))}" /><figcaption>${esc(t(`profile.${item.kind}`))}</figcaption></figure>`)
+        .join("")}</div>`
+      : `<p class="profile-media-pending">${esc(t("profile.mediaPending"))}</p>`;
+    return `<div class="profile-media${dialog ? " profile-media-dialog" : ""}"><div class="profile-primary">${photo}${statusChip(p.status)}</div>${logo}${support}</div>`;
+  }
+
   const renderPeople = () => [...new Set(activities.flatMap((a) => a.people || []))]
     .map((id) => [id, DATA.people[id]])
-    .map(([id, p]) => `
-      <button type="button" class="person-card" data-person="${esc(id)}">
-        <span class="portrait" aria-hidden="true">${esc(initials(L(p.name)))}</span>
-        <span class="person-text">
-          <strong>${esc(L(p.name))}</strong>
-          <span>${p.business && L(p.business) !== L(p.name) ? `${esc(L(p.business))} · ` : ""}${esc(region(p.region))}</span>
-          ${statusChip(p.status)}
-        </span>
-      </button>`)
+    .map(([id, p]) => {
+      const name = L(p.name);
+      const business = L(p.business) || name;
+      const website = externalUrl(p.links?.website);
+      const businessTitle = website
+        ? `<a href="${esc(website)}" target="_blank" rel="noopener noreferrer">${esc(business)}</a>`
+        : esc(business);
+      return `
+        <article class="profile-card" data-profile="${esc(id)}">
+          ${profileMedia(p, name)}
+          <div class="profile-copy">
+            <p class="profile-location">${esc(L(p.location) || region(p.region))}</p>
+            <h4>${businessTitle}</h4>
+            <p class="profile-name">${esc(name)} · ${esc(L(p.role))}</p>
+            <p class="profile-story">${esc(L(p.story) || t("person.noStory"))}</p>
+            ${p.wines ? `<p class="profile-wines"><span>${esc(t("profile.wines"))}</span>${esc(L(p.wines))}</p>` : ""}
+            ${profileLinks(p)}
+            <button type="button" class="profile-open" data-person="${esc(id)}">${esc(t("profile.open"))}</button>
+          </div>
+        </article>`;
+    })
     .join("");
 
   const renderStops = () => mappedPlaces
@@ -414,7 +445,7 @@
           <span class="status status-draft">${esc(t("clavelo.badge"))}</span>
           <p>${esc(t("clavelo.text"))}</p>
         </div>
-        <a class="btn" href="${esc(url)}" target="_blank" rel="noopener">${esc(t("clavelo.cta"))} ↗</a>
+        <a class="btn" href="${esc(url)}" target="_blank" rel="noopener">${esc(t("clavelo.cta"))}</a>
       </div>`;
   };
 
@@ -664,16 +695,17 @@
       `${t("person.kicker")} · ${region(p.region)}`,
       name,
       `
-      <div class="detail-photo">
-        ${p.photo ? `<img src="${esc(p.photo)}" alt="${esc(name)}" />` : `<span class="detail-initials">${esc(initials(name))}</span><span>${esc(t("person.photo"))}</span>`}
-      </div>
+      ${profileMedia(p, name, { dialog: true })}
       <div class="detail-row">${statusChip(p.status)}<span>${esc(L(p.role))}</span></div>
       <dl class="facts detail-facts">
-        ${p.business && L(p.business) !== name ? `<div><dt>${esc(t("person.business"))}</dt><dd>${esc(L(p.business))}</dd></div>` : ""}
+        ${p.business && L(p.business) !== name ? `<div><dt>${esc(t("person.business"))}</dt><dd>${externalUrl(p.links?.website) ? `<a href="${esc(p.links.website)}" target="_blank" rel="noopener noreferrer">${esc(L(p.business))}</a>` : esc(L(p.business))}</dd></div>` : ""}
         <div><dt>${esc(t("person.region"))}</dt><dd>${esc(region(p.region))}</dd></div>
+        ${p.location ? `<div><dt>${esc(t("place.location"))}</dt><dd>${esc(L(p.location))}</dd></div>` : ""}
+        ${p.wines ? `<div><dt>${esc(t("profile.wines"))}</dt><dd>${esc(L(p.wines))}</dd></div>` : ""}
       </dl>
       <p class="detail-text">${esc(L(p.story) || t("person.noStory"))}</p>
       ${p.note ? `<p class="detail-note">${esc(L(p.note))}</p>` : ""}
+      ${profileLinks(p)}
       ${appears.length ? `<h4 class="detail-sub">${esc(t("person.appears"))}</h4>${activityLinks(appears)}` : ""}
       ${placeIds.length ? `<div class="actions">${placeIds.map((pid) => `<button type="button" class="action" data-place="${esc(pid)}">${icon("pin")}${esc(t("action.place"))} · ${esc(L(DATA.places[pid].name))}</button>`).join("")}</div>` : ""}
       `,
@@ -800,7 +832,7 @@
     }
   }
 
-  // Racha's stops sit a few kilometres apart and overlap at overview zoom:
+  // Nearby stops can overlap at overview zoom:
   // a tap on a crowded pin also zooms in so its neighbours can be reached.
   function zoomIfCrowded(placeId) {
     const here = map.latLngToContainerPoint(DATA.places[placeId].coord);

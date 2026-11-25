@@ -44,13 +44,13 @@ async function open(width, height, query = "") {
 
 // Words allowed to stay in Latin script on KA / RU pages: brands, the Leaflet
 // credit, Manana's quoted English title and the source spelling of a name.
-const ALLOWED_LATIN = /WIWI|Tours|UVAMO!?|Clavelo|ChkhaValley|Winery|Women in Wine Industry Georgia|Leaflet|OpenStreetMap|contributors|A 7-Day Boutique Wine & Culinary Journey|Simonika|Simonica|Datum Space/gi;
+const ALLOWED_LATIN = /WIWI|Tours|UVAMO!?|Clavelo|ChkhaValley|Winery|Women in Wine Industry Georgia|Leaflet|OpenStreetMap|contributors|Simonika|Simonica|Argvani|Exponati|Sisters|Three Sisters|Baia.?s Wine|Sarishvili|Sarajishvili|Instagram|Facebook|Datum Space/gi;
 const latinWords = (s) => (s.replace(ALLOWED_LATIN, "").match(/\b[A-Za-z]{3,}\b/g) || []);
 
 const EXPECT = {
-  en: { html: "en", west: "Guests of Women Winemakers", east: "In development", maka: "Maka Tedoradze", tvishi: "Tvishi", day: "Day 3", popup: "Approximate location", zoom: "Zoom in", wine: "Chkhaveri, Adjarian style", seeWine: "See wine" },
-  ka: { html: "ka", west: "ქალი მეღვინეების სტუმრად", east: "მზადდება", maka: "მაკა თედორაძე", tvishi: "ტვიში", day: "დღე 3", popup: "მიახლოებითი ადგილი", zoom: "გადიდება", wine: "ჩხავერი, აჭარული სტილი", seeWine: "ღვინის ნახვა" },
-  ru: { html: "ru", west: "В гостях у женщин-виноделов", east: "Готовится", maka: "Мака Тедорадзе", tvishi: "Твиши", day: "День 3", popup: "Приблизительное место", zoom: "Приблизить", wine: "Чхавери, аджарский стиль", seeWine: "Смотреть вино" },
+  en: { html: "en", west: "Visiting Women Winemakers · Western Georgia", east: "In development", maka: "Maka Tedoradze", argvani: "Family Winery Argvani", day: "Day 3", popup: "Approximate location", zoom: "Zoom in", wine: "Chkhaveri and Tsolikouri", seeWine: "See wine" },
+  ka: { html: "ka", west: "ქალი მეღვინეების სტუმრად · დასავლეთ საქართველო", east: "მზადდება", maka: "მაკა თედორაძე", argvani: "არგვანის საოჯახო მარანი", day: "დღე 3", popup: "მიახლოებითი ადგილი", zoom: "გადიდება", wine: "ჩხავერი და ცოლიკაური", seeWine: "ღვინის ნახვა" },
+  ru: { html: "ru", west: "В гостях у женщин-виноделов. Западная Грузия", east: "Готовится", maka: "Мака Тедорадзе", argvani: "Семейная винодельня Argvani", day: "День 3", popup: "Приблизительное место", zoom: "Приблизить", wine: "Чхавери и цоликоури", seeWine: "Смотреть вино" },
 };
 
 for (const [code, e] of Object.entries(EXPECT)) {
@@ -103,6 +103,13 @@ for (const [code, e] of Object.entries(EXPECT)) {
     await check(`${label}: wine, person and place dialogs`, async () => {
       if (w < 1000) await page.locator("#tab-itinerary").click();
       if (await page.locator("#day-2-body").isHidden()) await page.locator("#day-2 .day-toggle").click();
+      if (SHOTS) {
+        // Locator screenshots stitch tall mobile cards. Temporarily unstick the
+        // global chrome so it does not repeat through the captured card.
+        const shotStyle = await page.addStyleTag({ content: ".topbar{position:absolute!important}.view-switch{position:static!important}" });
+        await page.locator("#day-2").screenshot({ path: `${SHOTS}/${code}-${vp}-day2.png` });
+        await shotStyle.evaluate((el) => el.remove());
+      }
       const seeWine = page.locator("#activity-d2-chkhavalley .action-see-wine");
       assert.equal((await seeWine.innerText()).trim(), e.seeWine);
       await seeWine.click();
@@ -116,8 +123,8 @@ for (const [code, e] of Object.entries(EXPECT)) {
       if (code !== "en") assert.deepEqual([...new Set(latinWords(await page.locator("#detail").innerText()))], []);
       await page.keyboard.press("Escape");
       if (await page.locator("#day-3-body").isHidden()) await page.locator("#day-3 .day-toggle").click();
-      await page.locator('#activity-d3-tvishi [data-place="tvishi"]').click();
-      assert.equal(await page.locator("#detail-title").innerText(), e.tvishi);
+      await page.locator('#activity-d3-argvani [data-place="argvani"]').click();
+      assert.equal(await page.locator("#detail-title").innerText(), e.argvani);
       if (code !== "en") assert.deepEqual([...new Set(latinWords(await page.locator("#detail").innerText()))], []);
       const box = await page.locator("#detail").boundingBox();
       assert.ok(box.x >= 0 && box.x + box.width <= w, "dialog fits");
@@ -126,7 +133,7 @@ for (const [code, e] of Object.entries(EXPECT)) {
       await settle(page, 900);
       assert.equal(await page.locator("#detail").getAttribute("open"), null);
       const [lat, lng] = await page.evaluate(() => { const c = window.WIWI_PROTOTYPE.map.getCenter(); return [c.lat, c.lng]; });
-      assert.ok(Math.abs(lat - 42.54) < 0.05 && Math.abs(lng - 42.73) < 0.05, `map at ${lat},${lng}`);
+      assert.ok(Math.abs(lat - 42.39) < 0.05 && Math.abs(lng - 42.36) < 0.05, `map at ${lat},${lng}`);
       const popup = await page.locator(".leaflet-popup").innerText();
       assert.ok(popup.includes(e.popup), `popup: ${popup.slice(0, 80)}`);
       if (code !== "en") assert.deepEqual([...new Set(latinWords(popup))], []);
@@ -134,7 +141,7 @@ for (const [code, e] of Object.entries(EXPECT)) {
       if (SHOTS) await page.screenshot({ path: `${SHOTS}/${code}-${vp}-map.png` });
       await page.locator(".leaflet-popup [data-go]").first().click();
       await settle(page);
-      assert.ok(await page.locator("#activity-d3-tvishi").evaluate((el) => el.classList.contains("is-active")));
+      assert.ok(await page.locator("#activity-d3-argvani").evaluate((el) => el.classList.contains("is-active")));
     });
 
     if (SHOTS) {
@@ -161,9 +168,9 @@ for (const [vp, w, h] of [["desktop", 1440, 900], ["390", 390, 844]]) {
   const { page, context, errors } = await open(w, h, "?tour=west");
   await check(`${vp}: EN → KA → RU keeps tour, open days, selection and place on page`, async () => {
     await page.locator("#day-3 .day-toggle").click();
-    await page.evaluate(() => window.WIWI_PROTOTYPE.selectActivity("d3-tvishi"));
+    await page.evaluate(() => window.WIWI_PROTOTYPE.selectActivity("d3-argvani"));
     await settle(page);
-    const before = await page.locator("#activity-d3-tvishi").boundingBox();
+    const before = await page.locator("#activity-d3-argvani").boundingBox();
     for (const code of ["ka", "ru"]) {
       await switchTo(page, code);
       const url = new URL(page.url());
@@ -171,8 +178,8 @@ for (const [vp, w, h] of [["desktop", 1440, 900], ["390", 390, 844]]) {
       assert.equal(url.searchParams.get("tour"), "west");
       assert.equal(await page.evaluate(() => window.WIWI_PROTOTYPE.tour), "west");
       assert.equal(await page.locator("#day-3 .day-toggle").getAttribute("aria-expanded"), "true");
-      assert.ok(await page.locator("#activity-d3-tvishi").evaluate((el) => el.classList.contains("is-active")));
-      const after = await page.locator("#activity-d3-tvishi").boundingBox();
+      assert.ok(await page.locator("#activity-d3-argvani").evaluate((el) => el.classList.contains("is-active")));
+      const after = await page.locator("#activity-d3-argvani").boundingBox();
       assert.ok(Math.abs(after.y - before.y) < 60, `card moved from ${before.y} to ${after.y}`);
       assert.equal((await page.locator("#day-3 .day-num").innerText()).toLowerCase(), EXPECT[code].day.toLowerCase());
     }
@@ -183,7 +190,7 @@ for (const [vp, w, h] of [["desktop", 1440, 900], ["390", 390, 844]]) {
   });
   if (w < 1000) {
     await check(`${vp}: map view and map position survive a language switch`, async () => {
-      await page.locator("#activity-d3-tvishi [data-map]").click();
+      await page.locator("#activity-d3-argvani [data-map]").click();
       await settle(page, 900);
       const before = await page.evaluate(() => { const m = window.WIWI_PROTOTYPE.map; return [m.getCenter().lat, m.getZoom()]; });
       await switchTo(page, "ka");
@@ -191,7 +198,7 @@ for (const [vp, w, h] of [["desktop", 1440, 900], ["390", 390, 844]]) {
       assert.equal(await page.locator("#tab-map").getAttribute("aria-selected"), "true");
       const after = await page.evaluate(() => { const m = window.WIWI_PROTOTYPE.map; return [m.getCenter().lat, m.getZoom()]; });
       assert.ok(Math.abs(after[0] - before[0]) < 0.01 && after[1] === before[1], `map moved ${before} → ${after}`);
-      assert.match(await page.locator(".leaflet-popup").innerText(), /ტვიში/);
+      assert.match(await page.locator(".leaflet-popup").innerText(), /არგვანის/);
     });
   }
   await check(`${vp}: language links carry the tour`, async () => {
