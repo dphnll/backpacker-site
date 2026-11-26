@@ -140,9 +140,13 @@
 
   function tourCard(x) {
     const hasRoute = (x.days || []).length > 0;
-    const duration = hasRoute
-      ? new Intl.NumberFormat(lang, { style: "unit", unit: "day", unitDisplay: "long" }).format(x.days.length)
-      : "";
+    let duration = "";
+    if (hasRoute) {
+      const n = x.days.length;
+      const formatter = new Intl.NumberFormat(lang, { style: "unit", unit: "day", unitDisplay: "long" });
+      // Some browsers lack Georgian Intl data and fall back to the browser's language.
+      duration = formatter.resolvedOptions().locale === lang ? formatter.format(n) : t("tours.duration", { n });
+    }
     const action = hasRoute
       ? `<a class="btn" href="${esc(urlWith({ tour: x.id }).search)}#route" data-tour="${esc(x.id)}">${esc(t("tours.open"))}</a>`
       : "";

@@ -63,6 +63,8 @@ for (const [code, e] of Object.entries(EXPECT)) {
       await page.goto(`${BASE}${code === "en" ? "" : `?lang=${code}`}`, { waitUntil: "load" });
       await settle(page, 300);
       assert.equal(await page.evaluate(() => document.documentElement.lang), e.html);
+      const duration = { en: "6 days", ka: "6 დღე", ru: "6 дней" };
+      assert.equal(await page.locator(".tour-west .tour-duration").innerText(), duration[code]);
       assert.equal(await page.locator(`#langs [data-lang="${code}"]`).getAttribute("aria-current"), "true");
       assert.equal(await page.locator(".tour").count(), 2);
       assert.equal(await page.locator(".tour-west h3").innerText(), e.west);
