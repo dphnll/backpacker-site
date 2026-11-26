@@ -257,7 +257,11 @@ window.WIWI_DATA = {
 
     {
       id: "east", status: "in-development",
-      title: { en: "Women of Kakheti & Eastern Georgia", ka: "კახეთისა და აღმოსავლეთ საქართველოს ქალები", ru: "Женщины Кахетии и Восточной Грузии" },
+      title: {
+        en: "Visiting Women Winemakers · Eastern Georgia",
+        ka: "ქალი მეღვინეების სტუმრად · აღმოსავლეთ საქართველო",
+        ru: "В гостях у женщин-виноделов. Восточная Грузия",
+      },
       region: { en: "Eastern Georgia · Kakheti", ka: "აღმოსავლეთ საქართველო · კახეთი", ru: "Восточная Грузия · Кахетия" },
       tagline: null,
       summary: {
