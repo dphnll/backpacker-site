@@ -374,9 +374,9 @@ button.activity-tile:hover .icon { transform: scale(1.08); }
 .profile-gallery-atmosphere img { object-position: center 78%; }
 .profile-links { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 7px; padding-top: 4px; border-top: 1px solid var(--line); }
 .profile-links a { display: inline-flex; align-items: center; min-height: 44px; color: var(--deep); font-size: 13px; font-weight: 600; text-underline-offset: 3px; }
-.profile-link-icon { justify-content: center; width: 44px; }
+.profile-link-icon { justify-content: center; width: 44px; border-radius: 50%; }
 .profile-link-icon .icon { width: 24px; height: 24px; }
-.profile-link-icon:hover { color: var(--deep-2); }
+.profile-link-icon:is(:hover, :focus-visible) { background: #f6f2ea; color: var(--deep-2); }
 /* footer */
 
 .footer { background: var(--deep); color: #f0e2e5; padding: 30px 0; }
