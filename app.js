@@ -68,6 +68,9 @@
     person: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/>',
     map: '<path d="M9 4 3.5 6v14L9 18l6 2 5.5-2V4L15 6 9 4Z"/><path d="M9 4v14M15 6v14"/>',
     zoom: '<circle cx="10.5" cy="10.5" r="5.5"/><path d="m15 15 4 4M8 10.5h5m-2.5-2.5v5"/>',
+    website: '<circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/>',
+    instagram: '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>',
+    facebook: '<path fill="currentColor" stroke="none" d="M14 21v-8h2.7l.5-3H14V8.3c0-.9.3-1.6 1.7-1.6H17V4.1c-.6-.1-1.5-.2-2.4-.2-2.5 0-4.2 1.5-4.2 4.2V10H8v3h2.4v8H14Z"/>',
   };
   const icon = (name, cls = "icon") =>
     `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${ICONS[name] || ICONS.other}</svg>`;
@@ -337,7 +340,12 @@
       .filter(([kind, url]) => url && PROFILE_LINK_LABELS[kind]);
     if (!links.length) return "";
     return `<nav class="profile-links" aria-label="${esc(t("profile.linksLabel"))}">${links
-      .map(([kind, url]) => `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(t(PROFILE_LINK_LABELS[kind]))}</a>`)
+      .map(([kind, url]) => {
+        const label = esc(t(PROFILE_LINK_LABELS[kind]));
+        return kind === "wiwi"
+          ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${label}</a>`
+          : `<a class="profile-link-icon" href="${esc(url)}" target="_blank" rel="noopener noreferrer" aria-label="${label}">${icon(kind)}</a>`;
+      })
       .join("")}</nav>`;
   }
 
@@ -368,13 +376,22 @@
     .map(([id, p]) => {
       const name = L(p.name);
       const business = L(p.business) || name;
+      const host = unnamedHosts.has(id) ? L(p.role) : name;
+      const location = id === "sarishvili"
+        ? `${t("profile.villagePending")} · ${profileLocation(p)}`
+        : profileLocation(p);
       return `
         <button type="button" class="profile-card" data-profile="${esc(id)}" data-person="${esc(id)}" aria-haspopup="dialog">
-          ${p.logo ? `<img class="profile-card-logo" src="${esc(p.logo)}" alt="" />` : ""}
-          <strong class="profile-card-title">${esc(business)}</strong>
-          ${!unnamedHosts.has(id) && name !== business ? `<span class="profile-card-name">${esc(name)}</span>` : ""}
-          <span class="profile-card-location">${esc(profileLocation(p))}</span>
-          <span class="profile-card-open">${esc(t("profile.open"))}</span>
+          <span class="profile-card-copy">
+            <strong class="profile-card-title">${esc(business)}</strong>
+            <span class="profile-card-name">${esc(host)}</span>
+            <span class="profile-card-location">${esc(location)}</span>
+            <span class="profile-card-summary">${esc(L(p.cardStory || p.story))}</span>
+            <span class="profile-card-open">${esc(t("profile.open"))}</span>
+          </span>
+          <span class="profile-card-logo">
+            ${p.logo ? `<img src="${esc(p.logo)}" alt="" />` : esc(t("profile.logoPending"))}
+          </span>
         </button>`;
     })
     .join("");
@@ -731,7 +748,7 @@
     const identity = `
       ${name !== business ? `<p class="profile-host">${esc(name)}</p>` : ""}
       <p class="profile-location">${esc(profileLocation(p))}</p>
-      ${p.role ? `<p class="profile-role">${esc(L(p.role))}</p>` : ""}`;
+      ${unnamedHosts.has(id) && p.role ? `<p class="profile-role">${esc(L(p.role))}</p>` : ""}`;
     const logo = p.logo
       ? `<img src="${esc(p.logo)}" alt="${esc(t("profile.logoAlt", { winery: business }))}" />`
       : "";

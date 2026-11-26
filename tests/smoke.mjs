@@ -237,7 +237,7 @@ async function tapPin(page, placeName) {
     assert.equal(await maka.locator("img").count(), 1, "only a logo in the collection");
     assert.equal(await page.locator("#people a, #people .profile-story, #people .profile-gallery").count(), 0);
     await maka.press("Enter");
-    assert.deepEqual(await page.locator("#detail .profile-links a").allInnerTexts(), ["Website", "Instagram", "Facebook"]);
+    assert.deepEqual(await page.locator("#detail .profile-links a").evaluateAll((links) => links.map((a) => a.getAttribute("aria-label"))), ["Website", "Instagram", "Facebook"]);
     for (const link of await page.locator("#detail .profile-links a").all()) {
       assert.equal(await link.getAttribute("target"), "_blank");
       assert.match(await link.getAttribute("rel"), /noopener/);

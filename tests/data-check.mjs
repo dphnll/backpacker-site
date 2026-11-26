@@ -128,6 +128,7 @@ for (const [id, p] of Object.entries(D.people)) {
   text(`${where} business`, p.business, { optional: true });
   text(`${where} note`, p.note, { optional: true });
   text(`${where} story`, p.story, { optional: true });
+  text(`${where} card story`, p.cardStory, { optional: true });
   text(`${where} location`, p.location, { optional: true });
   text(`${where} wines`, p.wines, { optional: true });
   dictKey(where, "region", p.region);
