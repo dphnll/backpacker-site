@@ -447,7 +447,7 @@ button.activity-tile:hover .icon { transform: scale(1.08); }
 :lang(ka) .detail-sub { text-transform: none; letter-spacing: 0.01em; }
 :lang(ka) h1, :lang(ka) h2, :lang(ka) h3, :lang(ka) h4,
 :lang(ka) .day-title, :lang(ka) .popup strong { overflow-wrap: break-word; }
-:lang(ka) .hero h1 { font-size: clamp(27px, 2.88vw, 45px); line-height: 1.15; overflow-wrap: normal; }
+:lang(ka) .hero h1 { font-size: clamp(27px, 2.65vw, 42px); line-height: 1.15; overflow-wrap: normal; }
 :lang(ka) .section h2, :lang(ka) .route h2 { line-height: 1.25; }
 :lang(ka) body, :lang(ka) .activity-summary, :lang(ka) .detail-text { line-height: 1.6; }
 :lang(ka) .status { white-space: normal; text-align: left; }
