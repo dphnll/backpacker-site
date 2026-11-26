@@ -63,11 +63,24 @@ for (const [code, e] of Object.entries(EXPECT)) {
       await page.goto(`${BASE}${code === "en" ? "" : `?lang=${code}`}`, { waitUntil: "load" });
       await settle(page, 300);
       assert.equal(await page.evaluate(() => document.documentElement.lang), e.html);
+      const duration = { en: "6 days", ka: "6 დღე", ru: "6 дней" };
+      assert.equal(await page.locator(".tour-west .tour-duration").innerText(), duration[code]);
       assert.equal(await page.locator(`#langs [data-lang="${code}"]`).getAttribute("aria-current"), "true");
       assert.equal(await page.locator(".tour").count(), 2);
       assert.equal(await page.locator(".tour-west h3").innerText(), e.west);
       assert.equal((await page.locator(".tour-east .status").innerText()).toLowerCase(), e.east.toLowerCase());
       assert.equal(await page.locator(".tour-east [data-tour]").count(), 0, "east has no itinerary");
+      const [westCard, eastCard] = await Promise.all([
+        page.locator(".tour-west").boundingBox(),
+        page.locator(".tour-east").boundingBox(),
+      ]);
+      assert.ok(Math.abs(westCard.width - eastCard.width) < 1 && Math.abs(westCard.height - eastCard.height) < 1, "tour cards share a footprint");
+      if (w >= 1000) {
+        const portrait = await page.locator(".hero-portrait").boundingBox();
+        const copy = await page.locator(".hero-copy").boundingBox();
+        const map = await page.locator(".hero-map").boundingBox();
+        assert.ok(copy.x + copy.width <= portrait.x && portrait.x + portrait.width <= map.x, "hero elements do not intersect");
+      } else assert.ok(await page.locator(".hero-map").isHidden());
       assert.ok(await page.locator("#route").isHidden(), "no day-by-day route on the home page");
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), 0, "no horizontal scroll");
       if (code !== "en") assert.deepEqual([...new Set(latinWords(await page.locator("body").innerText()))], [], "home page translated");
@@ -101,6 +114,39 @@ for (const [code, e] of Object.entries(EXPECT)) {
       });
     }
 
+    await check(`${label}: compact profiles, lightbox and journey links`, async () => {
+      const profile = page.locator('.profile-card[data-profile="maka-tedoradze"]');
+      const dialog = page.locator("#detail");
+      const photo = dialog.locator("[data-profile-photo]");
+      if (SHOTS) await page.locator(".people").screenshot({ path: `${SHOTS}/${code}-${vp}-hosts.png` });
+      await profile.click();
+      assert.equal(await dialog.locator(".profile-host").innerText(), e.maka);
+      assert.ok(await dialog.locator(".profile-portrait").isVisible());
+      assert.equal(await dialog.locator(".profile-gallery > *").count(), 3);
+      assert.ok(await dialog.evaluate((el) => el.scrollWidth <= el.clientWidth));
+      if (SHOTS) await page.screenshot({ path: `${SHOTS}/${code}-${vp}-profile.png` });
+      await photo.scrollIntoViewIfNeeded();
+      const scroll = await dialog.evaluate((el) => el.scrollTop);
+      assert.ok(await dialog.locator("#detail-close").evaluate((el) => {
+        const rect = el.getBoundingClientRect();
+        return el.contains(document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2));
+      }), "close button stays reachable while scrolling");
+      await photo.click();
+      assert.ok(await page.locator("#profile-photo-view").isVisible());
+      if (SHOTS) await page.screenshot({ path: `${SHOTS}/${code}-${vp}-photo.png` });
+      await page.keyboard.press("Escape");
+      await page.waitForFunction(() => document.activeElement?.hasAttribute("data-profile-photo"));
+      assert.ok(await dialog.isVisible());
+      assert.ok(Math.abs(await dialog.evaluate((el) => el.scrollTop) - scroll) < 2, "profile scroll is restored");
+      await dialog.locator("[data-go]").first().click();
+      assert.ok(await dialog.isHidden());
+      assert.ok(await page.locator("#activity-d2-chkhavalley.is-active").isVisible());
+      await profile.click();
+      await dialog.locator("[data-map-place]").click();
+      assert.ok(await dialog.isHidden());
+      assert.ok(await page.locator("#map-pane").isVisible());
+    });
+
     await check(`${label}: wine, person and place dialogs`, async () => {
       if (w < 1000) await page.locator("#tab-itinerary").click();
       if (await page.locator("#day-2-body").isHidden()) await page.locator("#day-2 .day-toggle").click();
@@ -120,7 +166,7 @@ for (const [code, e] of Object.entries(EXPECT)) {
       if (SHOTS) await page.screenshot({ path: `${SHOTS}/${code}-${vp}-wine.png` });
       await page.keyboard.press("Escape");
       await page.locator("#activity-d2-chkhavalley [data-person]").click();
-      assert.equal(await page.locator("#detail-title").innerText(), e.maka);
+      assert.equal(await page.locator("#detail .profile-host").innerText(), e.maka);
       if (code !== "en") assert.deepEqual([...new Set(latinWords(await page.locator("#detail").innerText()))], []);
       await page.keyboard.press("Escape");
       if (await page.locator("#day-3-body").isHidden()) await page.locator("#day-3 .day-toggle").click();

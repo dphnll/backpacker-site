@@ -221,7 +221,9 @@ async function tapPin(page, placeName) {
     const btn = page.locator("#activity-d2-chkhavalley [data-person]");
     await btn.click();
     assert.equal(await page.locator("#detail").getAttribute("open"), "");
-    assert.equal(await page.locator("#detail-title").innerText(), "Maka Tedoradze");
+    assert.equal(await page.locator("#detail-title").innerText(), "ChkhaValley Winery");
+    assert.equal(await page.locator("#detail .profile-host").innerText(), "Maka Tedoradze");
+    assert.equal(await page.locator("#detail-title a").getAttribute("href"), "https://chkhavalley.com/");
     assert.equal(await page.locator("#detail img").count(), 3, "supplied portrait, logo and atmosphere image are shown");
     assert.equal(await page.locator("#detail .profile-links a").count(), 3, "three official ChkhaValley links are visible");
     await page.keyboard.press("Escape");
@@ -229,25 +231,37 @@ async function tapPin(page, placeName) {
     assert.ok(await btn.evaluate((el) => el === document.activeElement));
   });
 
-  await check("3a. profile cards show only available assets and verified links", async () => {
+  await check("3a. compact profile collection and gallery use only available assets", async () => {
     assert.equal(await page.locator(".profile-card").count(), 5);
     const maka = page.locator('.profile-card[data-profile="maka-tedoradze"]');
-    assert.equal(await maka.locator("img").count(), 3, "portrait, logo and atmosphere image");
-    assert.deepEqual(await maka.locator(".profile-links a").allInnerTexts(), ["Website", "Instagram", "Facebook"]);
-    for (const link of await maka.locator(".profile-links a").all()) {
+    assert.equal(await maka.locator("img").count(), 1, "only a logo in the collection");
+    assert.equal(await page.locator("#people a, #people .profile-story, #people .profile-gallery").count(), 0);
+    await maka.press("Enter");
+    assert.deepEqual(await page.locator("#detail .profile-links a").allInnerTexts(), ["Website", "Instagram", "Facebook"]);
+    for (const link of await page.locator("#detail .profile-links a").all()) {
       assert.equal(await link.getAttribute("target"), "_blank");
       assert.match(await link.getAttribute("rel"), /noopener/);
       assert.match(await link.getAttribute("rel"), /noreferrer/);
     }
+    await page.keyboard.press("Escape");
+    assert.ok(await maka.evaluate((el) => el === document.activeElement));
     const sarishvili = page.locator('.profile-card[data-profile="sarishvili"]');
-    assert.equal(await sarishvili.locator("img").count(), 1, "only the supplied wine image is shown");
-    assert.equal(await sarishvili.locator(".profile-links a").count(), 0, "no invented channels");
-    assert.equal(await page.locator('.profile-card[data-profile="khatia-jakhua"] img').count(), 0, "no fabricated portrait");
-    assert.equal(await page.locator('.profile-card[data-profile="exponati-host"] img').count(), 0, "no fabricated Exponati media");
+    assert.equal(await sarishvili.locator("img").count(), 0, "no fabricated logo");
+    await sarishvili.click();
+    const winePhoto = page.locator("#detail .profile-gallery-wine");
+    assert.equal(await page.locator("#detail [data-profile-photo]").count(), 1);
+    assert.equal(await page.locator("#detail .profile-gallery-slot").count(), 2);
+    assert.equal(await page.locator("#detail .profile-links a").count(), 0, "no invented channels");
+    await winePhoto.click();
+    assert.ok(await page.locator("#profile-photo-view").isVisible());
+    assert.match(await page.locator("#profile-photo-image").getAttribute("src"), /sarishvili-wine\.jpg$/);
+    await page.locator("#profile-photo-close").click();
+    assert.ok(await page.locator("#detail").isVisible());
+    await page.locator("#detail-close").click();
   });
 
   await check("3b. uncertain host is labelled, not presented as confirmed", async () => {
-    await page.locator('.profile-card[data-profile="exponati-host"] [data-person]').click();
+    await page.locator('.profile-card[data-profile="exponati-host"]').click();
     const text = await page.locator("#detail").innerText();
     assert.match(text, /host to be confirmed/i);
     assert.doesNotMatch(text, /approved visual assets/i);
@@ -525,7 +539,7 @@ for (const [w, h] of [[390, 844], [320, 640]]) {
     assert.ok(box.y >= 0 && box.y < h, `card y=${box.y}`);
   });
   await check(`6. ${w}px: modal fits the screen`, async () => {
-    await page.locator('.profile-card[data-profile="khatia-jakhua"] [data-person]').click();
+    await page.locator('.profile-card[data-profile="khatia-jakhua"]').click();
     const box = await page.locator("#detail").boundingBox();
     assert.ok(box.x >= 0 && box.x + box.width <= w, `dialog ${box.x}+${box.width}`);
     await page.keyboard.press("Escape");

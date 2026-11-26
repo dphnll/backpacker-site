@@ -67,6 +67,7 @@
     pin: '<path d="M12 21s-6-5.4-6-10a6 6 0 0 1 12 0c0 4.6-6 10-6 10Z"/><circle cx="12" cy="11" r="2"/>',
     person: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/>',
     map: '<path d="M9 4 3.5 6v14L9 18l6 2 5.5-2V4L15 6 9 4Z"/><path d="M9 4v14M15 6v14"/>',
+    zoom: '<circle cx="10.5" cy="10.5" r="5.5"/><path d="m15 15 4 4M8 10.5h5m-2.5-2.5v5"/>',
   };
   const icon = (name, cls = "icon") =>
     `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${ICONS[name] || ICONS.other}</svg>`;
@@ -129,6 +130,7 @@
     $("#footerCredit").hidden = !creditOk;
     $("#footerCredit").innerHTML = creditOk ? `<a href="${esc(creditUrl)}" target="_blank" rel="noopener">${esc(t(credit.label))}</a>` : "";
     $("#detail-close").setAttribute("aria-label", t("action.close"));
+    $("#profile-photo-close").setAttribute("aria-label", t("action.close"));
     if (noticeKey) notice.textContent = t(noticeKey);
     if (map) {
       zoomControl?.remove();
@@ -138,15 +140,18 @@
 
   function tourCard(x) {
     const hasRoute = (x.days || []).length > 0;
-    const duration = hasRoute
-      ? new Intl.NumberFormat(lang, { style: "unit", unit: "day", unitDisplay: "long" }).format(x.days.length)
-      : "";
+    let duration = "";
+    if (hasRoute) {
+      const n = x.days.length;
+      const formatter = new Intl.NumberFormat(lang, { style: "unit", unit: "day", unitDisplay: "long" });
+      // Some browsers lack Georgian Intl data and fall back to the browser's language.
+      duration = formatter.resolvedOptions().locale === lang ? formatter.format(n) : t("tours.duration", { n });
+    }
     const action = hasRoute
       ? `<a class="btn" href="${esc(urlWith({ tour: x.id }).search)}#route" data-tour="${esc(x.id)}">${esc(t("tours.open"))}</a>`
       : "";
     return `
       <article class="tour tour-${esc(x.id)}" id="tour-${esc(x.id)}" aria-labelledby="tour-${esc(x.id)}-title">
-        ${x.id === "west" ? '<div class="tour-art" aria-hidden="true"></div>' : ""}
         <div class="tour-body">
           <div class="tour-top">
             <span class="tour-region">${esc(L(x.region))}</span>
@@ -336,46 +341,41 @@
       .join("")}</nav>`;
   }
 
-  function profileMedia(p, name) {
-    const gallery = (p.gallery || []).filter((item) => item.src);
-    if (!p.photo && !p.logo && !gallery.length) return "";
-    const photo = p.photo
-      ? `<div class="profile-primary"><img class="profile-portrait" src="${esc(p.photo)}" alt="${esc(name)}" /></div>`
-      : "";
-    const logo = p.logo
-      ? `<div class="profile-logo"><img src="${esc(p.logo)}" alt="${esc(t("profile.logoAlt", { winery: L(p.business) || name }))}" /></div>`
-      : "";
-    const support = gallery.length
-      ? `<div class="profile-support${dialog ? " profile-support-dialog" : ""}">${gallery
-        .map((item) => `<figure class="profile-support-${esc(item.kind)}"><img src="${esc(item.src)}" alt="${esc(L(item.alt))}" /><figcaption>${esc(t(`profile.${item.kind}`))}</figcaption></figure>`)
-        .join("")}</div>`
-      : "";
-    const layout = p.photo && (p.logo || gallery.length) ? " profile-media-composite" : "";
-    return `<div class="profile-media${layout}">${photo}${logo}${support}</div>`;
+  function profileMedia(p) {
+    const slots = ["winery", "wine", "atmosphere"];
+    return `<div class="profile-gallery">${slots.map((kind) => {
+      const item = p.gallery?.find((entry) => entry.kind === kind && entry.src);
+      if (!item) return `<div class="profile-gallery-slot">${esc(t(`profile.${kind}`))}</div>`;
+      return `<button type="button" class="profile-gallery-photo profile-gallery-${esc(kind)}"
+        data-profile-photo aria-haspopup="dialog" aria-label="${esc(t("profile.zoom", { photo: L(item.alt) }))}">
+        <img src="${esc(item.src)}" alt="${esc(L(item.alt))}" />
+        ${icon("zoom")}
+      </button>`;
+    }).join("")}</div>`;
   }
 
+  function profileLocation(p) {
+    const locality = L(p.location);
+    const area = region(p.region);
+    if (!locality) return area;
+    return locality.includes(area) ? locality : `${locality} · ${area}`;
+  }
+
+  // These two hosts are represented by a family or a venue until a person is named.
+  const unnamedHosts = new Set(["sarishvili", "exponati-host"]);
   const renderPeople = () => [...new Set(activities.flatMap((a) => a.people || []))]
     .map((id) => [id, DATA.people[id]])
     .map(([id, p]) => {
       const name = L(p.name);
       const business = L(p.business) || name;
-      const website = externalUrl(p.links?.website);
-      const businessTitle = website
-        ? `<a href="${esc(website)}" target="_blank" rel="noopener noreferrer">${esc(business)}</a>`
-        : esc(business);
       return `
-        <article class="profile-card${p.photo ? " profile-feature" : ""}" data-profile="${esc(id)}">
-          ${profileMedia(p, name)}
-          <div class="profile-copy">
-            <p class="profile-location">${esc(L(p.location) || region(p.region))}</p>
-            <h4>${businessTitle}</h4>
-            <p class="profile-name">${esc(name)}${p.role ? ` · ${esc(L(p.role))}` : ""}</p>
-            ${p.story ? `<p class="profile-story">${esc(L(p.story))}</p>` : ""}
-            ${p.wines ? `<p class="profile-wines"><span>${esc(t("profile.wines"))}</span>${esc(L(p.wines))}</p>` : ""}
-            ${profileLinks(p)}
-            <button type="button" class="profile-open" data-person="${esc(id)}">${esc(t("profile.open"))}</button>
-          </div>
-        </article>`;
+        <button type="button" class="profile-card" data-profile="${esc(id)}" data-person="${esc(id)}" aria-haspopup="dialog">
+          ${p.logo ? `<img class="profile-card-logo" src="${esc(p.logo)}" alt="" />` : ""}
+          <strong class="profile-card-title">${esc(business)}</strong>
+          ${!unnamedHosts.has(id) && name !== business ? `<span class="profile-card-name">${esc(name)}</span>` : ""}
+          <span class="profile-card-location">${esc(profileLocation(p))}</span>
+          <span class="profile-card-open">${esc(t("profile.open"))}</span>
+        </button>`;
     })
     .join("");
 
@@ -638,10 +638,35 @@
 
   // ---------- dialog ----------
   const dialog = $("#detail");
+  const photoDialog = $("#profile-photo-view");
   let returnFocus = null;
+  let photoReturn = null;
   $("#detail-close").addEventListener("click", () => dialog.close());
+  $("#profile-photo-close").addEventListener("click", () => photoDialog.close());
+  photoDialog.addEventListener("click", (event) => {
+    if (event.target === photoDialog) photoDialog.close();
+  });
+  photoDialog.addEventListener("close", () => {
+    if (dialog.open && photoReturn) {
+      photoReturn.button.focus({ preventScroll: true });
+      dialog.scrollTop = photoReturn.scrollTop;
+    }
+    photoReturn = null;
+  });
   dialog.addEventListener("click", (event) => {
     if (event.target === dialog) dialog.close();
+    const photo = event.target.closest("[data-profile-photo]");
+    if (photo) {
+      const thumbnail = $("img", photo);
+      const image = $("#profile-photo-image");
+      image.src = thumbnail.src;
+      image.alt = thumbnail.alt;
+      $("#profile-photo-caption").textContent = thumbnail.alt;
+      photoReturn = { button: photo, scrollTop: dialog.scrollTop };
+      photoDialog.showModal();
+      $("#profile-photo-close").focus();
+      return;
+    }
     // Leaving the dialog for the itinerary or map: focus goes there, not back to the opener.
     const go = event.target.closest("[data-go]");
     if (go) {
@@ -664,13 +689,31 @@
     if (returnFocus && document.contains(returnFocus) && !dialog.open) returnFocus.focus({ preventScroll: true });
   });
 
-  function showDialog(kicker, title, html, opener) {
-    $("#detail-kicker").textContent = kicker;
-    $("#detail-title").textContent = title;
+  function showDialog(kicker, title, html, opener, { website, identity = "", logo = "" } = {}) {
+    const kickerSlot = $("#detail-kicker");
+    kickerSlot.textContent = kicker;
+    kickerSlot.hidden = !kicker;
+    const titleSlot = $("#detail-title");
+    titleSlot.textContent = title;
+    if (website) {
+      const link = document.createElement("a");
+      link.href = website;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = title;
+      titleSlot.replaceChildren(link);
+    }
+    const identitySlot = $("#detail-identity");
+    identitySlot.innerHTML = identity;
+    identitySlot.hidden = !identity;
+    const logoSlot = $("#detail-logo");
+    logoSlot.innerHTML = logo;
+    logoSlot.hidden = !logo;
     $("#detail-body").innerHTML = html;
     if (opener) returnFocus = opener;
     if (!dialog.open) dialog.showModal();
-    $("#detail-close").focus();
+    dialog.scrollTop = 0;
+    $("#detail-close").focus({ preventScroll: true });
   }
 
   const activityLinks = (list) =>
@@ -684,24 +727,33 @@
     const appears = activitiesWith(id);
     const placeIds = [...new Set(appears.map((a) => a.place).filter(Boolean))];
     const name = L(p.name);
+    const business = L(p.business) || name;
+    const identity = `
+      ${name !== business ? `<p class="profile-host">${esc(name)}</p>` : ""}
+      <p class="profile-location">${esc(profileLocation(p))}</p>
+      ${p.role ? `<p class="profile-role">${esc(L(p.role))}</p>` : ""}`;
+    const logo = p.logo
+      ? `<img src="${esc(p.logo)}" alt="${esc(t("profile.logoAlt", { winery: business }))}" />`
+      : "";
     showDialog(
-      `${t("person.kicker")} · ${region(p.region)}`,
-      name,
+      "",
+      business,
       `
-      ${profileMedia(p, name)}
-      ${p.role ? `<p class="detail-text">${esc(L(p.role))}</p>` : ""}
-      <dl class="facts detail-facts">
-        ${p.business && L(p.business) !== name ? `<div><dt>${esc(t("person.business"))}</dt><dd>${externalUrl(p.links?.website) ? `<a href="${esc(p.links.website)}" target="_blank" rel="noopener noreferrer">${esc(L(p.business))}</a>` : esc(L(p.business))}</dd></div>` : ""}
-        <div><dt>${esc(t("person.region"))}</dt><dd>${esc(region(p.region))}</dd></div>
-        ${p.location ? `<div><dt>${esc(t("place.location"))}</dt><dd>${esc(L(p.location))}</dd></div>` : ""}
-        ${p.wines ? `<div><dt>${esc(t("profile.wines"))}</dt><dd>${esc(L(p.wines))}</dd></div>` : ""}
-      </dl>
-      ${p.story ? `<p class="detail-text">${esc(L(p.story))}</p>` : ""}
-      ${profileLinks(p)}
+      ${p.photo ? `<img class="profile-portrait" src="${esc(p.photo)}" alt="${esc(name)}" />` : `<p class="profile-portrait-slot">${esc(t("profile.portraitPending"))}</p>`}
+      ${p.story ? `<p class="detail-text profile-story">${esc(L(p.story))}</p>` : ""}
+      ${p.wines ? `<p class="profile-wines"><strong>${esc(t("profile.wines"))}</strong> ${esc(L(p.wines))}</p>` : ""}
+      ${profileMedia(p)}
       ${appears.length ? `<h4 class="detail-sub">${esc(t("person.appears"))}</h4>${activityLinks(appears)}` : ""}
-      ${placeIds.length ? `<div class="actions">${placeIds.map((pid) => `<button type="button" class="action" data-place="${esc(pid)}">${icon("pin")}${esc(t("action.place"))} · ${esc(L(DATA.places[pid].name))}</button>`).join("")}</div>` : ""}
+      ${placeIds.length ? `<div class="actions">${placeIds.map((pid) => {
+        const place = DATA.places[pid];
+        const placeLink = `<button type="button" class="action" data-place="${esc(pid)}">${icon("pin")}${esc(t("action.place"))}</button>`;
+        const mapLink = place.coord ? `<button type="button" class="action" data-map-place="${esc(pid)}">${icon("map")}${esc(t("action.map"))}</button>` : "";
+        return placeLink + mapLink;
+      }).join("")}</div>` : ""}
+      ${profileLinks(p)}
       `,
       opener,
+      { website: externalUrl(p.links?.website), identity, logo },
     );
   }
 

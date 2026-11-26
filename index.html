@@ -27,20 +27,22 @@
 
     <main id="top">
       <section class="hero">
-        <!-- Overview of the route (approximate stop positions). Each pin opens the tour at that stop. -->
-        <div class="hero-map" role="group" aria-label="Map of approximate stop locations" data-i18n-aria="map.label">
-          <span class="hero-map-frame">
-            <img src="./assets/hero-map.svg" alt="" />
-            <svg class="hero-regions" id="heroRegions" viewBox="0 0 1000 587" aria-hidden="true"></svg>
-            <span id="heroPins"></span>
-            <span class="hero-region-label" id="heroRegionLabel" aria-live="polite" hidden></span>
-          </span>
-        </div>
-        <div class="wrap">
-          <h1 data-i18n="hero.title">Visiting Georgia’s women winemakers</h1>
-          <p class="hero-lead" data-i18n="hero.lead">There’s a place for you at the table.</p>
-          <div class="hero-actions">
-            <a class="btn btn-light" href="?tour=west" data-tour="west" data-i18n="hero.cta">Explore Western Georgia</a>
+        <div class="wrap hero-layout">
+          <div class="hero-copy">
+            <h1 data-i18n="hero.title">Visiting Georgia’s women winemakers</h1>
+            <p class="hero-lead" data-i18n="hero.lead">There’s a place for you at the table.</p>
+            <div class="hero-actions">
+              <a class="btn" href="?tour=west" data-tour="west" data-i18n="hero.cta">Explore Western Georgia</a>
+            </div>
+          </div>
+          <img class="hero-portrait" src="./assets/hosts/chkhavalley-maka.jpg" alt="" />
+          <div class="hero-map" role="group" aria-label="Map of approximate stop locations" data-i18n-aria="map.label">
+            <div class="hero-map-frame">
+              <img src="./assets/hero-map.svg" alt="" />
+              <svg class="hero-regions" id="heroRegions" viewBox="0 0 1000 587" aria-hidden="true"></svg>
+              <span id="heroPins"></span>
+              <span class="hero-region-label" id="heroRegionLabel" aria-live="polite" hidden></span>
+            </div>
           </div>
         </div>
       </section>
@@ -55,11 +57,11 @@
       <section class="route" id="route" aria-labelledby="route-title" hidden>
         <div class="wrap">
           <a class="back-link" href="./" data-home><span data-i18n="route.back">All journeys</span></a>
-          <figure class="route-cover" aria-hidden="true">
-            <img src="./assets/hosts/chkhavalley-table.jpg" alt="" />
-          </figure>
           <div class="route-head">
             <h2 id="route-title"></h2>
+            <figure class="route-cover" aria-hidden="true">
+              <img src="./assets/hosts/chkhavalley-table.jpg" alt="" />
+            </figure>
           </div>
 
           <section class="people" aria-labelledby="people-title">
@@ -124,10 +126,22 @@
           <div>
             <p class="detail-kicker" id="detail-kicker"></p>
             <h3 class="detail-title" id="detail-title"></h3>
+            <div id="detail-identity" hidden></div>
           </div>
+          <div id="detail-logo" hidden></div>
           <button type="button" class="detail-close" id="detail-close" aria-label="Close">×</button>
         </div>
         <div id="detail-body"></div>
+      </div>
+    </dialog>
+
+    <dialog id="profile-photo-view" aria-labelledby="profile-photo-caption">
+      <div class="photo-view-content">
+        <button type="button" class="detail-close" id="profile-photo-close" aria-label="Close">×</button>
+        <figure>
+          <img id="profile-photo-image" alt="" />
+          <figcaption id="profile-photo-caption"></figcaption>
+        </figure>
       </div>
     </dialog>
 
