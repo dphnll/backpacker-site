@@ -377,8 +377,10 @@
       const name = L(p.name);
       const business = L(p.business) || name;
       const host = unnamedHosts.has(id) ? L(p.role) : name;
-      const location = id === "sarishvili"
-        ? `${t("profile.villagePending")} · ${profileLocation(p)}`
+      const locality = L(p.location);
+      const area = region(p.region);
+      const location = !locality || locality === area
+        ? `${t("profile.villagePending")} · ${area}`
         : profileLocation(p);
       return `
         <button type="button" class="profile-card" data-profile="${esc(id)}" data-person="${esc(id)}" aria-haspopup="dialog">
