@@ -401,7 +401,7 @@ for (const [label, url, shown] of [
       const a = page.locator(".clavelo-preview a");
       assert.equal(await a.getAttribute("href"), url);
       assert.equal(await a.getAttribute("target"), "_blank");
-      assert.equal(await page.locator(".clavelo-preview p").innerText(), "Keep the day-by-day itinerary handy in Clavelo.");
+      assert.equal(await page.locator(".clavelo-preview p").innerText(), "Keep the day-by-day itinerary handy in Clavelo");
       assert.equal(await page.locator(".clavelo-preview .status").count(), 0);
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), 0, "phone layout intact");
       await page.evaluate(() => window.WIWI_PROTOTYPE.setLanguage("ka"));

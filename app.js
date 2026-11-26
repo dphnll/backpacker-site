@@ -284,7 +284,7 @@
               </button>
             </h3>
             <div class="day-body" id="day-${day.n}-body"${open ? "" : " hidden"}>
-              ${review ? `<p class="review-note"><strong>${esc(L(review.title))}.</strong> ${esc(L(review.text))}</p>` : ""}
+              ${review ? `<p class="review-note"><strong>${esc(L(review.title))}</strong> — ${esc(L(review.text))}</p>` : ""}
               <div class="day-timeline">
                 ${day.activities.map((a) => activityCard({ ...a, day: day.n })).join("")}
               </div>

@@ -54,7 +54,7 @@ const EXPECT = {
 };
 
 for (const [code, e] of Object.entries(EXPECT)) {
-  for (const [vp, w, h] of [["desktop", 1440, 900], ["390", 390, 844], ["320", 320, 640]]) {
+  for (const [vp, w, h] of [["1920", 1920, 1080], ["desktop", 1440, 900], ["1280", 1280, 900], ["390", 390, 844], ["320", 320, 640]]) {
     const { page, context, errors } = await open(w, h, code === "en" ? "?tour=west" : `?tour=west&lang=${code}`);
     const label = `${code.toUpperCase()} ${vp}`;
 
@@ -79,10 +79,16 @@ for (const [code, e] of Object.entries(EXPECT)) {
       assert.ok(await artwork.evaluate((img) => img.complete && img.naturalWidth > 0 && getComputedStyle(img).maskImage.includes("linear-gradient")));
       assert.ok(await page.locator(".hero-visual figcaption").isVisible(), "generated illustration is identified");
       assert.ok(await page.locator(".hero-copy").evaluate((el) => el.scrollWidth === el.clientWidth), "hero copy fits");
+      const copy = await page.locator(".hero-copy").boundingBox();
+      const brand = await page.locator(".topbar .brand").boundingBox();
+      assert.ok(Math.abs(copy.x - brand.x) < 1, "hero copy aligns with the header brand");
+      assert.doesNotMatch(await page.locator(".hero-lead").innerText(), /\.$/);
       if (w >= 1000) {
         const map = await page.locator(".hero-map").boundingBox();
         const visual = await page.locator(".hero-visual").boundingBox();
-        assert.ok(map.width >= 530 && map.x >= visual.x + visual.width - 20, "large map stays to the right of the figures");
+        const previousWidth = { 1280: 488, 1440: 543, 1920: 569 }[w];
+        assert.ok(map.width >= previousWidth * 1.2 && map.width <= previousWidth * 1.25, "map is 20–25% larger");
+        assert.ok(map.x >= visual.x + visual.width - 1 && Math.abs(map.y + map.height / 2 - copy.y - copy.height / 2) < 1, "hero shares a horizontal centerline");
         assert.ok(await page.locator(".hero-pin").evaluateAll((pins) => pins.length > 0 && pins.every((pin) => {
           const rect = pin.getBoundingClientRect();
           return pin.contains(document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2));
@@ -138,7 +144,7 @@ for (const [code, e] of Object.entries(EXPECT)) {
       assert.equal(cards.length, 5);
       for (const card of cards) {
         assert.ok(card.logoLeft >= card.textRight && Math.abs(card.logoSize - card.logoHeight) < 1, "logo has a separate square slot");
-        assert.ok(card.logoSize >= (vp === "desktop" ? 100 : 64));
+        assert.ok(card.logoSize >= (w >= 1000 ? 100 : 64));
         assert.ok(cards.filter((other) => other.top === card.top).every((other) => other.bottom === card.bottom && other.actionBottom === card.actionBottom), "row and actions align");
       }
       const summaries = await page.locator(".profile-card-summary").allInnerTexts();
@@ -153,7 +159,7 @@ for (const [code, e] of Object.entries(EXPECT)) {
       assert.equal(await dialog.locator(".profile-host").innerText(), e.maka);
       assert.equal(await dialog.locator(".profile-role").count(), 0);
       const logo = await dialog.locator("#detail-logo").boundingBox();
-      assert.ok(logo.width >= (vp === "desktop" ? 110 : 56) && Math.abs(logo.width - logo.height) < 1);
+      assert.ok(logo.width >= (w >= 1000 ? 110 : 56) && Math.abs(logo.width - logo.height) < 1);
       assert.ok(await dialog.locator(".profile-portrait").isVisible());
       assert.equal(await dialog.locator(".profile-gallery > *").count(), 3);
       assert.ok(await dialog.evaluate((el) => el.scrollWidth <= el.clientWidth));
@@ -195,6 +201,19 @@ for (const [code, e] of Object.entries(EXPECT)) {
     await check(`${label}: wine, person and place dialogs`, async () => {
       if (w < 1000) await page.locator("#tab-itinerary").click();
       if (await page.locator("#day-2-body").isHidden()) await page.locator("#day-2 .day-toggle").click();
+      for (const tile of await page.locator("#day-2 .activity-tile").all()) {
+        assert.ok(await tile.evaluate((el) => {
+          const marker = getComputedStyle(el, "::before");
+          const target = el.getBoundingClientRect();
+          return marker.width === "34px" && marker.height === "34px" &&
+            marker.borderRadius === "50%" && marker.backgroundColor === "rgb(238, 224, 220)" &&
+            target.width >= 34 && target.height >= 34;
+        }), "timeline markers share a 34px circle and preserve their hit area");
+      }
+      assert.doesNotMatch(await page.locator("#day-2 .review-note strong").innerText(), /\.$/);
+      assert.doesNotMatch(await page.locator("#activity-d2-chkhavalley .activity-summary").innerText(), /\.$/);
+      assert.match(await page.locator("#activity-d2-kutaisi .activity-summary").innerText(), /\.\s+.+\.$/);
+      assert.match(await page.locator("#activity-d2-chkhavalley .approx-tag").innerText(), /\.$/);
       if (SHOTS) {
         // Locator screenshots stitch tall mobile cards. Temporarily unstick the
         // global chrome so it does not repeat through the captured card.
