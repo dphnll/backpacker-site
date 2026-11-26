@@ -75,16 +75,26 @@ for (const [code, e] of Object.entries(EXPECT)) {
         page.locator(".tour-east").boundingBox(),
       ]);
       assert.ok(Math.abs(westCard.width - eastCard.width) < 1 && Math.abs(westCard.height - eastCard.height) < 1, "tour cards share a footprint");
+      const artwork = page.locator(".hero-visual img");
+      assert.ok(await artwork.evaluate((img) => img.complete && img.naturalWidth > 0 && getComputedStyle(img).maskImage.includes("linear-gradient")));
+      assert.ok(await page.locator(".hero-visual figcaption").isVisible(), "generated illustration is identified");
+      assert.ok(await page.locator(".hero-copy").evaluate((el) => el.scrollWidth === el.clientWidth), "hero copy fits");
       if (w >= 1000) {
-        const portrait = await page.locator(".hero-portrait").boundingBox();
-        const copy = await page.locator(".hero-copy").boundingBox();
         const map = await page.locator(".hero-map").boundingBox();
-        assert.ok(copy.x + copy.width <= portrait.x && portrait.x + portrait.width <= map.x, "hero elements do not intersect");
+        const visual = await page.locator(".hero-visual").boundingBox();
+        assert.ok(map.width >= 530 && map.x >= visual.x + visual.width - 20, "large map stays to the right of the figures");
+        assert.ok(await page.locator(".hero-pin").evaluateAll((pins) => pins.length > 0 && pins.every((pin) => {
+          const rect = pin.getBoundingClientRect();
+          return pin.contains(document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2));
+        })), "no pins are covered");
       } else assert.ok(await page.locator(".hero-map").isHidden());
       assert.ok(await page.locator("#route").isHidden(), "no day-by-day route on the home page");
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), 0, "no horizontal scroll");
       if (code !== "en") assert.deepEqual([...new Set(latinWords(await page.locator("body").innerText()))], [], "home page translated");
-      if (SHOTS) await page.screenshot({ path: `${SHOTS}/${code}-${vp}-home.png`, fullPage: true });
+      if (SHOTS) {
+        await page.screenshot({ path: `${SHOTS}/${code}-${vp}-home.png`, fullPage: true });
+        await page.locator(".hero").screenshot({ path: `${SHOTS}/${code}-${vp}-hero.png` });
+      }
       // Then into the tour, keeping the language.
       await page.locator(".tour-west [data-tour]").click();
       await settle(page, 500);
@@ -114,17 +124,52 @@ for (const [code, e] of Object.entries(EXPECT)) {
       });
     }
 
-    await check(`${label}: compact profiles, lightbox and journey links`, async () => {
+    await check(`${label}: winery cards, profile actions and lightbox`, async () => {
       const profile = page.locator('.profile-card[data-profile="maka-tedoradze"]');
       const dialog = page.locator("#detail");
       const photo = dialog.locator("[data-profile-photo]");
-      if (SHOTS) await page.locator(".people").screenshot({ path: `${SHOTS}/${code}-${vp}-hosts.png` });
+      const cards = await page.locator(".profile-card").evaluateAll((elements) => elements.map((card) => {
+        const { top, bottom } = card.getBoundingClientRect();
+        const copy = card.querySelector(".profile-card-copy").getBoundingClientRect();
+        const logo = card.querySelector(".profile-card-logo").getBoundingClientRect();
+        const action = card.querySelector(".profile-card-open").getBoundingClientRect();
+        return { top, bottom, actionBottom: action.bottom, textRight: copy.right, logoLeft: logo.left, logoSize: logo.width, logoHeight: logo.height };
+      }));
+      assert.equal(cards.length, 5);
+      for (const card of cards) {
+        assert.ok(card.logoLeft >= card.textRight && Math.abs(card.logoSize - card.logoHeight) < 1, "logo has a separate square slot");
+        assert.ok(card.logoSize >= (vp === "desktop" ? 100 : 64));
+        assert.ok(cards.filter((other) => other.top === card.top).every((other) => other.bottom === card.bottom && other.actionBottom === card.actionBottom), "row and actions align");
+      }
+      const summaries = await page.locator(".profile-card-summary").allInnerTexts();
+      assert.equal(summaries.length, cards.length);
+      assert.ok(summaries.every((summary) => summary.length >= 120 && summary.length <= 175));
+      if (SHOTS) {
+        const shotStyle = await page.addStyleTag({ content: ".topbar{position:absolute!important}" });
+        await page.locator(".people").screenshot({ path: `${SHOTS}/${code}-${vp}-hosts.png` });
+        await shotStyle.evaluate((el) => el.remove());
+      }
       await profile.click();
       assert.equal(await dialog.locator(".profile-host").innerText(), e.maka);
+      assert.equal(await dialog.locator(".profile-role").count(), 0);
+      const logo = await dialog.locator("#detail-logo").boundingBox();
+      assert.ok(logo.width >= (vp === "desktop" ? 110 : 56) && Math.abs(logo.width - logo.height) < 1);
       assert.ok(await dialog.locator(".profile-portrait").isVisible());
       assert.equal(await dialog.locator(".profile-gallery > *").count(), 3);
       assert.ok(await dialog.evaluate((el) => el.scrollWidth <= el.clientWidth));
       if (SHOTS) await page.screenshot({ path: `${SHOTS}/${code}-${vp}-profile.png` });
+      const profileLinks = dialog.locator(".profile-links");
+      const iconLinks = await profileLinks.locator(".profile-link-icon").evaluateAll((elements) => elements.map((link) => {
+        const { width, height } = link.getBoundingClientRect();
+        return { label: link.getAttribute("aria-label"), width, height, svg: !!link.querySelector('svg[aria-hidden="true"]') };
+      }));
+      assert.deepEqual(iconLinks.map(({ label }) => label), [{ en: "Website", ka: "ვებსაიტი", ru: "Сайт" }[code], "Instagram", "Facebook"]);
+      assert.ok(iconLinks.every(({ width, height, svg }) => width >= 44 && height >= 44 && svg));
+      if (SHOTS) {
+        await profileLinks.scrollIntoViewIfNeeded();
+        await page.screenshot({ path: `${SHOTS}/${code}-${vp}-profile-links.png` });
+        await dialog.evaluate((el) => { el.scrollTop = 0; });
+      }
       await photo.scrollIntoViewIfNeeded();
       const scroll = await dialog.evaluate((el) => el.scrollTop);
       assert.ok(await dialog.locator("#detail-close").evaluate((el) => {
