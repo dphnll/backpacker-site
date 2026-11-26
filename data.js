@@ -54,18 +54,18 @@ window.WIWI_DATA = {
           id: "day-two-variant",
           title: { en: "Autumn route choice", ka: "შემოდგომის მარშრუტის არჩევანი", ru: "Выбор осеннего маршрута" },
           text: {
-            en: "If the group stays for Maka’s mandarin harvest, it goes straight to Kutaisi and skips Sarishvili.",
-            ka: "თუ ჯგუფი მაკასთან მანდარინის კრეფაზე დარჩება, სარიშვილებთან აღარ შეივლის და პირდაპირ ქუთაისში გაემგზავრება.",
-            ru: "Если группа останется у Маки на сбор мандаринов, из Эрге поедем прямо в Кутаиси, минуя Саришвили.",
+            en: "If the group stays for Maka’s mandarin harvest, it goes straight to Kutaisi and skips Sarishvili",
+            ka: "თუ ჯგუფი მაკასთან მანდარინის კრეფაზე დარჩება, სარიშვილებთან აღარ შეივლის და პირდაპირ ქუთაისში გაემგზავრება",
+            ru: "Если группа останется у Маки на сбор мандаринов, из Эрге поедем прямо в Кутаиси, минуя Саришвили",
           },
         },
         {
           id: "day-three-options",
           title: { en: "One stop, time permitting", ka: "ერთი გაჩერება, თუ დრო დაგვრჩა", ru: "Остановка по пути" },
           text: {
-            en: "There may be time for one more stop on the way back to Kutaisi.",
-            ka: "ქუთაისში დაბრუნებისას, თუ დრო დაგვრჩა, კიდევ ერთ ადგილას შევივლით.",
-            ru: "На обратном пути в Кутаиси можно заехать в одно из мест ниже, если позволит время.",
+            en: "There may be time for one more stop on the way back to Kutaisi",
+            ka: "ქუთაისში დაბრუნებისას, თუ დრო დაგვრჩა, კიდევ ერთ ადგილას შევივლით",
+            ru: "На обратном пути в Кутаиси можно заехать в одно из мест ниже, если позволит время",
           },
         },
         {
@@ -81,9 +81,9 @@ window.WIWI_DATA = {
           id: "exponati-host",
           title: { en: "Order of visits", ka: "სტუმრობის თანმიმდევრობა", ru: "Порядок поездки" },
           text: {
-            en: "The order of the Tbilisi walk and the Mtskheta visit is still open.",
-            ka: "ჯერ გადასაწყვეტია, როდის მოვინახულებთ მცხეთას — თბილისში გასეირნებამდე თუ შემდეგ.",
-            ru: "Пока уточняем, когда поедем в Мцхету: до прогулки по Тбилиси или после неё.",
+            en: "The order of the Tbilisi walk and the Mtskheta visit is still open",
+            ka: "ჯერ გადასაწყვეტია, როდის მოვინახულებთ მცხეთას — თბილისში გასეირნებამდე თუ შემდეგ",
+            ru: "Пока уточняем, когда поедем в Мцхету: до прогулки по Тбилиси или после неё",
           },
         },
         {
@@ -107,13 +107,13 @@ window.WIWI_DATA = {
             {
               id: "d1-arrival", time: null, type: "transport",
               title: { en: "Arrival in Batumi", ka: "ჩამოსვლა ბათუმში", ru: "Прибытие в Батуми" },
-              summary: { en: "The journey begins on the Black Sea coast.", ka: "მოგზაურობა შავი ზღვის სანაპიროზე იწყება.", ru: "Путешествие начинается на берегу Чёрного моря." },
+              summary: { en: "The journey begins on the Black Sea coast", ka: "მოგზაურობა შავი ზღვის სანაპიროზე იწყება", ru: "Путешествие начинается на берегу Чёрного моря" },
               topics: ["arrival"], place: "batumi", status: "draft",
             },
             {
               id: "d1-rest", time: null, type: "stay",
               title: { en: "Hotel, rest and an optional easy walk", ka: "სასტუმრო, დასვენება და სურვილისამებრ მსუბუქი გასეირნება", ru: "Отель, отдых и необязательная лёгкая прогулка" },
-              summary: { en: "Arrival arrangements are still open.", ka: "ჩამოსვლის დეტალები ჯერ შესათანხმებელია.", ru: "Детали встречи по прибытии ещё уточняются." },
+              summary: { en: "Arrival arrangements are still open", ka: "ჩამოსვლის დეტალები ჯერ შესათანხმებელია", ru: "Детали встречи по прибытии ещё уточняются" },
               topics: ["stay", "free-time"], place: "batumi", flags: ["hotel"], status: "to-confirm",
             },
           ],
@@ -128,7 +128,7 @@ window.WIWI_DATA = {
             {
               id: "d2-chkhavalley", time: { en: "First visit", ka: "პირველი ვიზიტი", ru: "Первый визит" }, type: "wine",
               title: { en: "Maka Tedoradze at ChkhaValley", ka: "მაკა თედორაძე ChkhaValley-ში", ru: "Мака Тедорадзе в ChkhaValley" },
-              summary: { en: "The family cellar sits in Erge, between Batumi and the mountains.", ka: "საოჯახო მარანი ერგეშია, ბათუმსა და მთებს შორის.", ru: "Семейный погреб находится в Эрге, между Батуми и горами." },
+              summary: { en: "The family cellar sits in Erge, between Batumi and the mountains", ka: "საოჯახო მარანი ერგეშია, ბათუმსა და მთებს შორის", ru: "Семейный погреб находится в Эрге, между Батуми и горами" },
               topics: ["wine", "food", "meet-winemaker", "family-winery"], place: "chkhavalley", people: ["maka-tedoradze"],
               wine: { en: "Chkhaveri and Tsolikouri", ka: "ჩხავერი და ცოლიკაური", ru: "Чхавери и цоликоури" },
               food: { en: "Local Adjarian food", ka: "ადგილობრივი აჭარული კერძები", ru: "Местные аджарские блюда" },
@@ -138,7 +138,7 @@ window.WIWI_DATA = {
             {
               id: "d2-sarishvili", time: { en: "Later", ka: "შემდეგ", ru: "Позже" }, type: "wine",
               title: { en: "Sarishvili family winery", ka: "სარიშვილების საოჯახო მარანი", ru: "Семейная винодельня Саришвили" },
-              summary: { en: "A shared table in the family’s fruit orchard.", ka: "სუფრა ოჯახის ხეხილის ბაღში.", ru: "Общий стол в семейном фруктовом саду." },
+              summary: { en: "A shared table in the family’s fruit orchard", ka: "სუფრა ოჯახის ხეხილის ბაღში", ru: "Общий стол в семейном фруктовом саду" },
               topics: ["wine", "food", "family-winery"], place: "sarishvili", people: ["sarishvili"],
               wine: { en: "Chkhaveri", ka: "ჩხავერი", ru: "Чхавери" },
               flags: [{ en: "Host identity, exact village and meal arrangements to confirm", ka: "მასპინძლის ვინაობა, ზუსტი სოფელი და კვების დეტალები დასაზუსტებელია", ru: "Нужно уточнить хозяина, точное село и организацию обеда" }],
@@ -162,7 +162,7 @@ window.WIWI_DATA = {
             {
               id: "d3-argvani", time: { en: "Main visit", ka: "მთავარი ვიზიტი", ru: "Главный визит" }, type: "wine",
               title: { en: "Khatia Jakhua at Family Winery Argvani", ka: "ხატია ჯახუა არგვანის საოჯახო მარანში", ru: "Хатия Джахуа в семейной винодельне Argvani" },
-              summary: { en: "Wine in Abedati, with a chance to hear Khatia talk about Georgian ornament.", ka: "ღვინის დაგემოვნება აბედათში და, თუ მოხერხდა, ხატიასთან საუბარი ქართულ ორნამენტზე.", ru: "Вино в Абедати и, если получится, разговор с Хатией о грузинском орнаменте." },
+              summary: { en: "Wine in Abedati, with a chance to hear Khatia talk about Georgian ornament", ka: "ღვინის დაგემოვნება აბედათში და, თუ მოხერხდა, ხატიასთან საუბარი ქართულ ორნამენტზე", ru: "Вино в Абедати и, если получится, разговор с Хатией о грузинском орнаменте" },
               topics: ["wine", "meet-winemaker", "heritage", "family-winery"], place: "argvani", people: ["khatia-jakhua"],
               wine: { en: "Ojaleshi and Chvitiluri", ka: "ოჯალეში და ჭვიტილური", ru: "Оджалеши и чвитилури" },
               flags: [{ en: "Host availability to confirm", ka: "მასპინძლის ხელმისაწვდომობა დასადასტურებელია", ru: "Нужно подтвердить доступность хозяйки" }],
@@ -171,14 +171,14 @@ window.WIWI_DATA = {
             {
               id: "d3-sight", time: { en: "Optional", ka: "სურვილისამებრ", ru: "По возможности" }, type: "excursion",
               title: { en: "A stop in nature", ka: "გაჩერება ბუნებაში", ru: "Остановка на природе" },
-              summary: { en: "Martvili Canyon, Okatse Canyon or Prometheus Cave.", ka: "მარტვილის კანიონი, ოკაცეს კანიონი ან პრომეთეს მღვიმე.", ru: "Мартвильский каньон, каньон Окаце или пещера Прометея." },
+              summary: { en: "Martvili Canyon, Okatse Canyon or Prometheus Cave", ka: "მარტვილის კანიონი, ოკაცეს კანიონი ან პრომეთეს მღვიმე", ru: "Мартвильский каньон, каньон Окаце или пещера Прометея" },
               topics: ["nature"], route: { en: "Samegrelo / Imereti option", ka: "სამეგრელოს / იმერეთის ვარიანტი", ru: "Вариант в Самегрело / Имерети" },
               flags: ["travel-time"], status: "to-confirm",
             },
             {
               id: "d3-dinner", time: { en: "Evening", ka: "საღამო", ru: "Вечер" }, type: "food",
               title: { en: "Return to Kutaisi · Sisters / Three Sisters", ka: "დაბრუნება ქუთაისში · Sisters / Three Sisters", ru: "Возвращение в Кутаиси · Sisters / Three Sisters" },
-              summary: { en: "The exact restaurant is still to be identified.", ka: "ჯერ დასაზუსტებელია, რომელ რესტორანში იქნება ვახშამი.", ru: "Ещё нужно уточнить, о каком именно ресторане речь." },
+              summary: { en: "The exact restaurant is still to be identified", ka: "ჯერ დასაზუსტებელია, რომელ რესტორანში იქნება ვახშამი", ru: "Ещё нужно уточнить, о каком именно ресторане речь" },
               topics: ["food"], place: "kutaisi", flags: ["restaurant"], status: "to-confirm",
             },
           ],
@@ -193,11 +193,11 @@ window.WIWI_DATA = {
             {
               id: "d4-simonica", time: { en: "On the road", ka: "გზად", ru: "По дороге" }, type: "wine",
               title: { en: "Simonica in Meore Obcha", ka: "Simonica მეორე ობჩაში", ru: "Simonica в Меоре Обча" },
-              summary: { en: "Qvevri wines made from the family’s own organically grown grapes.", ka: "ქვევრის ღვინოები ოჯახის ორგანულ ვენახებში მოყვანილი ყურძნისგან.", ru: "Вина из квеври, сделанные из винограда с семейных органических виноградников." },
+              summary: { en: "Qvevri wines made from the family’s own organically grown grapes", ka: "ქვევრის ღვინოები ოჯახის ორგანულ ვენახებში მოყვანილი ყურძნისგან", ru: "Вина из квеври, сделанные из винограда с семейных органических виноградников" },
               topics: ["wine", "food", "meet-winemaker", "family-winery"], place: "obcha", people: ["nini-chkheidze"],
               wine: { en: "Tsolikouri, Tsitska and Otskhanuri Sapere", ka: "ცოლიკაური, ციცქა და ოცხანური საფერე", ru: "Цоликоури, цицка и оцханури сапере" },
               food: { en: "Lunch at the winery", ka: "სადილი მარანში", ru: "Обед на винодельне" },
-              flags: [{ en: "The winery visit is still to be arranged.", ka: "მარანში სტუმრობა ჯერ შესათანხმებელია.", ru: "Визит на винодельню ещё нужно согласовать." }],
+              flags: [{ en: "The winery visit is still to be arranged", ka: "მარანში სტუმრობა ჯერ შესათანხმებელია", ru: "Визит на винодельню ещё нужно согласовать" }],
               status: "to-confirm", links: { uvamoWine: null, uvamoSet: null },
             },
             {
@@ -217,21 +217,21 @@ window.WIWI_DATA = {
             {
               id: "d5-tbilisi", time: null, type: "excursion",
               title: { en: "A walk in Tbilisi", ka: "გასეირნება თბილისში", ru: "Прогулка по Тбилиси" },
-              summary: { en: "Time to explore the city on foot.", ka: "დრო ქალაქში ფეხით სასეირნოდ.", ru: "Время пройтись по городу пешком." },
+              summary: { en: "Time to explore the city on foot", ka: "დრო ქალაქში ფეხით სასეირნოდ", ru: "Время пройтись по городу пешком" },
               topics: ["heritage"], place: "tbilisi", status: "draft",
             },
             {
               id: "d5-mtskheta", time: null, type: "excursion",
               title: { en: "Mtskheta", ka: "მცხეთა", ru: "Мцхета" },
-              summary: { en: "A visit to Georgia’s ancient capital.", ka: "სტუმრობა საქართველოს ძველ დედაქალაქში.", ru: "Поездка в древнюю столицу Грузии." },
+              summary: { en: "A visit to Georgia’s ancient capital", ka: "სტუმრობა საქართველოს ძველ დედაქალაქში", ru: "Поездка в древнюю столицу Грузии" },
               topics: ["heritage"], place: "mtskheta", status: "draft",
             },
             {
               id: "d5-exponati", time: null, type: "wine",
               title: { en: "Exponati cellar, museum and shop", ka: "Exponati-ის მარანი, მუზეუმი და მაღაზია", ru: "Винный погреб, музей и магазин Exponati" },
-              summary: { en: "A chance to taste wine and see the exhibits.", ka: "ღვინის დაგემოვნება და ექსპონატების ნახვა.", ru: "Дегустация и знакомство с экспонатами." },
+              summary: { en: "A chance to taste wine and see the exhibits", ka: "ღვინის დაგემოვნება და ექსპონატების ნახვა", ru: "Дегустация и знакомство с экспонатами" },
               topics: ["wine", "heritage"], place: "exponati", people: ["exponati-host"],
-              flags: [{ en: "The host, venue operator and availability still need confirming.", ka: "ჯერ გასარკვევია, ვინ უძღვება ამ ადგილს, ვინ დაგვხვდება და შეძლებენ თუ არა ჩვენს მიღებას.", ru: "Ещё нужно уточнить, кто ведёт погреб, кто примет группу и возможен ли визит." }],
+              flags: [{ en: "The host, venue operator and availability still need confirming", ka: "ჯერ გასარკვევია, ვინ უძღვება ამ ადგილს, ვინ დაგვხვდება და შეძლებენ თუ არა ჩვენს მიღებას", ru: "Ещё нужно уточнить, кто ведёт погреб, кто примет группу и возможен ли визит" }],
               status: "to-confirm", links: { uvamoWine: null, uvamoSet: null },
             },
           ],
@@ -246,7 +246,7 @@ window.WIWI_DATA = {
             {
               id: "d6-departure", time: null, type: "transport",
               title: { en: "Airport transfer and departure", ka: "აეროპორტში გადაყვანა და გამგზავრება", ru: "Трансфер в аэропорт и вылет" },
-              summary: { en: "Transfer time will depend on the flight.", ka: "ტრანსფერის დრო ფრენაზე იქნება დამოკიდებული.", ru: "Время трансфера будет зависеть от рейса." },
+              summary: { en: "Transfer time will depend on the flight", ka: "ტრანსფერის დრო ფრენაზე იქნება დამოკიდებული", ru: "Время трансфера будет зависеть от рейса" },
               topics: ["transfer"], place: "tbilisi",
               flags: [{ en: "Airport and flight details to confirm", ka: "აეროპორტი და ფრენის დეტალები დასაზუსტებელია", ru: "Нужно уточнить аэропорт и данные рейса" }], status: "to-confirm",
             },
@@ -265,9 +265,9 @@ window.WIWI_DATA = {
       region: { en: "Eastern Georgia · Kakheti", ka: "აღმოსავლეთ საქართველო · კახეთი", ru: "Восточная Грузия · Кахетия" },
       tagline: null,
       summary: {
-        en: "A journey through wine country, planned with Ketino around visits with women winemakers.",
-        ka: "ქეთინოსთან ერთად ვგეგმავთ მოგზაურობას და შეხვედრებს ქალ მეღვინეებთან.",
-        ru: "Вместе с Кетино планируем поездку в гости к женщинам-виноделам.",
+        en: "A journey through wine country, planned with Ketino around visits with women winemakers",
+        ka: "ქეთინოსთან ერთად ვგეგმავთ მოგზაურობას და შეხვედრებს ქალ მეღვინეებთან",
+        ru: "Вместе с Кетино планируем поездку в гости к женщинам-виноделам",
       },
       focus: ["kakheti"],
       facts: [
