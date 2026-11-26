@@ -38,7 +38,7 @@ window.WIWI_DATA = {
         ru: "Рабочий маршрут согласован с Мананой · 25 ноября 2026",
       },
       // The existing share still contains the superseded Racha–Lechkhumi route.
-      clavelo: { url: null },
+      clavelo: { url: "https://app.clavelo.cc/?share=ff358b0d2fbd9340c235238236a7857b04956a460f3f5ab0ab89d682cb22db9c" },
 
       openQuestions: [
         {

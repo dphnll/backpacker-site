@@ -377,12 +377,18 @@ async function tapPin(page, placeName) {
 // ---------- "Explore in Clavelo" only with a real public share link ----------
 {
   const { page, context } = await open(1440, 900, { query: "?tour=west" });
-  await check("outdated Clavelo sample is hidden", async () => {
-    assert.equal(await page.locator(".clavelo-preview").count(), 0);
+  await check("Western route shows its published Clavelo share", async () => {
+    const link = page.locator(".clavelo-preview a");
+    const configuredUrl = await page.evaluate(() => window.WIWI_DATA.tours.find(({ id }) => id === "west").clavelo.url);
+    assert.match(configuredUrl, /^https:\/\/app\.clavelo\.cc\/\?share=[a-f0-9]{64}$/);
+    assert.equal(await link.count(), 1);
+    assert.equal(await link.getAttribute("href"), configuredUrl);
+    assert.equal(await link.getAttribute("target"), "_blank");
   });
   await context.close();
 }
 for (const [label, url, shown] of [
+  ["missing share link is hidden", null, false],
   ["valid share link is shown", "https://app.clavelo.cc/?share=abc_123-XYZ", true],
   ["non-share URL is dropped", "https://app.clavelo.cc/", false],
   ["other site is dropped", "https://example.com/?share=abc", false],

@@ -168,7 +168,9 @@ for (const id of ["d2-chkhavalley", "d2-sarishvili", "d3-argvani", "d4-simonica"
   if (!ids.has(id)) problems.push(`west route: missing required activity "${id}"`);
 }
 if (west?.days?.length !== 6) problems.push("west route: must remain a six-day working route");
-if (west?.clavelo?.url != null) problems.push("west route: stale Clavelo share must stay hidden until synchronized");
+if (!/^https:\/\/app\.clavelo\.cc\/\?share=[a-f0-9]{64}$/.test(west?.clavelo?.url || "")) {
+  problems.push("west route: expected the verified public Clavelo share URL");
+}
 
 if (problems.length) {
   console.log(`data.js / i18n.js: ${problems.length} problem(s)\n- ${problems.join("\n- ")}`);

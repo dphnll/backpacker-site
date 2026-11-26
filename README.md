@@ -73,7 +73,7 @@ Missing imagery and channels stay visibly pending. Do not add generic stock imag
 - All map coordinates are city/village-level approximations, not venue addresses.
 - The route and host/place dialogs continue to work when map tiles are unavailable.
 - UVAMO wine links appear only for validated public tasting URLs; none are supplied in this draft.
-- `west.clavelo.url` is deliberately `null`. The previous public share contains the superseded Racha–Lechkhumi programme and must not be shown until the owner updates and republishes that same demo trip.
+- `west.clavelo.url` links to the existing Clavelo sample trip. The public share was verified without sign-in against the updated six-day, 15-event programme with the budget hidden.
 - Footer links to WIWI Association and UVAMO, plus the Datum Space authorship credit, remain intact.
 
 ## Tests
@@ -87,6 +87,6 @@ node tests/smoke.mjs http://127.0.0.1:4300/
 node tests/i18n.mjs http://127.0.0.1:4300/ artifacts/screenshots
 ```
 
-`data-check.mjs` enforces the six-day route, required new stops, complete EN/KA/RU content, secure profile links and local assets. It also rejects the stale Racha–Lechkhumi names in the active Western route and rejects a non-null Clavelo URL until synchronization.
+`data-check.mjs` enforces the six-day route, required new stops, complete EN/KA/RU content, secure links and local assets. It also rejects stale Racha–Lechkhumi names and checks that the Western route has a canonical Clavelo share URL.
 
 The Georgian title and copy remain working translations until native review by Manana or WIWI.
