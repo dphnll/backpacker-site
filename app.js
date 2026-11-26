@@ -67,17 +67,11 @@
     pin: '<path d="M12 21s-6-5.4-6-10a6 6 0 0 1 12 0c0 4.6-6 10-6 10Z"/><circle cx="12" cy="11" r="2"/>',
     person: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/>',
     map: '<path d="M9 4 3.5 6v14L9 18l6 2 5.5-2V4L15 6 9 4Z"/><path d="M9 4v14M15 6v14"/>',
-    leaf: '<path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14Z"/><path d="M5 19 13 11"/>',
   };
   const icon = (name, cls = "icon") =>
     `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${ICONS[name] || ICONS.other}</svg>`;
   const statusChip = (status) => `<span class="status status-${esc(status)}">${esc(t(`status.${status}`))}</span>`;
 
-  // Latin/Cyrillic capitals, or the first letter of Georgian words (Mkhedruli has no case).
-  function initials(name) {
-    const words = name.split(/\s+/).filter((w) => /^[\p{Lu}ა-ჿ]/u.test(w));
-    return words.slice(0, 2).map((w) => w[0]).join("") || "·";
-  }
 
   // ---------- per-tour state ----------
   const routable = DATA.tours.filter((x) => (x.days || []).length);
@@ -144,26 +138,22 @@
 
   function tourCard(x) {
     const hasRoute = (x.days || []).length > 0;
-    const facts = x.facts
-      .map((f) => `<li>${esc(L(f.label))}${f.note ? `<span class="fact-note">${esc(L(f.note))}</span>` : ""}</li>`)
-      .join("");
+    const duration = hasRoute
+      ? new Intl.NumberFormat(lang, { style: "unit", unit: "day", unitDisplay: "long" }).format(x.days.length)
+      : "";
     const action = hasRoute
       ? `<a class="btn" href="${esc(urlWith({ tour: x.id }).search)}#route" data-tour="${esc(x.id)}">${esc(t("tours.open"))}</a>`
-      : `<span class="btn btn-ghost btn-disabled" aria-disabled="true">${esc(t("tours.notYet"))}</span>`;
+      : "";
     return `
       <article class="tour tour-${esc(x.id)}" id="tour-${esc(x.id)}" aria-labelledby="tour-${esc(x.id)}-title">
-        <div class="tour-art" aria-hidden="true">${icon(hasRoute ? "wine" : "leaf", "tour-art-icon")}</div>
+        ${x.id === "west" ? '<div class="tour-art" aria-hidden="true"></div>' : ""}
         <div class="tour-body">
           <div class="tour-top">
             <span class="tour-region">${esc(L(x.region))}</span>
-            ${statusChip(x.status)}
+            ${duration ? `<span class="tour-duration">${esc(duration)}</span>` : statusChip(x.status)}
           </div>
           <h3 id="tour-${esc(x.id)}-title">${esc(L(x.title))}</h3>
-          ${x.tagline ? `<p class="tour-tagline">${esc(L(x.tagline))}</p>` : ""}
           <p>${esc(L(x.summary))}</p>
-          <p class="tour-regions"><span>${esc(t("tours.regions"))}:</span> ${x.focus.map((r) => esc(region(r))).join(" · ")}</p>
-          <ul class="tour-facts">${facts}</ul>
-          ${x.author ? `<p class="tour-author">${esc(L(x.author))}</p>` : ""}
           ${action}
         </div>
       </article>`;
@@ -194,7 +184,17 @@
       ? `<button type="button" class="action" data-map="${esc(a.id)}">${icon("map")}${esc(t("action.map"))}<span class="approx-tag">${esc(t("map.approxTag"))}</span></button>`
       : "";
 
-  const timeText = (a) => (a.time ? L(a.time) : t("activity.timeTbc"));
+  const timeText = (a) => L(a.time);
+  const activityMeta = (a) => {
+    const time = timeText(a);
+    const hasSpecificNote = a.status === "to-confirm" && a.flags?.length;
+    const status = a.status === "draft" || hasSpecificNote ? "" : statusChip(a.status);
+    return `<div class="activity-top">
+      <span class="category-chip">${esc(t(`type.${a.type}`))}</span>
+      ${time ? `<span class="activity-time">${esc(time)}</span>` : ""}
+      ${status}
+    </div>`;
+  };
   const flagLines = (a) => (a.flags || []).map((f) => `<li class="flag-line flag-line-confirm">${esc(term("flag", f))}</li>`);
 
   // Breakfasts, transfers, check-ins: one line, no repeated buttons.
@@ -209,10 +209,7 @@
       <article class="activity activity-compact type-${esc(a.type)}" id="activity-${esc(a.id)}" tabindex="-1" aria-labelledby="activity-${esc(a.id)}-title">
         <div class="activity-tile" aria-hidden="true">${icon(a.type)}<small>${esc(t(`type.${a.type}`))}</small></div>
         <div class="activity-body">
-          <div class="activity-top">
-            <span class="activity-time${a.time ? "" : " is-tbc"}">${esc(timeText(a))}</span>
-            ${a.status === "draft" ? "" : statusChip(a.status)}
-          </div>
+          ${activityMeta(a)}
           <h4 id="activity-${esc(a.id)}-title">${esc(L(a.title))}</h4>
           ${a.summary ? `<p class="activity-summary">${esc(L(a.summary))}</p>` : ""}
           ${where ? `<div class="where">${where}${mapAction(a, place)}</div>` : ""}
@@ -228,7 +225,7 @@
     const rows = [];
     if (place) rows.push([t("activity.place"), `${esc(L(place.name))} <span class="muted">· ${esc(region(place.region))}</span>`]);
     else if (a.route) rows.push([t("activity.route"), esc(L(a.route))]);
-    for (const p of people) rows.push([t("activity.host"), `${esc(L(p.name))} ${statusChip(p.status)}`]);
+    for (const p of people) rows.push([t("activity.host"), esc(L(p.name))]);
     if (a.wine) rows.push([t("activity.wine"), esc(L(a.wine))]);
     if (a.food) rows.push([t("activity.food"), esc(L(a.food))]);
 
@@ -246,13 +243,9 @@
       <article class="activity type-${esc(a.type)}" id="activity-${esc(a.id)}" tabindex="-1" aria-labelledby="activity-${esc(a.id)}-title">
         ${typeTile(a)}
         <div class="activity-body">
-          <div class="activity-top">
-            <span class="activity-time${a.time ? "" : " is-tbc"}">${esc(timeText(a))}</span>
-            ${a.status === "draft" ? "" : statusChip(a.status)}
-          </div>
+          ${activityMeta(a)}
           <h4 id="activity-${esc(a.id)}-title">${esc(L(a.title))}</h4>
           ${a.summary ? `<p class="activity-summary">${esc(L(a.summary))}</p>` : ""}
-          <ul class="topics">${(a.topics || []).map((topic) => `<li>${esc(term("topic", topic))}</li>`).join("")}</ul>
           ${rows.length ? `<dl class="facts">${rows.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${v}</dd></div>`).join("")}</dl>` : ""}
           ${flags.length ? `<ul class="flag-lines">${flags.join("")}</ul>` : ""}
           ${actions.join("") ? `<div class="actions">${actions.join("")}</div>` : ""}
@@ -277,7 +270,7 @@
                 <span class="day-num">${esc(t("day.label", { n: day.n }))}</span>
                 <span class="day-main">
                   <span class="day-title">${esc(L(day.title))}</span>
-                  <span class="day-meta">${day.note ? `${esc(L(day.note))} · ` : ""}${esc(L(day.route))} · ${esc(t("day.count", { n: day.activities.length }))}${review ? ` · <span class="day-review">${esc(t("day.review"))}</span>` : ""}</span>
+                  ${L(day.route) !== L(day.title) ? `<span class="day-meta">${esc(L(day.route))}</span>` : ""}
                 </span>
                 <span class="day-chevron" aria-hidden="true"></span>
               </button>
@@ -337,26 +330,28 @@
     const links = Object.entries(p.links || {})
       .map(([kind, url]) => [kind, externalUrl(url)])
       .filter(([kind, url]) => url && PROFILE_LINK_LABELS[kind]);
-    if (!links.length) return `<p class="profile-links-empty">${esc(t("profile.linksPending"))}</p>`;
+    if (!links.length) return "";
     return `<nav class="profile-links" aria-label="${esc(t("profile.linksLabel"))}">${links
       .map(([kind, url]) => `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(t(PROFILE_LINK_LABELS[kind]))}</a>`)
       .join("")}</nav>`;
   }
 
-  function profileMedia(p, name, { dialog = false } = {}) {
+  function profileMedia(p, name) {
     const gallery = (p.gallery || []).filter((item) => item.src);
+    if (!p.photo && !p.logo && !gallery.length) return "";
     const photo = p.photo
-      ? `<img class="profile-portrait" src="${esc(p.photo)}" alt="${esc(name)}" />`
-      : `<div class="profile-fallback"><span class="detail-initials">${esc(initials(name))}</span><span>${esc(t("profile.portraitPending"))}</span></div>`;
+      ? `<div class="profile-primary"><img class="profile-portrait" src="${esc(p.photo)}" alt="${esc(name)}" /></div>`
+      : "";
     const logo = p.logo
       ? `<div class="profile-logo"><img src="${esc(p.logo)}" alt="${esc(t("profile.logoAlt", { winery: L(p.business) || name }))}" /></div>`
-      : `<div class="profile-logo profile-logo-missing"><span>${esc(t("profile.logoPending"))}</span></div>`;
+      : "";
     const support = gallery.length
       ? `<div class="profile-support${dialog ? " profile-support-dialog" : ""}">${gallery
         .map((item) => `<figure class="profile-support-${esc(item.kind)}"><img src="${esc(item.src)}" alt="${esc(L(item.alt))}" /><figcaption>${esc(t(`profile.${item.kind}`))}</figcaption></figure>`)
         .join("")}</div>`
-      : `<p class="profile-media-pending">${esc(t("profile.mediaPending"))}</p>`;
-    return `<div class="profile-media${dialog ? " profile-media-dialog" : ""}"><div class="profile-primary">${photo}${statusChip(p.status)}</div>${logo}${support}</div>`;
+      : "";
+    const layout = p.photo && (p.logo || gallery.length) ? " profile-media-composite" : "";
+    return `<div class="profile-media${layout}">${photo}${logo}${support}</div>`;
   }
 
   const renderPeople = () => [...new Set(activities.flatMap((a) => a.people || []))]
@@ -369,13 +364,13 @@
         ? `<a href="${esc(website)}" target="_blank" rel="noopener noreferrer">${esc(business)}</a>`
         : esc(business);
       return `
-        <article class="profile-card" data-profile="${esc(id)}">
+        <article class="profile-card${p.photo ? " profile-feature" : ""}" data-profile="${esc(id)}">
           ${profileMedia(p, name)}
           <div class="profile-copy">
             <p class="profile-location">${esc(L(p.location) || region(p.region))}</p>
             <h4>${businessTitle}</h4>
-            <p class="profile-name">${esc(name)} · ${esc(L(p.role))}</p>
-            <p class="profile-story">${esc(L(p.story) || t("person.noStory"))}</p>
+            <p class="profile-name">${esc(name)}${p.role ? ` · ${esc(L(p.role))}` : ""}</p>
+            ${p.story ? `<p class="profile-story">${esc(L(p.story))}</p>` : ""}
             ${p.wines ? `<p class="profile-wines"><span>${esc(t("profile.wines"))}</span>${esc(L(p.wines))}</p>` : ""}
             ${profileLinks(p)}
             <button type="button" class="profile-open" data-person="${esc(id)}">${esc(t("profile.open"))}</button>
@@ -442,7 +437,6 @@
     return `
       <div class="clavelo-preview">
         <div>
-          <span class="status status-draft">${esc(t("clavelo.badge"))}</span>
           <p>${esc(t("clavelo.text"))}</p>
         </div>
         <a class="btn" href="${esc(url)}" target="_blank" rel="noopener">${esc(t("clavelo.cta"))}</a>
@@ -460,7 +454,6 @@
       if (place && place.coord && !mappedPlaces.includes(a.place)) mappedPlaces.push(a.place);
     }
 
-    $("#route-eyebrow").textContent = t("route.eyebrow", { region: L(tour.region) });
     $("#route-title").textContent = L(tour.title);
     $("#claveloPreview").innerHTML = renderClaveloPreview();
     $("#days").innerHTML = renderDays(keep ? keep.openDays : OPEN_BY_DEFAULT);
@@ -682,7 +675,7 @@
 
   const activityLinks = (list) =>
     `<ul class="detail-list">${list
-      .map((a) => `<li><button type="button" class="link-btn" data-go="${esc(a.id)}">${esc(t("day.label", { n: a.day }))} · ${esc(timeText(a))} — ${esc(L(a.title))}</button></li>`)
+      .map((a) => `<li><button type="button" class="link-btn" data-go="${esc(a.id)}">${esc(t("day.label", { n: a.day }))} · ${a.time ? `${esc(timeText(a))} · ` : ""}${esc(L(a.title))}</button></li>`)
       .join("")}</ul>`;
 
   function openPerson(id, opener) {
@@ -695,16 +688,15 @@
       `${t("person.kicker")} · ${region(p.region)}`,
       name,
       `
-      ${profileMedia(p, name, { dialog: true })}
-      <div class="detail-row">${statusChip(p.status)}<span>${esc(L(p.role))}</span></div>
+      ${profileMedia(p, name)}
+      ${p.role ? `<p class="detail-text">${esc(L(p.role))}</p>` : ""}
       <dl class="facts detail-facts">
         ${p.business && L(p.business) !== name ? `<div><dt>${esc(t("person.business"))}</dt><dd>${externalUrl(p.links?.website) ? `<a href="${esc(p.links.website)}" target="_blank" rel="noopener noreferrer">${esc(L(p.business))}</a>` : esc(L(p.business))}</dd></div>` : ""}
         <div><dt>${esc(t("person.region"))}</dt><dd>${esc(region(p.region))}</dd></div>
         ${p.location ? `<div><dt>${esc(t("place.location"))}</dt><dd>${esc(L(p.location))}</dd></div>` : ""}
         ${p.wines ? `<div><dt>${esc(t("profile.wines"))}</dt><dd>${esc(L(p.wines))}</dd></div>` : ""}
       </dl>
-      <p class="detail-text">${esc(L(p.story) || t("person.noStory"))}</p>
-      ${p.note ? `<p class="detail-note">${esc(L(p.note))}</p>` : ""}
+      ${p.story ? `<p class="detail-text">${esc(L(p.story))}</p>` : ""}
       ${profileLinks(p)}
       ${appears.length ? `<h4 class="detail-sub">${esc(t("person.appears"))}</h4>${activityLinks(appears)}` : ""}
       ${placeIds.length ? `<div class="actions">${placeIds.map((pid) => `<button type="button" class="action" data-place="${esc(pid)}">${icon("pin")}${esc(t("action.place"))} · ${esc(L(DATA.places[pid].name))}</button>`).join("")}</div>` : ""}
@@ -722,9 +714,7 @@
       `${t("place.kicker")} · ${region(p.region)}`,
       name,
       `
-      <div class="detail-photo detail-photo-place">
-        ${p.photo ? `<img src="${esc(p.photo)}" alt="${esc(name)}" />` : `${icon("pin", "icon detail-icon")}<span>${esc(t("place.photo"))}</span>`}
-      </div>
+      ${p.photo ? `<div class="detail-photo detail-photo-place"><img src="${esc(p.photo)}" alt="${esc(name)}" /></div>` : ""}
       ${p.status ? `<div class="detail-row">${statusChip(p.status)}</div>` : ""}
       <p class="detail-text">${esc(L(p.description))}</p>
       <dl class="facts detail-facts">
@@ -755,9 +745,7 @@
       `
       ${links.wine
         ? `<div class="wine-frame"><iframe src="${esc(links.wine)}" title="${esc(t("wine.frame"))}" loading="lazy" referrerpolicy="no-referrer"></iframe></div>`
-        : `<div class="detail-photo detail-photo-wine">${icon("wine", "icon detail-icon")}<span>${esc(t("wine.photo"))}</span></div>
-           <div class="detail-row">${statusChip("to-confirm")}</div>
-           <p class="detail-note">${esc(t("wine.pending"))}</p>`}
+        : `<p class="detail-note">${esc(t("wine.pending"))}</p>`}
       <dl class="facts detail-facts">${facts.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${v}</dd></div>`).join("")}</dl>
       <h4 class="detail-sub">${esc(t("wine.when"))}</h4>
       ${activityLinks([a])}

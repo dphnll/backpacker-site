@@ -71,6 +71,7 @@ for (const [code, e] of Object.entries(EXPECT)) {
       assert.ok(await page.locator("#route").isHidden(), "no day-by-day route on the home page");
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), 0, "no horizontal scroll");
       if (code !== "en") assert.deepEqual([...new Set(latinWords(await page.locator("body").innerText()))], [], "home page translated");
+      if (SHOTS) await page.screenshot({ path: `${SHOTS}/${code}-${vp}-home.png`, fullPage: true });
       // Then into the tour, keeping the language.
       await page.locator(".tour-west [data-tour]").click();
       await settle(page, 500);
