@@ -473,14 +473,14 @@ for (const [w, h] of [[1440, 900], [390, 844]]) {
   await check("second tour: card links to its own route, map and stops switch", async () => {
     await page.locator(".tour-east [data-tour]").click();
     await settle(page);
-    assert.match(await page.locator("#route-title").innerText(), /Kakheti/);
+    assert.equal(await page.locator("#route-title").innerText(), "Visiting Women Winemakers · Eastern Georgia");
     assert.equal(await page.locator(".activity").count(), 1);
     assert.equal(await page.locator(".pin").count(), 1);
     assert.equal(await page.locator(".stop").count(), 1);
     // The new tour is localized by its data alone.
     await page.evaluate(() => window.WIWI_PROTOTYPE.setLanguage("ka"));
     await settle(page);
-    assert.equal(await page.locator("#route-title").innerText(), "კახეთისა და აღმოსავლეთ საქართველოს ქალები");
+    assert.equal(await page.locator("#route-title").innerText(), "ქალი მეღვინეების სტუმრად · აღმოსავლეთ საქართველო");
     assert.equal(await page.locator("#activity-test-east-1 h4").innerText(), "სატესტო აქტივობა");
     assert.equal(new URL(page.url()).searchParams.get("tour"), "east");
     await page.evaluate(() => window.WIWI_PROTOTYPE.setLanguage("en"));
