@@ -75,11 +75,13 @@ async function tapPin(page, placeName) {
 
   await check("1. two tour cards with honest statuses", async () => {
     assert.equal(await page.locator(".tour").count(), 2);
-    assert.match(await page.locator(".tour-west .status").innerText(), /in draft/i);
+    assert.equal(await page.locator(".tour-west .tour-duration").innerText(), "6 days");
+    assert.equal(await page.locator(".tour-west .status").count(), 0);
     assert.match(await page.locator(".tour-east .status").innerText(), /in development/i);
-    assert.match(await page.locator(".tour-west").innerText(), /6-day working route/);
+    assert.match(await page.locator(".tour-west").innerText(), /From Batumi to Tbilisi/);
     assert.equal(await page.locator(".tour-east [data-tour]").count(), 0, "no itinerary for the tour in development");
-    assert.match(await page.locator(".hero-notice").innerText(), /not a commercial offer/i);
+    assert.equal(await page.locator(".hero-notice").count(), 0);
+    assert.match(await page.locator('[data-i18n="footer.note"]').innerText(), /Preliminary itinerary/);
   });
 
   await check("home has no day-by-day route; a tour card opens the tour page; back returns home", async () => {
@@ -247,8 +249,8 @@ async function tapPin(page, placeName) {
   await check("3b. uncertain host is labelled, not presented as confirmed", async () => {
     await page.locator('.profile-card[data-profile="exponati-host"] [data-person]').click();
     const text = await page.locator("#detail").innerText();
-    assert.match(text, /to confirm/i);
-    assert.match(text, /Manana must supply the host/i);
+    assert.match(text, /host to be confirmed/i);
+    assert.doesNotMatch(text, /approved visual assets/i);
     await page.locator("#detail-close").click();
   });
 
@@ -304,7 +306,7 @@ async function tapPin(page, placeName) {
     await page.locator("#activity-d2-chkhavalley .action-see-wine").click();
     assert.equal(await page.locator("#detail-title").innerText(), "Chkhaveri and Tsolikouri");
     const text = await page.locator("#detail").innerText();
-    assert.match(text, /will appear here once WIWI shares its public tasting link/);
+    assert.match(text, /Tasting notes aren’t available yet/);
     assert.match(text, /ChkhaValley Winery/);
     assert.equal(await page.locator("#detail iframe").count(), 0);
     assert.equal(await page.locator('#detail a[href*="tasting"]').count(), 0);
@@ -315,7 +317,8 @@ async function tapPin(page, placeName) {
   });
 
   await check("7. tentative, seasonal and review markers visible", async () => {
-    assert.ok((await page.locator(".activity .status-to-confirm").count()) >= 8);
+    assert.ok((await page.locator(".activity .flag-line-confirm").count()) >= 8);
+    assert.equal(await page.locator("#activity-d2-sarishvili .status-to-confirm").count(), 0);
     assert.match(await page.locator("#activity-d2-chkhavalley .flag-line-seasonal").innerText(), /mandarin/i);
     assert.equal(await page.locator(".review-note").count(), 4);
     assert.match(await page.locator(".map-note").innerText(), /approximate/i);
@@ -378,8 +381,8 @@ for (const [label, url, shown] of [
       const a = page.locator(".clavelo-preview a");
       assert.equal(await a.getAttribute("href"), url);
       assert.equal(await a.getAttribute("target"), "_blank");
-      assert.match(await page.locator(".clavelo-preview").innerText(), /sample/i);
-      assert.match(await page.locator(".clavelo-preview").innerText(), /not a booking/i);
+      assert.equal(await page.locator(".clavelo-preview p").innerText(), "Keep the day-by-day itinerary handy in Clavelo.");
+      assert.equal(await page.locator(".clavelo-preview .status").count(), 0);
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), 0, "phone layout intact");
       await page.evaluate(() => window.WIWI_PROTOTYPE.setLanguage("ka"));
       assert.equal(await a.innerText(), "ნახვა Clavelo-ში");
