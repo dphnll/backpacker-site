@@ -224,7 +224,7 @@ async function tapPin(page, placeName) {
     assert.equal(await page.locator("#detail-title").innerText(), "ChkhaValley Winery");
     assert.equal(await page.locator("#detail .profile-host").innerText(), "Maka Tedoradze");
     assert.equal(await page.locator("#detail-title a").getAttribute("href"), "https://chkhavalley.com/");
-    assert.equal(await page.locator("#detail img").count(), 3, "supplied portrait, logo and atmosphere image are shown");
+    assert.equal(await page.locator("#detail img").count(), 5, "portrait, logo and three supplied images are shown");
     assert.equal(await page.locator("#detail .profile-links a").count(), 3, "three official ChkhaValley links are visible");
     await page.keyboard.press("Escape");
     assert.equal(await page.locator("#detail").getAttribute("open"), null);
@@ -246,24 +246,24 @@ async function tapPin(page, placeName) {
     await page.keyboard.press("Escape");
     assert.ok(await maka.evaluate((el) => el === document.activeElement));
     const sarishvili = page.locator('.profile-card[data-profile="sarishvili"]');
-    assert.equal(await sarishvili.locator("img").count(), 0, "no fabricated logo");
+    assert.equal(await sarishvili.locator("img").count(), 1, "founder-supplied logo");
     await sarishvili.click();
     const winePhoto = page.locator("#detail .profile-gallery-wine");
-    assert.equal(await page.locator("#detail [data-profile-photo]").count(), 1);
-    assert.equal(await page.locator("#detail .profile-gallery-slot").count(), 2);
-    assert.equal(await page.locator("#detail .profile-links a").count(), 0, "no invented channels");
+    assert.equal(await page.locator("#detail [data-profile-photo]").count(), 3);
+    assert.equal(await page.locator("#detail .profile-gallery-slot").count(), 0);
+    assert.equal(await page.locator("#detail .profile-links a").count(), 3);
     await winePhoto.click();
     assert.ok(await page.locator("#profile-photo-view").isVisible());
-    assert.match(await page.locator("#profile-photo-image").getAttribute("src"), /sarishvili-wine\.jpg$/);
+    assert.match(await page.locator("#profile-photo-image").getAttribute("src"), /sarishvili-wine\.webp$/);
     await page.locator("#profile-photo-close").click();
     assert.ok(await page.locator("#detail").isVisible());
     await page.locator("#detail-close").click();
   });
 
-  await check("3b. uncertain host is labelled, not presented as confirmed", async () => {
+  await check("3b. Exponati shows the founder-confirmed winemaker", async () => {
     await page.locator('.profile-card[data-profile="exponati-host"]').click();
     const text = await page.locator("#detail").innerText();
-    assert.match(text, /host to be confirmed/i);
+    assert.match(text, /Nato Shukakidze/);
     assert.doesNotMatch(text, /approved visual assets/i);
     await page.locator("#detail-close").click();
   });

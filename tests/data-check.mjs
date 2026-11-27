@@ -137,7 +137,7 @@ for (const [id, p] of Object.entries(D.people)) {
   }
   for (const [i, item] of (p.gallery || []).entries()) {
     if (!/^\.\/assets\/[A-Za-z0-9_./-]+\.(?:jpg|jpeg|png|webp|svg)$/i.test(item.src || "")) problems.push(`${where}: gallery ${i + 1} must be a local asset`);
-    if (!["winery", "wine", "atmosphere"].includes(item.kind)) problems.push(`${where}: gallery ${i + 1} has an unknown kind`);
+    if (!["winery", "food", "wine", "atmosphere"].includes(item.kind)) problems.push(`${where}: gallery ${i + 1} has an unknown kind`);
     text(`${where} gallery ${i + 1} alt`, item.alt);
   }
   for (const [kind, url] of Object.entries(p.links || {})) {
