@@ -353,15 +353,15 @@ window.WIWI_DATA = {
         "ru": "Эрге, Аджария"
       },
       "wines": {
-        "en": "Chkhaveri · Tsolikouri",
-        "ka": "ჩხავერი · ცოლიკაური",
-        "ru": "Чхавери · Цоликоури"
+        "en": "Chkhaveri · Tsolikouri · Saperavi · Kisi",
+        "ka": "ჩხავერი · ცოლიკაური · საფერავი · ქისი",
+        "ru": "Чхавери · Цоликоури · Саперави · Киси"
       },
       "status": "draft",
       "story": {
-        "en": "Maka runs ChkhaValley with Davit Bibineishvili. Their family has tended vines and made wine in Erge since 2010. They serve Adjarian dishes at their table.",
-        "ka": "მაკა ChkhaValley-ს დავით ბიბინეიშვილთან ერთად უძღვება. მათი ოჯახი ერგეში 2010 წლიდან უვლის ვაზს და აყენებს ღვინოს. მათ სუფრაზე ღვინოს აჭარული კერძები ახლავს.",
-        "ru": "Мака ведёт ChkhaValley вместе с Давитом Бибинеишвили. Их семья с 2010 года выращивает виноград и делает вино в Эрге. К вину за их столом подают аджарские блюда."
+        "en": "Maka Tedoradze trained as a financier. Her path into wine began with the family vineyard in Erge, a village just ten kilometres from Batumi, between the Black Sea and the mountains of Adjara.\n\nThe family has grown grapes since 2010. After studying winemaking, Maka made her first wine with her husband, Davit Bibineishvili, in 2023. Together they began developing their own winery, ChkhaValley.\n\nChkhaveri, an old western Georgian variety, has a special place here, producing both rosé and amber wines. The family also grows Tsolikouri. Adjara’s humid climate calls for close attention to the vines, and Maka aims to follow the principles of natural winemaking.\n\nAt ChkhaValley, getting to know the wines continues around the family table. Home-cooked Georgian food includes Adjarian sinori, khachapuri, mchadi and seasonal dishes. Welcoming guests has become an important part of the family’s work.",
+        "ka": "მაკა თედორაძე პროფესიით ფინანსისტია. მისი გზა მეღვინეობისკენ სოფელ ერგეში, საოჯახო ვენახიდან დაიწყო — ბათუმიდან სულ ათ კილომეტრში, შავ ზღვასა და აჭარის მთებს შორის.\n\nოჯახი ვაზს 2010 წლიდან უვლის. მეღვინეობის შესწავლის შემდეგ, 2023 წელს, მაკამ მეუღლესთან, დავით ბიბინეიშვილთან ერთად პირველი ღვინო დააყენა და საკუთარი მეურნეობის, ChkhaValley-ს განვითარებას შეუდგა.\n\nმათ საქმიანობაში განსაკუთრებული ადგილი ჩხავერს უჭირავს — დასავლეთ საქართველოს ძველ ჯიშს, რომლისგანაც აქ ვარდისფერ და ქარვისფერ ღვინოებს აყენებენ. ოჯახს ცოლიკაურიც მოჰყავს. აჭარის ნოტიო კლიმატში ვაზს განსაკუთრებით ფრთხილი მოვლა სჭირდება, მაკა კი ბუნებრივი მეღვინეობის პრინციპების დაცვას ცდილობს.\n\nChkhaValley-ში ღვინის გაცნობა საოჯახო სუფრასთან გრძელდება. აქ შინაურ ქართულ კერძებს ამზადებენ, მათ შორის აჭარულ სინორს, ხაჭაპურს, მჭადსა და სეზონურ ნუგბარს. სტუმართმოყვარეობა საოჯახო საქმის მნიშვნელოვან ნაწილად იქცა.",
+        "ru": "По профессии Мака Тедорадзе — финансист. Её путь в виноделие начался с семейного виноградника в селе Эрге, всего в десяти километрах от Батуми, между Чёрным морем и горами Аджарии.\n\nСемья выращивает виноград с 2010 года. Пройдя обучение виноделию, в 2023 году Мака вместе с супругом Давитом Бибинеишвили сделала своё первое вино и начала развивать собственное хозяйство ChkhaValley.\n\nОсобое место в их работе занимает чхавери — старинный сорт Западной Грузии, из которого здесь делают розовые и янтарные вина. Вместе с ним семья выращивает цоликоури. Влажный климат Аджарии требует особенно внимательного ухода за лозой, а Мака стремится придерживаться принципов натурального виноделия.\n\nВ ChkhaValley знакомство с вином продолжается за семейным столом. Здесь готовят домашние грузинские блюда, среди которых аджарский синори, хачапури, мчади и сезонные угощения. Гостеприимство стало важной частью семейного проекта."
       },
       "photo": "./assets/hosts/chkhavalley-maka.jpg",
       "logo": "./assets/hosts/chkhavalley-logo.webp",
@@ -397,24 +397,29 @@ window.WIWI_DATA = {
       "links": {
         "website": "https://chkhavalley.com/",
         "instagram": "https://www.instagram.com/chkhavalley_winery",
-        "facebook": "https://www.facebook.com/198576696681515"
+        "facebook": "https://www.facebook.com/profile.php?id=61556347416179"
+      },
+      "cardStory": {
+        "en": "A financier turned winemaker, with family wines from rare Georgian grapes in the foothills of Adjara",
+        "ka": "ფინანსისტი, რომელიც მეღვინე გახდა — იშვიათი ქართული ჯიშების საოჯახო ღვინოები აჭარის მთისწინეთში",
+        "ru": "Финансист, ставшая виноделом, и семейные вина из редких грузинских сортов в предгорьях Аджарии"
       }
     },
     "sarishvili": {
       "name": {
-        "en": "Sofio Sarishvili",
-        "ka": "სოფიო სარიშვილი",
-        "ru": "Софио Саришвили"
+        "en": "Sarishvili Family",
+        "ka": "სარიშვილების ოჯახი",
+        "ru": "Семья Саришвили"
       },
       "role": {
-        "en": "Winemaker",
-        "ka": "მეღვინე",
-        "ru": "Винодел"
+        "en": "Family winery",
+        "ka": "საოჯახო მარანი",
+        "ru": "Семейная винодельня"
       },
       "business": {
-        "en": "Sarishvili Winery",
-        "ka": "სარიშვილების მარანი",
-        "ru": "Винодельня Саришвили"
+        "en": "Sarishvili Family Winery",
+        "ka": "სარიშვილების საოჯახო მარანი",
+        "ru": "Семейная винодельня Саришвили"
       },
       "region": "guria",
       "location": {
@@ -429,14 +434,14 @@ window.WIWI_DATA = {
       },
       "status": "to-confirm",
       "story": {
-        "en": "The family grows fruit and makes Gurian Chkhaveri. They’ve suggested setting a table in the orchard.",
-        "ka": "ოჯახი ხილს ზრდის და გურულ ჩხავერს აყენებს. სტუმრებისთვის სუფრის გაშლა ხეხილის ბაღში შემოგვთავაზეს.",
-        "ru": "Семья выращивает фрукты и делает гурийское чхавери. Хозяева предложили накрыть стол в саду."
+        "en": "The Sarishvili family winery introduces guests to one of western Georgia’s most distinctive grapes, Chkhaveri. This old variety holds a special place in Guria’s wine culture, where families have kept winemaking traditions alive for generations.\n\nAmong the winery’s wines is a dry rosé Chkhaveri available through specialist Georgian wine shops. The production notes for one release describe fermentation with native yeasts, a short period of skin contact and subsequent ageing in a steel tank. This approach preserves the grape’s freshness and character.\n\nThe family also grows fruit. Our journey envisages tasting their wines at a shared table in the family orchard, with time to meet the hosts and get a sense of everyday life in rural Guria.",
+        "ka": "სარიშვილების საოჯახო მარანი სტუმრებს დასავლეთ საქართველოს ერთ-ერთ გამორჩეულ ჯიშს — ჩხავერს აცნობს. ამ ძველ ჯიშს განსაკუთრებული ადგილი უჭირავს გურიის მეღვინეობაში, სადაც ღვინის დაყენების საოჯახო ტრადიცია თაობიდან თაობას გადაეცემოდა.\n\nმეურნეობის ერთ-ერთი ღვინო მშრალი ვარდისფერი ჩხავერია, რომელიც ქართული ღვინის სპეციალიზებულ მაღაზიებში იყიდება. ერთ-ერთი გამოშვების აღწერის მიხედვით, ღვინო ბუნებრივ საფუარზე დუღდება, ყურძნის კანთან ხანმოკლე შეხებით, შემდეგ კი ფოლადის ჭურჭელში ძველდება. ასეთი მიდგომა ჯიშის სიხალისისა და ხასიათის შენარჩუნებას უწყობს ხელს.\n\nოჯახი ხილსაც ზრდის. ჩვენი მოგზაურობის ფარგლებში მათ ღვინოებს საოჯახო ხეხილის ბაღში, საერთო სუფრასთან გავეცნობით, თუ სტუმრობა შეთანხმდება. ეს მასპინძლებთან დროის გატარებისა და გურიის შინაური ყოფის გაცნობის შესაძლებლობაა.",
+        "ru": "Винодельня семьи Саришвили знакомит гостей с одним из самых характерных сортов Западной Грузии — чхавери. Этот старинный сорт занимает особое место в винодельческой культуре Гурии, где традиции семейного виноделия сохранялись на протяжении поколений.\n\nОдно из вин хозяйства — сухое розовое чхавери, представленное в специализированных грузинских винных магазинах. Для одного из его выпусков описан способ ферментации на природных дрожжах с непродолжительным контактом с кожицей винограда и последующей выдержкой в стальной ёмкости. Такой подход позволяет сохранить свежесть и характер сорта.\n\nСемья занимается также выращиванием фруктов. В рамках нашего путешествия предполагается знакомство с их винами за общим столом в семейном фруктовом саду — возможность провести время с хозяевами и познакомиться с домашним укладом жизни Гурии."
       },
       "cardStory": {
-        "en": "The Sarishvili family grows fruit and makes Gurian Chkhaveri. They’ve suggested setting a table for the group among the trees in their orchard.",
-        "ka": "სარიშვილების ოჯახი ხილს ზრდის და გურულ ჩხავერს აყენებს. სტუმრებისთვის სუფრის გაშლა თავიანთ ხეხილის ბაღში, ხეებს შორის შემოგვთავაზეს.",
-        "ru": "Семья Саришвили выращивает фрукты и делает гурийское чхавери. Для гостей хозяева предложили накрыть стол среди деревьев в своём фруктовом саду."
+        "en": "Rare rosé Chkhaveri and a family welcome at a shared table among the fruit trees of their orchard",
+        "ka": "იშვიათი ვარდისფერი ჩხავერი და საოჯახო სტუმართმოყვარეობა — საერთო სუფრა ხეხილის ბაღში",
+        "ru": "Редкое розовое чхавери и семейное гостеприимство за столом среди фруктовых деревьев"
       },
       "photo": "./assets/hosts/sarishvili-portrait.webp",
       "logo": "./assets/hosts/sarishvili-logo.webp",
@@ -479,7 +484,7 @@ window.WIWI_DATA = {
       "name": {
         "en": "Khatia Jakhua",
         "ka": "ხატია ჯახუა",
-        "ru": "Хатия Джахуа"
+        "ru": "Хатия Жахуа"
       },
       "role": {
         "en": "Winemaker and artist",
@@ -487,26 +492,26 @@ window.WIWI_DATA = {
         "ru": "Винодел и художница"
       },
       "business": {
-        "en": "Argvani Cellar",
-        "ka": "მარანი არგვანი",
-        "ru": "Марани Argvani"
+        "en": "Family Winery Argvani",
+        "ka": "არგვანის საოჯახო მარანი",
+        "ru": "Семейная винодельня Argvani"
       },
       "region": "samegrelo",
       "location": {
-        "en": "Abedati near Martvili",
-        "ka": "აბედათი, მარტვილთან",
-        "ru": "Абедати рядом с Мартвили"
+        "en": "Abedati, Samegrelo",
+        "ka": "აბედათი, სამეგრელო",
+        "ru": "Абедати, Самегрело"
       },
       "wines": {
-        "en": "Ojaleshi · Chvitiluri",
-        "ka": "ოჯალეში · ჭვიტილური",
-        "ru": "Оджалеши · Чвитилури"
+        "en": "Ojaleshi · Chvitiluri — the principal local varieties the winery works with",
+        "ka": "ოჯალეში · ჩვიტილური — ძირითადი ადგილობრივი ჯიშები, რომლებთანაც მეურნეობა მუშაობს",
+        "ru": "Оджалеши · Чвитилури — основные местные сорта, с которыми работает хозяйство"
       },
       "status": "to-confirm",
       "story": {
-        "en": "Khatia brought winemaking back to her family, replanted the vineyard and built a cellar. She’s also an artist with an interest in Georgian ornament.",
-        "ka": "ხატიამ ოჯახში მეღვინეობა გააცოცხლა, ვენახი ხელახლა გააშენა და მარანი ააგო. ის მხატვარიცაა და ქართული ორნამენტითაა დაინტერესებული.",
-        "ru": "Хатия вернула в семью виноделие: заново посадила виноградник и построила погреб. Она художница, и одна из её тем — грузинский орнамент."
+        "en": "Khatia Jakhua is an artist and the founder of the family winery Argvani in Abedati, nine kilometres from Martvili.\n\nHer family had long grown grapes, brought in the harvest and pressed wine in a traditional Georgian wooden trough, the satsnakheli. Over time, that tradition was almost lost. Khatia and her brother decided to bring it back, restoring the vineyard and building a new marani. Argvani has been developing its own wine production since 2021.\n\nKhatia pays particular attention to preserving and promoting Megrelian grapes, especially Ojaleshi and Chvitiluri. The winery combines traditional and modern approaches, experimenting with Georgian and European varieties.\n\nArt is another part of her life. Khatia studies Georgian ornament and introduces guests to its history and symbolism. Meeting her offers a fresh view of Samegrelo’s cultural heritage, drawing connections between art, architecture, local wines and family traditions.\n\nMegrelian food, which Khatia enjoys discussing with her guests, completes an introduction to Argvani.",
+        "ka": "ხატია ჯახუა მხატვარი და საოჯახო მარნის, Argvani-ს დამფუძნებელია. მარანი სოფელ აბედათში, მარტვილიდან ცხრა კილომეტრში მდებარეობს.\n\nმის ოჯახში ოდითგანვე უვლიდნენ ვაზს, იღებდნენ მოსავალს და ყურძენს ტრადიციულ ქართულ საწნახელში წურავდნენ. დროთა განმავლობაში ეს ტრადიცია თითქმის დაიკარგა. ხატიამ და მისმა ძმამ მისი გაცოცხლება გადაწყვიტეს — ვენახი აღადგინეს და ახალი მარანი ააშენეს. 2021 წლიდან Argvani საკუთარი ღვინის წარმოებას ავითარებს.\n\nხატია განსაკუთრებულ ყურადღებას მეგრული ჯიშების, უპირველესად ოჯალეშისა და ჩვიტილურის, შენარჩუნებასა და პოპულარიზაციას უთმობს. მეურნეობაში მეღვინეობის ტრადიციულ და თანამედროვე მიდგომებს აერთიანებენ და ქართულ თუ ევროპულ ჯიშებზე ექსპერიმენტობენ.\n\nმისი ცხოვრების კიდევ ერთი მხარე ხელოვნებაა. ხატია ქართულ ორნამენტს სწავლობს და სტუმრებს მის ისტორიასა და სიმბოლიკას აცნობს. მასთან შეხვედრა სამეგრელოს კულტურული მემკვიდრეობის სხვაგვარად დანახვის საშუალებას იძლევა — ხელოვნებას, არქიტექტურას, ადგილობრივ ღვინოსა და საოჯახო ტრადიციებს შორის კავშირის აღმოჩენას.\n\nArgvani-ს გაცნობას მეგრული სამზარეულოც ახლავს, რომელზეც ხატია სტუმრებს სიამოვნებით ესაუბრება.",
+        "ru": "Хатия Жахуа — художница и основательница семейной винодельни Argvani в селе Абедати, в девяти километрах от Мартвили.\n\nВ её семье издавна выращивали виноград, собирали урожай и давили вино в традиционном грузинском давильном корыте — сацнахели. Со временем эта традиция оказалась почти утрачена. Хатия вместе с братом решила вернуть её к жизни: они восстановили виноградник и построили новый марани. С 2021 года Argvani развивает собственное производство вина.\n\nОсобое внимание Хатия уделяет сохранению и популяризации мегрельских сортов, прежде всего оджалеши и чвитилури. В хозяйстве сочетают традиционные и современные подходы к виноделию, экспериментируют с грузинскими и европейскими сортами.\n\nЕщё одна сторона её жизни — искусство. Хатия изучает грузинский орнамент и знакомит гостей с его историей и символикой. Встреча с ней позволяет по-новому взглянуть на культурное наследие Самегрело: увидеть связь между искусством, архитектурой, местными винами и семейными традициями.\n\nЗнакомство с Argvani дополняет мегрельская кухня, о которой Хатия с удовольствием рассказывает своим гостям."
       },
       "photo": "./assets/hosts/argvani-portrait.webp",
       "logo": "./assets/hosts/argvani-logo.webp",
@@ -543,18 +548,23 @@ window.WIWI_DATA = {
         "instagram": "https://www.instagram.com/vinoargvani/",
         "facebook": "https://www.facebook.com/xatia.jaxua/",
         "wiwi": "https://www.wiwi.ge/en/members_details/29/khatia-jakhua"
+      },
+      "cardStory": {
+        "en": "An artist who revived her family vineyard, sharing Megrelian wines and the stories held in Georgian ornament",
+        "ka": "მხატვარი, რომელმაც საოჯახო ვენახი აღადგინა და სტუმრებს მეგრული ღვინისა და ქართული ორნამენტის სამყაროს აცნობს",
+        "ru": "Художница, возродившая семейный виноградник и открывающая гостям мир мегрельских вин и грузинского орнамента"
       }
     },
     "nini-chkheidze": {
       "name": {
-        "en": "Nino Chkheidze",
-        "ka": "ნინო ჩხეიძე",
-        "ru": "Нино Чхеидзе"
+        "en": "Nini Chkheidze",
+        "ka": "ნინი ჩხეიძე",
+        "ru": "Нини Чхеидзе"
       },
       "business": {
-        "en": "Simonika - Chkheidze Wines",
-        "ka": "Simonika - ჩხეიძეების ღვინო",
-        "ru": "Simonika - вина Чхеидзе"
+        "en": "Simonica — Chkheidze Wines",
+        "ka": "Simonica — ჩხეიძეების ღვინო",
+        "ru": "Simonica — вина Чхеидзе"
       },
       "region": "imereti",
       "location": {
@@ -563,15 +573,15 @@ window.WIWI_DATA = {
         "ru": "Меоре Обча, Имерети"
       },
       "wines": {
-        "en": "Tsolikouri · Tsitska · Otskhanuri Sapere",
-        "ka": "ცოლიკაური · ციცქა · ოცხანური საფერე",
-        "ru": "Цоликоури · Цицка · Оцханури сапере"
+        "en": "Tsitska · Tsolikouri · Krakhuna · Otskhanuri Sapere · Ojaleshi",
+        "ka": "ციცქა · ცოლიკაური · კრახუნა · ოცხანური საფერე · ოჯალეში",
+        "ru": "Цицка · Цоликоури · Крахуна · Оцханури сапере · Оджалеши"
       },
       "status": "to-confirm",
       "story": {
-        "en": "Nugzar and Mamuka Chkheidze founded the cellar. The next generation now helps make natural qvevri wines from the family’s organic vineyards.",
-        "ka": "მარანი ნუგზარ და მამუკა ჩხეიძეებმა დააარსეს. დღეს ოჯახის ორგანული ვენახების ყურძნისგან ბუნებრივ ქვევრის ღვინოს ახალი თაობაც აყენებს.",
-        "ru": "Погреб основали Нугзар и Мамука Чхеидзе. Теперь натуральные вина в квеври из винограда с семейных органических участков помогает делать и новое поколение."
+        "en": "Nini Chkheidze is the third generation of winemakers in her family. Before joining the family winery, she spent more than ten years in marketing, earned an MBA at France’s Grenoble École de Management and a WSET Level 3 qualification, and studied viticulture and oenology at the Agricultural University of Georgia.\n\nBrothers Nugzar and Mamuka Chkheidze founded Simonica in 2008. Nini now develops the family business alongside her father and uncle, bringing contemporary professional knowledge to the experience passed down through generations.\n\nThe family has vineyards in two wine regions of western Georgia, in Meore Obcha in Imereti and Zana in Samegrelo. They grow local varieties, from Imeretian Tsitska, Tsolikouri, Krakhuna and Otskhanuri Sapere to Megrelian Ojaleshi, Egudzguri and Chvitiluri.\n\nSimonica follows the principles of organic viticulture and natural winemaking. Alongside traditional qvevri wines, it makes rosé and naturally sparkling wines. The winery has been a member of Georgia’s Natural Wine Association since 2017.",
+        "ka": "ნინი ჩხეიძე თავისი ოჯახის მეღვინეთა მესამე თაობას წარმოადგენს. საოჯახო მეურნეობაში ჩართვამდე ის ათ წელზე მეტხანს მარკეტინგში მუშაობდა, საფრანგეთის გრენობლის მენეჯმენტის სკოლაში MBA-ის ხარისხი მიიღო, მოიპოვა WSET Level 3-ის კვალიფიკაცია და საქართველოს აგრარულ უნივერსიტეტში მევენახეობა და ენოლოგია შეისწავლა.\n\nმეღვინეობა Simonica 2008 წელს ძმებმა ნუგზარ და მამუკა ჩხეიძეებმა დააარსეს. დღეს ნინი საოჯახო საქმეს მამასა და ბიძასთან ერთად ავითარებს და თაობების გამოცდილებას თანამედროვე პროფესიულ ცოდნას უთავსებს.\n\nოჯახს ვენახები დასავლეთ საქართველოს ორ მეღვინეობის რეგიონში აქვს — იმერეთში, სოფელ მეორე ობჩაში, და სამეგრელოში, სოფელ ზანაში. აქ ადგილობრივი ჯიშები მოჰყავთ — იმერული ციცქა, ცოლიკაური, კრახუნა და ოცხანური საფერე, ასევე მეგრული ოჯალეში, ეგუძგური და ჩვიტილური.\n\nSimonica ორგანული მევენახეობისა და ბუნებრივი მეღვინეობის პრინციპებს მისდევს. ქვევრის ტრადიციულ ღვინოებთან ერთად მეურნეობა ვარდისფერ და ბუნებრივად ცქრიალა ღვინოებსაც აწარმოებს. 2017 წლიდან მარანი საქართველოს ბუნებრივი ღვინის ასოციაციის წევრია.",
+        "ru": "Нини Чхеидзе представляет третье поколение виноделов своей семьи. Прежде чем присоединиться к семейному хозяйству, она более десяти лет работала в маркетинге, получила MBA во французской Grenoble École de Management, квалификацию WSET Level 3 и прошла обучение виноградарству и энологии в Аграрном университете Грузии.\n\nВинодельню Simonica основали в 2008 году братья Нугзар и Мамука Чхеидзе. Сегодня Нини развивает семейное дело вместе с отцом и дядей, соединяя накопленный поколениями опыт с современными профессиональными знаниями.\n\nУ семьи есть виноградники в двух винодельческих регионах Западной Грузии: в Имерети, в селе Меоре Обча, и в Самегрело, в селе Зана. Здесь выращивают местные сорта — от имеретинских цицки, цоликоури, крахуны и оцханури сапере до мегрельских оджалеши, эгудзгури и чвитилури.\n\nSimonica придерживается принципов органического виноградарства и натурального виноделия. Наряду с традиционными винами в квеври хозяйство выпускает розовые и естественно игристые вина. С 2017 года винодельня входит в грузинскую Ассоциацию натурального вина."
       },
       "photo": "./assets/hosts/simonika-portrait.webp",
       "logo": "./assets/hosts/simonika-logo.webp",
@@ -614,37 +624,46 @@ window.WIWI_DATA = {
         "en": "Winemaker",
         "ka": "მეღვინე",
         "ru": "Винодел"
+      },
+      "cardStory": {
+        "en": "An MBA, WSET Level 3 and three generations of winemaking — a fresh perspective on the family’s qvevri tradition",
+        "ka": "MBA, WSET Level 3 და მეღვინეთა მესამე თაობა — ახალი ხედვა ქართული ქვევრის ღვინის საოჯახო ტრადიციაზე",
+        "ru": "MBA, WSET Level 3 и третье поколение виноделов — новый взгляд на семейную традицию грузинского квеври"
       }
     },
     "exponati-host": {
       "name": {
-        "en": "Nato Shukakidze",
-        "ka": "ნატო შუკაკიძე",
-        "ru": "Нато Шукакидзе"
+        "en": "Exponati",
+        "ka": "Exponati",
+        "ru": "Exponati"
       },
       "role": {
-        "en": "Winemaker",
-        "ka": "მეღვინე",
-        "ru": "Винодел"
+        "en": "Wine cellar",
+        "ka": "ღვინის მარანი",
+        "ru": "Винный погреб"
       },
-      "business": "Exponati",
-      "region": "mtskheta-mtianeti",
+      "business": {
+        "en": "Exponati Wine Cellar",
+        "ka": "Exponati — ღვინის მარანი",
+        "ru": "Винный погреб Exponati"
+      },
+      "region": "kartli",
       "location": {
-        "en": "Mtskheta · exact location to verify",
-        "ka": "მცხეთა · ზუსტი ადგილი გადასამოწმებელია",
-        "ru": "Мцхета · точное место нужно проверить"
+        "en": "Mtskheta, Kartli",
+        "ka": "მცხეთა, ქართლი",
+        "ru": "Мцхета, Картли"
       },
       "wines": null,
       "status": "to-confirm",
       "story": {
-        "en": "A cellar, museum and shop where the group may stop for wine and exhibits.",
-        "ka": "მარანი, მუზეუმი და მაღაზია. თუ სტუმრობა შედგა, აქ ღვინოსაც გავსინჯავთ და ექსპონატებსაც ვნახავთ.",
-        "ru": "Погреб, музей и магазин. Если визит состоится, здесь можно будет попробовать вино и посмотреть экспонаты."
+        "en": "In the historic heart of Mtskheta, close to Svetitskhoveli Cathedral, Exponati brings a tasting cellar and wine shop together in one space.\n\nWhat distinguishes the place is the opportunity to explore several approaches to winemaking. Its wines include those made by the traditional Georgian method in clay qvevri, alongside wines made using European methods and barrel ageing.\n\nA visit to Exponati continues the introduction to Georgian wine culture after the journey through family wineries in Adjara, Guria, Samegrelo and Imereti. Here, guests can compare wine styles and learn more about how they are made.\n\nIts location in Georgia’s ancient capital brings wine and Mtskheta’s historic heritage into the same visit.",
+        "ka": "მცხეთის ისტორიულ ნაწილში, სვეტიცხოვლის ტაძრის მახლობლად, ღვინის სივრცე Exponati მდებარეობს, რომელიც სადეგუსტაციო მარანსა და ღვინის მაღაზიას აერთიანებს.\n\nამ ადგილის თავისებურება მეღვინეობის რამდენიმე მიდგომის გაცნობის შესაძლებლობაა. აქ წარმოდგენილია როგორც ტრადიციული ქართული ტექნოლოგიით, თიხის ქვევრებში დაყენებული ღვინოები, ისე ევროპული მეთოდებითა და კასრში დაძველებით შექმნილი ღვინოები.\n\nExponati-ში სტუმრობა ქართული ღვინის კულტურის გაცნობას აგრძელებს აჭარის, გურიის, სამეგრელოსა და იმერეთის საოჯახო მეურნეობების მონახულების შემდეგ. აქ სხვადასხვა სტილის ღვინის შედარება და მათი დამზადების გზების უკეთ გაცნობა შეიძლება.\n\nსაქართველოს ძველ დედაქალაქში მდებარეობა ღვინის გაცნობასა და მცხეთის ისტორიული მემკვიდრეობის მონახულებას ერთ ვიზიტში აერთიანებს.",
+        "ru": "В исторической части Мцхеты, неподалёку от собора Светицховели, находится винное пространство Exponati, объединяющее дегустационный погреб и магазин вина.\n\nОсобенность этого места — возможность познакомиться с несколькими подходами к виноделию. Здесь представлены вина, изготовленные по традиционной грузинской технологии в глиняных квеври, а также вина, созданные с применением европейских методов и выдержки в бочках.\n\nПосещение Exponati станет продолжением знакомства с винной культурой Грузии после путешествия по семейным хозяйствам Аджарии, Гурии, Самегрело и Имерети. Здесь можно будет сопоставить разные стили вина и узнать больше о способах его изготовления.\n\nРасположение в древней столице Грузии позволяет объединить знакомство с вином и историческим наследием Мцхеты."
       },
       "cardStory": {
-        "en": "Exponati brings a cellar, a museum and a shop together. If the visit near Mtskheta goes ahead, the group can taste wine and see the exhibits.",
-        "ka": "Exponati-ში მარანი, მუზეუმი და მაღაზიაა. თუ მცხეთასთან ამ გაჩერებას შევათანხმებთ, აქ ღვინოსაც გავსინჯავთ და ექსპონატებსაც ვნახავთ.",
-        "ru": "В Exponati есть винный погреб, музей и магазин. Если остановку в районе Мцхеты согласуют, здесь можно будет попробовать вино и посмотреть экспонаты."
+        "en": "A wine cellar near Svetitskhoveli, where different traditions of Georgian winemaking meet in the glass",
+        "ka": "ღვინის მარანი სვეტიცხოველთან — ადგილი ქართული მეღვინეობის სხვადასხვა ტრადიციის გასაცნობად",
+        "ru": "Винный погреб рядом со Светицховели, где знакомятся с разными традициями грузинского виноделия"
       },
       "photo": "./assets/hosts/exponati-portrait.webp",
       "logo": "./assets/hosts/exponati-logo.webp",

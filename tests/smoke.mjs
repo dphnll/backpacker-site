@@ -260,10 +260,11 @@ async function tapPin(page, placeName) {
     await page.locator("#detail-close").click();
   });
 
-  await check("3b. Exponati shows the founder-confirmed winemaker", async () => {
+  await check("3b. Exponati uses the venue identity from the editorial master", async () => {
     await page.locator('.profile-card[data-profile="exponati-host"]').click();
     const text = await page.locator("#detail").innerText();
-    assert.match(text, /Nato Shukakidze/);
+    assert.doesNotMatch(text, /Nato Shukakidze/);
+    assert.match(text, /Exponati Wine Cellar/);
     assert.doesNotMatch(text, /approved visual assets/i);
     await page.locator("#detail-close").click();
   });

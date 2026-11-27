@@ -33,7 +33,7 @@ const dictKey = (where, kind, key) => {
 // ---------- localized text ----------
 // Names that stay the same in every language may be plain strings.
 const UNTRANSLATED = new Set(["ChkhaValley Winery", "WIWI Tours", "UVAMO!", "Clavelo", "Exponati"]);
-const BRAND_WORDS = /WIWI|UVAMO!?|ChkhaValley(?: Winery)?|Clavelo|Simonica|Simonika|Argvani|Exponati|Sisters|Three Sisters|Baia.?s Wine|Sarishvili|Sarajishvili|Facebook|Instagram|A 7-Day Boutique Wine & Culinary Journey/g;
+const BRAND_WORDS = /Grenoble École de Management|WSET Level 3|MBA|WIWI|UVAMO!?|ChkhaValley(?: Winery)?|Clavelo|Simonica|Simonika|Argvani|Exponati|Sisters|Three Sisters|Baia.?s Wine|Sarishvili|Sarajishvili|Facebook|Instagram|A 7-Day Boutique Wine & Culinary Journey/g;
 function text(where, value, { optional = false } = {}) {
   if (value == null) {
     if (!optional) problems.push(`${where}: missing text`);
