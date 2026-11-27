@@ -350,10 +350,10 @@
   }
 
   function profileMedia(p) {
-    const slots = ["winery", "wine", "atmosphere"];
+    const slots = ["food", "wine", "atmosphere"];
     return `<div class="profile-gallery">${slots.map((kind) => {
       const item = p.gallery?.find((entry) => entry.kind === kind && entry.src);
-      if (!item) return `<div class="profile-gallery-slot">${esc(t(`profile.${kind}`))}</div>`;
+      if (!item) return `<div class="profile-gallery-slot">${esc(t(kind === "food" ? "topic.food" : `profile.${kind}`))}</div>`;
       return `<button type="button" class="profile-gallery-photo profile-gallery-${esc(kind)}"
         data-profile-photo aria-haspopup="dialog" aria-label="${esc(t("profile.zoom", { photo: L(item.alt) }))}">
         <img src="${esc(item.src)}" alt="${esc(L(item.alt))}" />
@@ -369,14 +369,12 @@
     return locality.includes(area) ? locality : `${locality} · ${area}`;
   }
 
-  // These two hosts are represented by a family or a venue until a person is named.
-  const unnamedHosts = new Set(["sarishvili", "exponati-host"]);
   const renderPeople = () => [...new Set(activities.flatMap((a) => a.people || []))]
     .map((id) => [id, DATA.people[id]])
     .map(([id, p]) => {
       const name = L(p.name);
       const business = L(p.business) || name;
-      const host = unnamedHosts.has(id) ? L(p.role) : name;
+      const host = name;
       const locality = L(p.location);
       const area = region(p.region);
       const location = !locality || locality === area
@@ -749,8 +747,7 @@
     const business = L(p.business) || name;
     const identity = `
       ${name !== business ? `<p class="profile-host">${esc(name)}</p>` : ""}
-      <p class="profile-location">${esc(profileLocation(p))}</p>
-      ${unnamedHosts.has(id) && p.role ? `<p class="profile-role">${esc(L(p.role))}</p>` : ""}`;
+      <p class="profile-location">${esc(profileLocation(p))}</p>`;
     const logo = p.logo
       ? `<img src="${esc(p.logo)}" alt="${esc(t("profile.logoAlt", { winery: business }))}" />`
       : "";

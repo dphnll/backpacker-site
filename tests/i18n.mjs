@@ -76,8 +76,8 @@ for (const [code, e] of Object.entries(EXPECT)) {
       ]);
       assert.ok(Math.abs(westCard.width - eastCard.width) < 1 && Math.abs(westCard.height - eastCard.height) < 1, "tour cards share a footprint");
       const artwork = page.locator(".hero-visual img");
-      assert.ok(await artwork.evaluate((img) => img.complete && img.naturalWidth > 0 && getComputedStyle(img).maskImage.includes("linear-gradient")));
-      assert.ok(await page.locator(".hero-visual figcaption").isVisible(), "generated illustration is identified");
+      assert.ok(await artwork.evaluate((img) => img.complete && img.naturalWidth > 0 && getComputedStyle(img).maskImage.includes("radial-gradient")));
+      assert.equal(await page.locator(".hero-visual figcaption").count(), 0);
       assert.ok(await page.locator(".hero-copy").evaluate((el) => el.scrollWidth === el.clientWidth), "hero copy fits");
       const copy = await page.locator(".hero-copy").boundingBox();
       const brand = await page.locator(".topbar .brand").boundingBox();
@@ -133,7 +133,7 @@ for (const [code, e] of Object.entries(EXPECT)) {
     await check(`${label}: winery cards, profile actions and lightbox`, async () => {
       const profile = page.locator('.profile-card[data-profile="maka-tedoradze"]');
       const dialog = page.locator("#detail");
-      const photo = dialog.locator("[data-profile-photo]");
+      const photo = dialog.locator("[data-profile-photo]").first();
       const cards = await page.locator(".profile-card").evaluateAll((elements) => elements.map((card) => {
         const { top, bottom } = card.getBoundingClientRect();
         const copy = card.querySelector(".profile-card-copy").getBoundingClientRect();

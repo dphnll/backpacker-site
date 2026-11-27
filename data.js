@@ -141,7 +141,7 @@ window.WIWI_DATA = {
               summary: { en: "A shared table in the family’s fruit orchard", ka: "სუფრა ოჯახის ხეხილის ბაღში", ru: "Общий стол в семейном фруктовом саду" },
               topics: ["wine", "food", "family-winery"], place: "sarishvili", people: ["sarishvili"],
               wine: { en: "Chkhaveri", ka: "ჩხავერი", ru: "Чхавери" },
-              flags: [{ en: "Host identity, exact village and meal arrangements to confirm", ka: "მასპინძლის ვინაობა, ზუსტი სოფელი და კვების დეტალები დასაზუსტებელია", ru: "Нужно уточнить хозяина, точное село и организацию обеда" }],
+              flags: [{ en: "Exact village and meal arrangements to confirm", ka: "ზუსტი სოფელი და კვების დეტალები დასაზუსტებელია", ru: "Нужно уточнить точное село и организацию обеда" }],
               status: "to-confirm", links: { uvamoWine: null, uvamoSet: null },
             },
             {
@@ -231,7 +231,7 @@ window.WIWI_DATA = {
               title: { en: "Exponati cellar, museum and shop", ka: "Exponati-ის მარანი, მუზეუმი და მაღაზია", ru: "Винный погреб, музей и магазин Exponati" },
               summary: { en: "A chance to taste wine and see the exhibits", ka: "ღვინის დაგემოვნება და ექსპონატების ნახვა", ru: "Дегустация и знакомство с экспонатами" },
               topics: ["wine", "heritage"], place: "exponati", people: ["exponati-host"],
-              flags: [{ en: "The host, venue operator and availability still need confirming", ka: "ჯერ გასარკვევია, ვინ უძღვება ამ ადგილს, ვინ დაგვხვდება და შეძლებენ თუ არა ჩვენს მიღებას", ru: "Ещё нужно уточнить, кто ведёт погреб, кто примет группу и возможен ли визит" }],
+              flags: [{ en: "Availability for the group still needs confirming", ka: "ჯგუფის მიღების შესაძლებლობა ჯერ შესათანხმებელია", ru: "Возможность принять группу ещё нужно согласовать" }],
               status: "to-confirm", links: { uvamoWine: null, uvamoSet: null },
             },
           ],
@@ -335,58 +335,353 @@ window.WIWI_DATA = {
 
   people: {
     "maka-tedoradze": {
-      name: { en: "Maka Tedoradze", ka: "მაკა თედორაძე", ru: "Мака Тедорадзе" },
-      role: { en: "Winemaker", ka: "მეღვინე", ru: "Винодел" },
-      business: "ChkhaValley Winery", region: "adjara",
-      location: { en: "Erge, Adjara", ka: "ერგე, აჭარა", ru: "Эрге, Аджария" },
-      wines: { en: "Chkhaveri · Tsolikouri", ka: "ჩხავერი · ცოლიკაური", ru: "Чхавери · Цоликоури" }, status: "draft",
-      story: { en: "Maka runs ChkhaValley with Davit Bibineishvili. Their family has tended vines and made wine in Erge since 2010. They serve Adjarian dishes at their table.", ka: "მაკა ChkhaValley-ს დავით ბიბინეიშვილთან ერთად უძღვება. მათი ოჯახი ერგეში 2010 წლიდან უვლის ვაზს და აყენებს ღვინოს. მათ სუფრაზე ღვინოს აჭარული კერძები ახლავს.", ru: "Мака ведёт ChkhaValley вместе с Давитом Бибинеишвили. Их семья с 2010 года выращивает виноград и делает вино в Эрге. К вину за их столом подают аджарские блюда." },
-      note: { en: "Portrait, logo and table image were supplied for this preview; final public reuse permission should remain on record.", ka: "პორტრეტი, ლოგო და სუფრის ფოტო ამ პრევიუსთვის იყო მოწოდებული; საჯარო გამოყენების საბოლოო ნებართვა დოკუმენტურად უნდა დარჩეს.", ru: "Портрет, логотип и фото стола предоставлены для этого превью; окончательное разрешение на публичное использование нужно сохранить документально." },
-      photo: "./assets/hosts/chkhavalley-maka.jpg", logo: "./assets/hosts/chkhavalley-logo.jpg",
-      gallery: [{ kind: "atmosphere", src: "./assets/hosts/chkhavalley-table.jpg", alt: { en: "A hosted table at ChkhaValley", ka: "სტუმრების სუფრა ChkhaValley-ში", ru: "Гостевой стол в ChkhaValley" } }],
-      links: { website: "https://chkhavalley.com/", instagram: "https://www.instagram.com/chkhavalley_winery", facebook: "https://www.facebook.com/198576696681515" },
+      "name": {
+        "en": "Maka Tedoradze",
+        "ka": "მაკა თედორაძე",
+        "ru": "Мака Тедорадзе"
+      },
+      "role": {
+        "en": "Winemaker",
+        "ka": "მეღვინე",
+        "ru": "Винодел"
+      },
+      "business": "ChkhaValley Winery",
+      "region": "adjara",
+      "location": {
+        "en": "Erge, Adjara",
+        "ka": "ერგე, აჭარა",
+        "ru": "Эрге, Аджария"
+      },
+      "wines": {
+        "en": "Chkhaveri · Tsolikouri",
+        "ka": "ჩხავერი · ცოლიკაური",
+        "ru": "Чхавери · Цоликоури"
+      },
+      "status": "draft",
+      "story": {
+        "en": "Maka runs ChkhaValley with Davit Bibineishvili. Their family has tended vines and made wine in Erge since 2010. They serve Adjarian dishes at their table.",
+        "ka": "მაკა ChkhaValley-ს დავით ბიბინეიშვილთან ერთად უძღვება. მათი ოჯახი ერგეში 2010 წლიდან უვლის ვაზს და აყენებს ღვინოს. მათ სუფრაზე ღვინოს აჭარული კერძები ახლავს.",
+        "ru": "Мака ведёт ChkhaValley вместе с Давитом Бибинеишвили. Их семья с 2010 года выращивает виноград и делает вино в Эрге. К вину за их столом подают аджарские блюда."
+      },
+      "photo": "./assets/hosts/chkhavalley-maka.jpg",
+      "logo": "./assets/hosts/chkhavalley-logo.webp",
+      "gallery": [
+        {
+          "kind": "food",
+          "src": "./assets/hosts/chkhavalley-food.webp",
+          "alt": {
+            "en": "Hospitality · ChkhaValley Winery",
+            "ka": "სტუმართმოყვარეობა · ChkhaValley Winery",
+            "ru": "Гостеприимство · ChkhaValley Winery"
+          }
+        },
+        {
+          "kind": "wine",
+          "src": "./assets/hosts/chkhavalley-wine.webp",
+          "alt": {
+            "en": "Wines · ChkhaValley Winery",
+            "ka": "ღვინოები · ChkhaValley Winery",
+            "ru": "Вина · ChkhaValley Winery"
+          }
+        },
+        {
+          "kind": "atmosphere",
+          "src": "./assets/hosts/chkhavalley-landscape.webp",
+          "alt": {
+            "en": "The setting · ChkhaValley Winery",
+            "ka": "გარემო · ChkhaValley Winery",
+            "ru": "Место · ChkhaValley Winery"
+          }
+        }
+      ],
+      "links": {
+        "website": "https://chkhavalley.com/",
+        "instagram": "https://www.instagram.com/chkhavalley_winery",
+        "facebook": "https://www.facebook.com/198576696681515"
+      }
     },
-    sarishvili: {
-      name: { en: "Sarishvili family", ka: "სარიშვილების ოჯახი", ru: "Семья Саришвили" },
-      role: { en: "Host to be confirmed", ka: "მასპინძელი დასაზუსტებელია", ru: "Кто примет гостей, ещё уточняется" },
-      business: { en: "Sarishvili family winery", ka: "სარიშვილების საოჯახო მარანი", ru: "Семейная винодельня Саришвили" }, region: "guria",
-      location: { en: "Guria", ka: "გურია", ru: "Гурия" },
-      wines: { en: "Chkhaveri", ka: "ჩხავერი", ru: "Чхавери" }, status: "to-confirm",
-      story: { en: "The family grows fruit and makes Gurian Chkhaveri. They’ve suggested setting a table in the orchard.", ka: "ოჯახი ხილს ზრდის და გურულ ჩხავერს აყენებს. სტუმრებისთვის სუფრის გაშლა ხეხილის ბაღში შემოგვთავაზეს.", ru: "Семья выращивает фрукты и делает гурийское чхавери. Хозяева предложили накрыть стол в саду." },
-      cardStory: { en: "The Sarishvili family grows fruit and makes Gurian Chkhaveri. They’ve suggested setting a table for the group among the trees in their orchard.", ka: "სარიშვილების ოჯახი ხილს ზრდის და გურულ ჩხავერს აყენებს. სტუმრებისთვის სუფრის გაშლა თავიანთ ხეხილის ბაღში, ხეებს შორის შემოგვთავაზეს.", ru: "Семья Саришвили выращивает фрукты и делает гурийское чхавери. Для гостей хозяева предложили накрыть стол среди деревьев в своём фруктовом саду." },
-      note: { en: "Do not confuse this winery with the unrelated Sarajishvili brand. Portrait, logo, atmosphere, official site and social channels are still needed.", ka: "ეს მარანი არ უნდა აგვერიოს სხვა ბრენდში Sarajishvili. საჭიროა პორტრეტი, ლოგო, გარემოს ფოტო, ოფიციალური საიტი და სოციალური არხები.", ru: "Эту винодельню нельзя путать с не связанным с ней брендом Sarajishvili. Ещё нужны портрет, логотип, фото атмосферы, официальный сайт и соцсети." },
-      photo: null, logo: null,
-      gallery: [{ kind: "wine", src: "./assets/hosts/sarishvili-wine.jpg", alt: { en: "Bottles of Sarishvili Chkhaveri", ka: "სარიშვილის ჩხავერის ბოთლები", ru: "Бутылки чхавери Sarishvili" } }], links: {},
+    "sarishvili": {
+      "name": {
+        "en": "Sofio Sarishvili",
+        "ka": "სოფიო სარიშვილი",
+        "ru": "Софио Саришвили"
+      },
+      "role": {
+        "en": "Winemaker",
+        "ka": "მეღვინე",
+        "ru": "Винодел"
+      },
+      "business": {
+        "en": "Sarishvili Winery",
+        "ka": "სარიშვილების მარანი",
+        "ru": "Винодельня Саришвили"
+      },
+      "region": "guria",
+      "location": {
+        "en": "Guria",
+        "ka": "გურია",
+        "ru": "Гурия"
+      },
+      "wines": {
+        "en": "Chkhaveri",
+        "ka": "ჩხავერი",
+        "ru": "Чхавери"
+      },
+      "status": "to-confirm",
+      "story": {
+        "en": "The family grows fruit and makes Gurian Chkhaveri. They’ve suggested setting a table in the orchard.",
+        "ka": "ოჯახი ხილს ზრდის და გურულ ჩხავერს აყენებს. სტუმრებისთვის სუფრის გაშლა ხეხილის ბაღში შემოგვთავაზეს.",
+        "ru": "Семья выращивает фрукты и делает гурийское чхавери. Хозяева предложили накрыть стол в саду."
+      },
+      "cardStory": {
+        "en": "The Sarishvili family grows fruit and makes Gurian Chkhaveri. They’ve suggested setting a table for the group among the trees in their orchard.",
+        "ka": "სარიშვილების ოჯახი ხილს ზრდის და გურულ ჩხავერს აყენებს. სტუმრებისთვის სუფრის გაშლა თავიანთ ხეხილის ბაღში, ხეებს შორის შემოგვთავაზეს.",
+        "ru": "Семья Саришвили выращивает фрукты и делает гурийское чхавери. Для гостей хозяева предложили накрыть стол среди деревьев в своём фруктовом саду."
+      },
+      "photo": "./assets/hosts/sarishvili-portrait.webp",
+      "logo": "./assets/hosts/sarishvili-logo.webp",
+      "gallery": [
+        {
+          "kind": "food",
+          "src": "./assets/hosts/sarishvili-food.webp",
+          "alt": {
+            "en": "Hospitality · Sarishvili Winery",
+            "ka": "სტუმართმოყვარეობა · სარიშვილების მარანი",
+            "ru": "Гостеприимство · Винодельня Саришвили"
+          }
+        },
+        {
+          "kind": "wine",
+          "src": "./assets/hosts/sarishvili-wine.webp",
+          "alt": {
+            "en": "Wines · Sarishvili Winery",
+            "ka": "ღვინოები · სარიშვილების მარანი",
+            "ru": "Вина · Винодельня Саришвили"
+          }
+        },
+        {
+          "kind": "atmosphere",
+          "src": "./assets/hosts/sarishvili-landscape.webp",
+          "alt": {
+            "en": "The setting · Sarishvili Winery",
+            "ka": "გარემო · სარიშვილების მარანი",
+            "ru": "Место · Винодельня Саришвили"
+          }
+        }
+      ],
+      "links": {
+        "website": "https://www.sarishviliwinery.ge/",
+        "instagram": "https://www.instagram.com/sarishvili_winery/",
+        "facebook": "https://www.facebook.com/profile.php?id=100054597752907"
+      }
     },
     "khatia-jakhua": {
-      name: { en: "Khatia Jakhua", ka: "ხატია ჯახუა", ru: "Хатия Джахуа" }, role: { en: "Winemaker and artist", ka: "მეღვინე და მხატვარი", ru: "Винодел и художница" },
-      business: { en: "Family Winery Argvani", ka: "არგვანის საოჯახო მარანი", ru: "Семейная винодельня Argvani" }, region: "samegrelo",
-      location: { en: "Abedati near Martvili", ka: "აბედათი, მარტვილთან", ru: "Абедати рядом с Мартвили" },
-      wines: { en: "Ojaleshi · Chvitiluri", ka: "ოჯალეში · ჭვიტილური", ru: "Оджалеши · Чвитилури" }, status: "to-confirm",
-      story: { en: "Khatia brought winemaking back to her family, replanted the vineyard and built a cellar. She’s also an artist with an interest in Georgian ornament.", ka: "ხატიამ ოჯახში მეღვინეობა გააცოცხლა, ვენახი ხელახლა გააშენა და მარანი ააგო. ის მხატვარიცაა და ქართული ორნამენტითაა დაინტერესებული.", ru: "Хатия вернула в семью виноделие: заново посадила виноградник и построила погреб. Она художница, и одна из её тем — грузинский орнамент." },
-      note: { en: "Availability, portrait permission, logo, wine and atmosphere imagery, website and social channels are still needed.", ka: "საჭიროა ხელმისაწვდომობის, პორტრეტის ნებართვის, ლოგოს, ღვინისა და გარემოს ფოტოების, საიტისა და სოციალური არხების დადასტურება.", ru: "Ещё нужны подтверждение доступности, разрешение на портрет, логотип, фото вина и атмосферы, сайт и соцсети." },
-      photo: null, logo: null, gallery: [], links: { wiwi: "https://wiwi.ge/ge/members_details/29/khatia-jakhua" },
+      "name": {
+        "en": "Khatia Jakhua",
+        "ka": "ხატია ჯახუა",
+        "ru": "Хатия Джахуа"
+      },
+      "role": {
+        "en": "Winemaker and artist",
+        "ka": "მეღვინე და მხატვარი",
+        "ru": "Винодел и художница"
+      },
+      "business": {
+        "en": "Argvani Cellar",
+        "ka": "მარანი არგვანი",
+        "ru": "Марани Argvani"
+      },
+      "region": "samegrelo",
+      "location": {
+        "en": "Abedati near Martvili",
+        "ka": "აბედათი, მარტვილთან",
+        "ru": "Абедати рядом с Мартвили"
+      },
+      "wines": {
+        "en": "Ojaleshi · Chvitiluri",
+        "ka": "ოჯალეში · ჭვიტილური",
+        "ru": "Оджалеши · Чвитилури"
+      },
+      "status": "to-confirm",
+      "story": {
+        "en": "Khatia brought winemaking back to her family, replanted the vineyard and built a cellar. She’s also an artist with an interest in Georgian ornament.",
+        "ka": "ხატიამ ოჯახში მეღვინეობა გააცოცხლა, ვენახი ხელახლა გააშენა და მარანი ააგო. ის მხატვარიცაა და ქართული ორნამენტითაა დაინტერესებული.",
+        "ru": "Хатия вернула в семью виноделие: заново посадила виноградник и построила погреб. Она художница, и одна из её тем — грузинский орнамент."
+      },
+      "photo": "./assets/hosts/argvani-portrait.webp",
+      "logo": "./assets/hosts/argvani-logo.webp",
+      "gallery": [
+        {
+          "kind": "food",
+          "src": "./assets/hosts/argvani-food.webp",
+          "alt": {
+            "en": "Hospitality · Argvani Cellar",
+            "ka": "სტუმართმოყვარეობა · მარანი არგვანი",
+            "ru": "Гостеприимство · Марани Argvani"
+          }
+        },
+        {
+          "kind": "wine",
+          "src": "./assets/hosts/argvani-wine.webp",
+          "alt": {
+            "en": "Wines · Argvani Cellar",
+            "ka": "ღვინოები · მარანი არგვანი",
+            "ru": "Вина · Марани Argvani"
+          }
+        },
+        {
+          "kind": "atmosphere",
+          "src": "./assets/hosts/argvani-landscape.webp",
+          "alt": {
+            "en": "The setting · Argvani Cellar",
+            "ka": "გარემო · მარანი არგვანი",
+            "ru": "Место · Марани Argvani"
+          }
+        }
+      ],
+      "links": {
+        "instagram": "https://www.instagram.com/vinoargvani/",
+        "facebook": "https://www.facebook.com/xatia.jaxua/",
+        "wiwi": "https://www.wiwi.ge/en/members_details/29/khatia-jakhua"
+      }
     },
     "nini-chkheidze": {
-      name: { en: "Nini / Nino Chkheidze", ka: "ნინი / ნინო ჩხეიძე", ru: "Нини / Нино Чхеидзе" }, role: { en: "Winemaker", ka: "მეღვინე", ru: "Винодел" },
-      business: { en: "Simonica · Chkheidze Wines", ka: "Simonica · ჩხეიძეების ღვინო", ru: "Simonica · вина Чхеидзе" }, region: "imereti",
-      location: { en: "Meore Obcha, Imereti", ka: "მეორე ობჩა, იმერეთი", ru: "Меоре Обча, Имерети" },
-      wines: { en: "Tsolikouri · Tsitska · Otskhanuri Sapere", ka: "ცოლიკაური · ციცქა · ოცხანური საფერე", ru: "Цоликоури · Цицка · Оцханури сапере" }, status: "to-confirm",
-      story: { en: "Nugzar and Mamuka Chkheidze founded the cellar. The next generation now helps make natural qvevri wines from the family’s organic vineyards.", ka: "მარანი ნუგზარ და მამუკა ჩხეიძეებმა დააარსეს. დღეს ოჯახის ორგანული ვენახების ყურძნისგან ბუნებრივ ქვევრის ღვინოს ახალი თაობაც აყენებს.", ru: "Погреб основали Нугзар и Мамука Чхеидзе. Теперь натуральные вина в квеври из винограда с семейных органических участков помогает делать и новое поколение." },
-      note: { en: "WIWI's heading says Nini while the biography says Nino. Portrait, logo and approved winery imagery are still needed; Facebook was not verified.", ka: "WIWI-ის სათაურში წერია ნინი, ბიოგრაფიაში კი ნინო. საჭიროა პორტრეტი, ლოგო და დამტკიცებული ფოტოები; Facebook ვერ დადასტურდა.", ru: "В заголовке WIWI указано Нини, а в биографии — Нино. Ещё нужны портрет, логотип и одобренные фото; Facebook не подтверждён." },
-      photo: null, logo: null, gallery: [],
-      links: { website: "https://www.simonica.ge/", instagram: "https://www.instagram.com/simonica.wines", wiwi: "https://www.wiwi.ge/public/ge/members_details/24/nini-chkheidze" },
+      "name": {
+        "en": "Nino Chkheidze",
+        "ka": "ნინო ჩხეიძე",
+        "ru": "Нино Чхеидзе"
+      },
+      "business": {
+        "en": "Simonika - Chkheidze Wines",
+        "ka": "Simonika - ჩხეიძეების ღვინო",
+        "ru": "Simonika - вина Чхеидзе"
+      },
+      "region": "imereti",
+      "location": {
+        "en": "Meore Obcha, Imereti",
+        "ka": "მეორე ობჩა, იმერეთი",
+        "ru": "Меоре Обча, Имерети"
+      },
+      "wines": {
+        "en": "Tsolikouri · Tsitska · Otskhanuri Sapere",
+        "ka": "ცოლიკაური · ციცქა · ოცხანური საფერე",
+        "ru": "Цоликоури · Цицка · Оцханури сапере"
+      },
+      "status": "to-confirm",
+      "story": {
+        "en": "Nugzar and Mamuka Chkheidze founded the cellar. The next generation now helps make natural qvevri wines from the family’s organic vineyards.",
+        "ka": "მარანი ნუგზარ და მამუკა ჩხეიძეებმა დააარსეს. დღეს ოჯახის ორგანული ვენახების ყურძნისგან ბუნებრივ ქვევრის ღვინოს ახალი თაობაც აყენებს.",
+        "ru": "Погреб основали Нугзар и Мамука Чхеидзе. Теперь натуральные вина в квеври из винограда с семейных органических участков помогает делать и новое поколение."
+      },
+      "photo": "./assets/hosts/simonika-portrait.webp",
+      "logo": "./assets/hosts/simonika-logo.webp",
+      "gallery": [
+        {
+          "kind": "food",
+          "src": "./assets/hosts/simonika-food.webp",
+          "alt": {
+            "en": "Hospitality · Simonika - Chkheidze Wines",
+            "ka": "სტუმართმოყვარეობა · Simonika - ჩხეიძეების ღვინო",
+            "ru": "Гостеприимство · Simonika - вина Чхеидзе"
+          }
+        },
+        {
+          "kind": "wine",
+          "src": "./assets/hosts/simonika-wine.webp",
+          "alt": {
+            "en": "Wines · Simonika - Chkheidze Wines",
+            "ka": "ღვინოები · Simonika - ჩხეიძეების ღვინო",
+            "ru": "Вина · Simonika - вина Чхеидзе"
+          }
+        },
+        {
+          "kind": "atmosphere",
+          "src": "./assets/hosts/simonika-landscape.webp",
+          "alt": {
+            "en": "The setting · Simonika - Chkheidze Wines",
+            "ka": "გარემო · Simonika - ჩხეიძეების ღვინო",
+            "ru": "Место · Simonika - вина Чхеидзе"
+          }
+        }
+      ],
+      "links": {
+        "website": "https://www.simonica.ge/",
+        "instagram": "https://www.instagram.com/simonica.wines/",
+        "facebook": "https://www.facebook.com/simonica.wines/",
+        "wiwi": "https://wiwi.ge/en/members_details/24/nini-chkheidze"
+      },
+      "role": {
+        "en": "Winemaker",
+        "ka": "მეღვინე",
+        "ru": "Винодел"
+      }
     },
     "exponati-host": {
-      name: { en: "Exponati host", ka: "Exponati-ის მასპინძელი", ru: "Хозяин Exponati" },
-      role: { en: "Host to be confirmed", ka: "მასპინძელი დასაზუსტებელია", ru: "Кто примет гостей, ещё уточняется" },
-      business: "Exponati", region: "mtskheta-mtianeti",
-      location: { en: "Mtskheta · exact location to verify", ka: "მცხეთა · ზუსტი ადგილი გადასამოწმებელია", ru: "Мцхета · точное место нужно проверить" }, wines: null, status: "to-confirm",
-      story: { en: "A cellar, museum and shop where the group may stop for wine and exhibits.", ka: "მარანი, მუზეუმი და მაღაზია. თუ სტუმრობა შედგა, აქ ღვინოსაც გავსინჯავთ და ექსპონატებსაც ვნახავთ.", ru: "Погреб, музей и магазин. Если визит состоится, здесь можно будет попробовать вино и посмотреть экспонаты." },
-      cardStory: { en: "Exponati brings a cellar, a museum and a shop together. If the visit near Mtskheta goes ahead, the group can taste wine and see the exhibits.", ka: "Exponati-ში მარანი, მუზეუმი და მაღაზიაა. თუ მცხეთასთან ამ გაჩერებას შევათანხმებთ, აქ ღვინოსაც გავსინჯავთ და ექსპონატებსაც ვნახავთ.", ru: "В Exponati есть винный погреб, музей и магазин. Если остановку в районе Мцхеты согласуют, здесь можно будет попробовать вино и посмотреть экспонаты." },
-      note: { en: "Manana must supply the host, official channels, availability and all approved visual assets.", ka: "მანანამ უნდა მოგვაწოდოს მასპინძელი, ოფიციალური არხები, ხელმისაწვდომობა და ყველა დამტკიცებული ვიზუალური მასალა.", ru: "Манана должна сообщить хозяина, официальные каналы, доступность и предоставить все одобренные визуальные материалы." },
-      photo: null, logo: null, gallery: [], links: {},
-    },
+      "name": {
+        "en": "Nato Shukakidze",
+        "ka": "ნატო შუკაკიძე",
+        "ru": "Нато Шукакидзе"
+      },
+      "role": {
+        "en": "Winemaker",
+        "ka": "მეღვინე",
+        "ru": "Винодел"
+      },
+      "business": "Exponati",
+      "region": "mtskheta-mtianeti",
+      "location": {
+        "en": "Mtskheta · exact location to verify",
+        "ka": "მცხეთა · ზუსტი ადგილი გადასამოწმებელია",
+        "ru": "Мцхета · точное место нужно проверить"
+      },
+      "wines": null,
+      "status": "to-confirm",
+      "story": {
+        "en": "A cellar, museum and shop where the group may stop for wine and exhibits.",
+        "ka": "მარანი, მუზეუმი და მაღაზია. თუ სტუმრობა შედგა, აქ ღვინოსაც გავსინჯავთ და ექსპონატებსაც ვნახავთ.",
+        "ru": "Погреб, музей и магазин. Если визит состоится, здесь можно будет попробовать вино и посмотреть экспонаты."
+      },
+      "cardStory": {
+        "en": "Exponati brings a cellar, a museum and a shop together. If the visit near Mtskheta goes ahead, the group can taste wine and see the exhibits.",
+        "ka": "Exponati-ში მარანი, მუზეუმი და მაღაზიაა. თუ მცხეთასთან ამ გაჩერებას შევათანხმებთ, აქ ღვინოსაც გავსინჯავთ და ექსპონატებსაც ვნახავთ.",
+        "ru": "В Exponati есть винный погреб, музей и магазин. Если остановку в районе Мцхеты согласуют, здесь можно будет попробовать вино и посмотреть экспонаты."
+      },
+      "photo": "./assets/hosts/exponati-portrait.webp",
+      "logo": "./assets/hosts/exponati-logo.webp",
+      "gallery": [
+        {
+          "kind": "food",
+          "src": "./assets/hosts/exponati-food.webp",
+          "alt": {
+            "en": "Hospitality · Exponati",
+            "ka": "სტუმართმოყვარეობა · Exponati",
+            "ru": "Гостеприимство · Exponati"
+          }
+        },
+        {
+          "kind": "wine",
+          "src": "./assets/hosts/exponati-wine.webp",
+          "alt": {
+            "en": "Wines · Exponati",
+            "ka": "ღვინოები · Exponati",
+            "ru": "Вина · Exponati"
+          }
+        },
+        {
+          "kind": "atmosphere",
+          "src": "./assets/hosts/exponati-landscape.webp",
+          "alt": {
+            "en": "The setting · Exponati",
+            "ka": "გარემო · Exponati",
+            "ru": "Место · Exponati"
+          }
+        }
+      ],
+      "links": {
+        "instagram": "https://www.instagram.com/_exponati_/",
+        "facebook": "https://www.facebook.com/exponatiwine"
+      }
+    }
   },
 
   footerLinks: [
