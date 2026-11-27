@@ -101,7 +101,7 @@ window.WIWI_DATA = {
         {
           n: 1,
           title: { en: "Batumi", ka: "ბათუმი", ru: "Батуми" },
-          note: { en: "Arrival and rest", ka: "ჩამოსვლა და დასვენება", ru: "Прибытие и отдых" },
+          note: { en: "Arrival, settling in and rest", ka: "ჩამოსვლა, დაბინავება და დასვენება", ru: "Прибытие, размещение и отдых" },
           route: { en: "Batumi", ka: "ბათუმი", ru: "Батуми" },
           activities: [
             {
@@ -239,7 +239,7 @@ window.WIWI_DATA = {
         {
           n: 6,
           title: { en: "Tbilisi", ka: "თბილისი", ru: "Тбилиси" },
-          note: { en: "Free time and departure", ka: "თავისუფალი დრო და გამგზავრება", ru: "Свободное время и отъезд" },
+          note: { en: "Free time, walks and getting ready to leave", ka: "თავისუფალი დრო, სეირნობა და გამგზავრებისთვის მზადება", ru: "Свободное время, прогулки и подготовка к отъезду" },
           route: { en: "Tbilisi", ka: "თბილისი", ru: "Тбилиси" },
           activities: [
             { id: "d6-free", time: null, type: "other", title: { en: "Free time", ka: "თავისუფალი დრო", ru: "Свободное время" }, topics: ["free-time"], place: "tbilisi", status: "draft" },

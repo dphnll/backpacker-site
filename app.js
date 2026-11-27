@@ -271,6 +271,7 @@
       .map((day) => {
         const open = openDays.includes(day.n);
         const review = day.review ? question(day.review) : null;
+        const subtitle = L(day.route) !== L(day.title) ? L(day.route) : L(day.note);
         return `
           <section class="day${open ? " is-open" : ""}" id="day-${day.n}">
             <h3 class="day-heading">
@@ -278,7 +279,7 @@
                 <span class="day-num">${esc(t("day.label", { n: day.n }))}</span>
                 <span class="day-main">
                   <span class="day-title">${esc(L(day.title))}</span>
-                  ${L(day.route) !== L(day.title) ? `<span class="day-meta">${esc(L(day.route))}</span>` : ""}
+                  ${subtitle ? `<span class="day-meta">${esc(subtitle)}</span>` : ""}
                 </span>
                 <span class="day-chevron" aria-hidden="true"></span>
               </button>
