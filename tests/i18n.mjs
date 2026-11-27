@@ -44,7 +44,7 @@ async function open(width, height, query = "") {
 
 // Words allowed to stay in Latin script on KA / RU pages: brands, the Leaflet
 // credit, Manana's quoted English title and the source spelling of a name.
-const ALLOWED_LATIN = /WIWI|Tours|UVAMO!?|Clavelo|ChkhaValley|Winery|Women in Wine Industry Georgia|Leaflet|OpenStreetMap|contributors|Simonika|Simonica|Argvani|Exponati|Sisters|Three Sisters|Baia.?s Wine|Sarishvili|Sarajishvili|Instagram|Facebook|Datum Space/gi;
+const ALLOWED_LATIN = /Grenoble École de Management|WSET Level 3|MBA|WIWI|Tours|UVAMO!?|Clavelo|ChkhaValley|Winery|Women in Wine Industry Georgia|Leaflet|OpenStreetMap|contributors|Simonika|Simonica|Argvani|Exponati|Sisters|Three Sisters|Baia.?s Wine|Sarishvili|Sarajishvili|Instagram|Facebook|Datum Space/gi;
 const latinWords = (s) => (s.replace(ALLOWED_LATIN, "").match(/\b[A-Za-z]{3,}\b/g) || []);
 
 const EXPECT = {
@@ -149,7 +149,7 @@ for (const [code, e] of Object.entries(EXPECT)) {
       }
       const summaries = await page.locator(".profile-card-summary").allInnerTexts();
       assert.equal(summaries.length, cards.length);
-      assert.ok(summaries.every((summary) => summary.length >= 120 && summary.length <= 175));
+      assert.ok(summaries.every((summary) => summary.length >= 65 && summary.length <= 145 && !summary.endsWith(".")));
       if (SHOTS) {
         const shotStyle = await page.addStyleTag({ content: ".topbar{position:absolute!important}" });
         await page.locator(".people").screenshot({ path: `${SHOTS}/${code}-${vp}-hosts.png` });
@@ -162,6 +162,8 @@ for (const [code, e] of Object.entries(EXPECT)) {
       assert.ok(logo.width >= (w >= 1000 ? 110 : 56) && Math.abs(logo.width - logo.height) < 1);
       assert.ok(await dialog.locator(".profile-portrait").isVisible());
       assert.equal(await dialog.locator(".profile-gallery > *").count(), 3);
+      assert.equal(await dialog.locator(".profile-story").count(), 4, "the full Maka story has four distinct paragraphs");
+      assert.ok((await dialog.locator(".profile-story").allInnerTexts()).join(" ").length > 800, "the detailed story is separate from its teaser");
       assert.ok(await dialog.evaluate((el) => el.scrollWidth <= el.clientWidth));
       if (SHOTS) await page.screenshot({ path: `${SHOTS}/${code}-${vp}-profile.png` });
       const profileLinks = dialog.locator(".profile-links");

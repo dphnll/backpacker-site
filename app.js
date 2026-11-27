@@ -756,7 +756,7 @@
       business,
       `
       ${p.photo ? `<img class="profile-portrait" src="${esc(p.photo)}" alt="${esc(name)}" />` : `<p class="profile-portrait-slot">${esc(t("profile.portraitPending"))}</p>`}
-      ${p.story ? `<p class="detail-text profile-story">${esc(L(p.story))}</p>` : ""}
+      ${p.story ? L(p.story).split(/\n\s*\n/).map((paragraph) => `<p class="detail-text profile-story">${esc(paragraph)}</p>`).join("") : ""}
       ${p.wines ? `<p class="profile-wines"><strong>${esc(t("profile.wines"))}</strong> ${esc(L(p.wines))}</p>` : ""}
       ${profileMedia(p)}
       ${appears.length ? `<h4 class="detail-sub">${esc(t("person.appears"))}</h4>${activityLinks(appears)}` : ""}
