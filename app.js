@@ -274,6 +274,7 @@
           ${a.summary ? `<p class="activity-summary">${esc(L(a.summary))}</p>` : ""}
           ${rows.length ? `<dl class="facts">${rows.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${v}</dd></div>`).join("")}</dl>` : ""}
           ${flags.length ? `<ul class="flag-lines">${flags.join("")}</ul>` : ""}
+          ${a.seasonal ? seasonalFigure(people.find((p) => p.seasonalPhoto), "seasonal-figure-route") : ""}
           ${sightGrid(a)}
           ${actions.join("") ? `<div class="actions">${actions.join("")}</div>` : ""}
         </div>
@@ -380,6 +381,14 @@
         ${icon("zoom")}
       </button>`;
     }).join("")}</div>`;
+  }
+
+  function seasonalFigure(p, className = "") {
+    if (!p?.seasonalPhoto) return "";
+    return `<figure class="seasonal-figure ${esc(className)}">
+      <img src="${esc(p.seasonalPhoto)}" alt="${esc(L(p.seasonalPhotoAlt))}" loading="lazy" />
+      <figcaption>${esc(L(p.seasonalPhotoCaption))}</figcaption>
+    </figure>`;
   }
 
   function profileLocation(p) {
@@ -777,6 +786,7 @@
       `
       ${p.photo ? `<img class="profile-portrait" src="${esc(p.photo)}" alt="${esc(name)}" />` : `<p class="profile-portrait-slot">${esc(t("profile.portraitPending"))}</p>`}
       ${p.story ? L(p.story).split(/\n\s*\n/).map((paragraph) => `<p class="detail-text profile-story">${esc(paragraph)}</p>`).join("") : ""}
+      ${seasonalFigure(p)}
       ${p.wines ? `<p class="profile-wines"><strong>${esc(t("profile.wines"))}</strong> ${esc(L(p.wines))}</p>` : ""}
       ${profileMedia(p)}
       ${appears.length ? `<h4 class="detail-sub">${esc(t("person.appears"))}</h4>${activityLinks(appears)}` : ""}

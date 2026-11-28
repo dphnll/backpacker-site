@@ -163,6 +163,10 @@ for (const [code, e] of Object.entries(EXPECT)) {
       assert.ok(await dialog.locator(".profile-portrait").isVisible());
       assert.equal(await dialog.locator(".profile-gallery > *").count(), 3);
       assert.equal(await dialog.locator(".profile-story").count(), 5, "the full Maka story has five paragraphs, the last one about the November mandarin harvest");
+      const orchard = dialog.locator(".seasonal-figure");
+      assert.equal(await orchard.locator("img").getAttribute("src"), "./assets/hosts/chkhavalley-mandarins.webp");
+      assert.match(await orchard.locator("figcaption").innerText(), { en: /November/, ka: /ნოემბერი/, ru: /Ноябрь/ }[code]);
+      assert.ok((await orchard.locator("img").getAttribute("alt")).length > 25);
       assert.ok((await dialog.locator(".profile-story").allInnerTexts()).join(" ").length > 800, "the detailed story is separate from its teaser");
       assert.ok(await dialog.evaluate((el) => el.scrollWidth <= el.clientWidth));
       if (SHOTS) await page.screenshot({ path: `${SHOTS}/${code}-${vp}-profile.png` });

@@ -258,7 +258,7 @@ async function tapPin(page, placeName) {
     assert.equal(await page.locator("#detail-title").innerText(), "ChkhaValley Winery");
     assert.equal(await page.locator("#detail .profile-host").innerText(), "Maka Tedoradze");
     assert.equal(await page.locator("#detail-title a").getAttribute("href"), "https://chkhavalley.com/");
-    assert.equal(await page.locator("#detail img").count(), 5, "portrait, logo and three supplied images are shown");
+    assert.equal(await page.locator("#detail img").count(), 6, "portrait, logo, three gallery images and the orchard photo are shown");
     assert.equal(await page.locator("#detail .profile-links a").count(), 3, "three official ChkhaValley links are visible");
     await page.keyboard.press("Escape");
     assert.equal(await page.locator("#detail").getAttribute("open"), null);
@@ -371,6 +371,14 @@ async function tapPin(page, placeName) {
     assert.ok((await page.locator(".activity .flag-line-confirm").count()) >= 8);
     assert.equal(await page.locator("#activity-d2-sarishvili .status-to-confirm").count(), 0);
     assert.match(await page.locator("#activity-d2-chkhavalley .flag-line-seasonal").innerText(), /mandarin/i);
+    const seasonalPhoto = page.locator("#activity-d2-chkhavalley .seasonal-figure img");
+    assert.equal(await seasonalPhoto.count(), 1, "Day 2 shows the supplied ChkhaValley orchard");
+    assert.ok(await seasonalPhoto.evaluate((img) => img.complete && img.naturalWidth > 0));
+    await page.locator("#activity-d2-chkhavalley [data-person]").click();
+    const storyPhoto = page.locator("#detail .seasonal-figure img");
+    assert.equal(await storyPhoto.getAttribute("src"), await seasonalPhoto.getAttribute("src"), "route and profile reuse one photo");
+    assert.ok(await storyPhoto.evaluate((img) => img.complete && img.naturalWidth > 0));
+    await page.keyboard.press("Escape");
     assert.equal(await page.locator(".review-note").count(), 4);
     assert.match(await page.locator(".map-note").innerText(), /approximate/i);
   });
