@@ -130,6 +130,18 @@ for (const [code, e] of Object.entries(EXPECT)) {
       });
     }
 
+    await check(`${label}: fact labels stay on one line`, async () => {
+      if (await page.locator("#day-2-body").isHidden()) await page.locator("#toggleAll").click();
+      const labels = await page.locator(".activity .facts dt").evaluateAll((nodes) => nodes.map((node) => {
+        const box = node.getBoundingClientRect();
+        const css = getComputedStyle(node);
+        return { text: node.textContent.trim(), width: box.width, scrollWidth: node.scrollWidth, height: box.height, lineHeight: parseFloat(css.lineHeight) || parseFloat(css.fontSize) * 1.5 };
+      }));
+      assert.ok(labels.length > 0);
+      assert.ok(labels.every(({ text, width, scrollWidth, height, lineHeight }) => scrollWidth <= width + 1 && height <= lineHeight * 1.25), `wrapped fact label: ${labels.filter(({ width, scrollWidth, height, lineHeight }) => scrollWidth > width + 1 || height > lineHeight * 1.25).map(({ text }) => text).join(", ")}`);
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), 0, "no page overflow after widening fact labels");
+    });
+
     await check(`${label}: winery cards, profile actions and lightbox`, async () => {
       const profile = page.locator('.profile-card[data-profile="maka-tedoradze"]');
       const dialog = page.locator("#detail");
