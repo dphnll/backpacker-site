@@ -218,11 +218,11 @@ async function tapPin(page, placeName) {
   });
 
   await check("2c. sight photo cards: in the day, open About the place, lead to the map", async () => {
-    const perDay = { 1: 4, 2: 5, 3: 4, 4: 1, 5: 5, 6: 1 };
+    const perDay = { 1: 4, 2: 6, 3: 4, 4: 1, 5: 5, 6: 1 };
     for (const [n, count] of Object.entries(perDay)) {
       assert.equal(await page.locator(`#day-${n} .sight-card`).count(), count, `day ${n} sight cards`);
     }
-    assert.equal(await page.locator(".sight-card img").count(), 20, "every sight has a photo");
+    assert.equal(await page.locator(".sight-card img").count(), 21, "every sight and seasonal orchard card has a photo");
     assert.equal(await page.locator('.sight-card[data-place="gelati"]').count(), 0);
     await page.locator("#day-3 .day-toggle").click();
     assert.equal(await page.locator("#activity-d3-martvili .sight-note").innerText(), "Depending on the weather");
@@ -283,10 +283,11 @@ async function tapPin(page, placeName) {
     assert.equal(await sarishvili.locator("img").count(), 1, "founder-supplied logo");
     await sarishvili.click();
     const winePhoto = page.locator("#detail .profile-gallery-wine");
-    // The last gallery image showed Germany, not Guria; it was removed on 27 November.
-    assert.equal(await page.locator("#detail [data-profile-photo]").count(), 2);
+    // The Germany photo stays absent; the founder supplied a new vineyard image.
+    assert.equal(await page.locator("#detail [data-profile-photo]").count(), 3);
     assert.equal(await page.locator('#detail img[src*="sarishvili-landscape"]').count(), 0);
-    assert.equal(await page.locator("#detail .profile-gallery-slot").count(), 1, "the missing winery photo stays visibly pending");
+    assert.equal(await page.locator('#detail img[src*="sarishvili-vineyard.webp"]').count(), 1);
+    assert.equal(await page.locator("#detail .profile-gallery-slot").count(), 0);
     assert.equal(await page.locator("#detail .profile-links a").count(), 3);
     await winePhoto.click();
     assert.ok(await page.locator("#profile-photo-view").isVisible());
@@ -371,9 +372,16 @@ async function tapPin(page, placeName) {
     assert.ok((await page.locator(".activity .flag-line-confirm").count()) >= 8);
     assert.equal(await page.locator("#activity-d2-sarishvili .status-to-confirm").count(), 0);
     assert.match(await page.locator("#activity-d2-chkhavalley .flag-line-seasonal").innerText(), /mandarin/i);
-    const seasonalPhoto = page.locator("#activity-d2-chkhavalley .seasonal-figure img");
+    const orchardCard = page.locator('#activity-d2-chkhavalley .sight-card[data-place="chkhavalley-orchard"]');
+    const seasonalPhoto = orchardCard.locator("img");
     assert.equal(await seasonalPhoto.count(), 1, "Day 2 shows the supplied ChkhaValley orchard");
     assert.ok(await seasonalPhoto.evaluate((img) => img.complete && img.naturalWidth > 0));
+    assert.ok((await orchardCard.boundingBox()).width <= 220, "route photo uses the compact sight card layout");
+    await orchardCard.click();
+    assert.equal(await page.locator("#detail-title").innerText(), "November mandarin harvest");
+    assert.match(await page.locator("#detail-body").innerText(), /directly to Kutaisi/);
+    assert.equal(await page.locator("#detail .detail-photo img").getAttribute("src"), await seasonalPhoto.getAttribute("src"));
+    await page.locator("#detail-close").click();
     await page.locator("#activity-d2-chkhavalley [data-person]").click();
     const storyPhoto = page.locator("#detail .seasonal-figure img");
     assert.equal(await storyPhoto.getAttribute("src"), await seasonalPhoto.getAttribute("src"), "route and profile reuse one photo");

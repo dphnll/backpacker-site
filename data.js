@@ -345,6 +345,18 @@ window.WIWI_DATA = {
       coord: [41.61, 41.72], locationLabel: { en: "Erge, Adjara · approximate", ka: "ერგე, აჭარა · დაახლოებით", ru: "Эрге, Аджария · приблизительно" },
       photo: "./assets/hosts/chkhavalley-table.jpg",
     },
+    "chkhavalley-orchard": {
+      name: { en: "November mandarin harvest", ka: "მანდარინის ნოემბრის კრეფა", ru: "Ноябрьский сбор мандаринов" }, region: "adjara",
+      summary: { en: "A seasonal visit to the family orchard", ka: "სეზონური სტუმრობა საოჯახო ბაღში", ru: "Сезонная прогулка по семейному саду" },
+      description: {
+        en: "In November, guests may join Maka and her family in picking mandarins in the ChkhaValley orchard. If the harvest takes most of the day, the group continues directly to Kutaisi, without a stop at Sarishvili.",
+        ka: "ნოემბერში სტუმრებს შეუძლიათ მაკასა და მის ოჯახს ChkhaValley-ს ბაღში მანდარინის კრეფაში შეუერთდნენ. თუ მოსავალი დღის დიდ ნაწილს დაიკავებს, ჯგუფი სარიშვილებთან გაჩერების გარეშე პირდაპირ ქუთაისში გაემგზავრება.",
+        ru: "В ноябре гости могут присоединиться к Маке и её семье и собирать мандарины в саду ChkhaValley. Если сбор займёт большую часть дня, группа отправится прямо в Кутаиси, минуя Саришвили."
+      },
+      coord: [41.61, 41.72], mapPlace: "chkhavalley",
+      locationLabel: { en: "ChkhaValley orchard, Erge", ka: "ChkhaValley-ს ბაღი, ერგე", ru: "Сад ChkhaValley, Эрге" },
+      photo: "./assets/hosts/chkhavalley-mandarins.webp"
+    },
     sarishvili: {
       name: { en: "Sarishvili family winery", ka: "სარიშვილების საოჯახო მარანი", ru: "Семейная винодельня Саришвили" }, region: "guria",
       description: { en: "A family cellar in Guria with Chkhaveri and a fruit orchard.", ka: "საოჯახო მარანი გურიაში, ჩხავერითა და ხეხილის ბაღით.", ru: "Семейный погреб в Гурии, где делают чхавери и выращивают фрукты." },
@@ -659,6 +671,7 @@ window.WIWI_DATA = {
       },
       "photo": "./assets/hosts/chkhavalley-maka.jpg",
       "seasonalPhoto": "./assets/hosts/chkhavalley-mandarins.webp",
+      "seasonalPlace": "chkhavalley-orchard",
       "seasonalPhotoAlt": {
         "en": "Mandarin trees and harvested fruit in the ChkhaValley family orchard",
         "ka": "მანდარინის ხეები და მოკრეფილი ნაყოფი ChkhaValley-ს საოჯახო ბაღში",
@@ -767,6 +780,15 @@ window.WIWI_DATA = {
             "en": "Wines · Sarishvili Winery",
             "ka": "ღვინოები · სარიშვილების მარანი",
             "ru": "Вина · Винодельня Саришвили"
+          }
+        },
+        {
+          "kind": "atmosphere",
+          "src": "./assets/hosts/sarishvili-vineyard.webp",
+          "alt": {
+            "en": "Vineyard rows · Sarishvili Winery",
+            "ka": "ვენახის რიგები · სარიშვილების მარანი",
+            "ru": "Ряды виноградника · Винодельня Саришвили"
           }
         }
       ],
