@@ -84,7 +84,7 @@
   let byId = new Map();
   let mappedPlaces = [];
   let activeId = null;
-  const activitiesAt = (placeId) => activities.filter((a) => a.place === placeId);
+  const activitiesAt = (placeId) => activities.filter((a) => a.place === placeId || a.sights?.includes(placeId));
   const activitiesWith = (personId) => activities.filter((a) => (a.people || []).includes(personId));
 
   const daysLabel = (placeId) => {
@@ -205,6 +205,21 @@
   };
   const flagLines = (a) => (a.flags || []).map((f) => `<li class="flag-line flag-line-confirm">${esc(term("flag", f))}</li>`);
 
+  // Sights of an excursion: a compact grid of photo cards. Each card opens the
+  // existing About the place dialog (photo, short story, map); no long text here.
+  const sightGrid = (a) => {
+    if (!a.sights?.length) return "";
+    const cards = a.sights.map((id) => {
+      const p = DATA.places[id];
+      return `<li><button type="button" class="sight-card" data-place="${esc(id)}">
+          <span class="sight-photo">${p.photo ? `<img src="${esc(p.photo)}" alt="" loading="lazy" decoding="async" />` : icon("pin")}</span>
+          <span class="sight-text"><span class="sight-name">${esc(L(p.name))}</span><span class="sight-line">${esc(L(p.summary))}</span></span>
+        </button></li>`;
+    }).join("");
+    const note = a.sightNote ? `<p class="sight-note${a.sightChoice ? " is-choice" : ""}">${esc(L(a.sightNote))}</p>` : "";
+    return `<div class="sights">${note}<ul class="sight-grid" data-count="${a.sights.length}">${cards}</ul></div>`;
+  };
+
   // Breakfasts, transfers, check-ins: one line, no repeated buttons.
   function compactCard(a, place) {
     const where = place
@@ -244,8 +259,11 @@
     for (const p of people) {
       actions.push(`<button type="button" class="action" data-person="${esc(p.id)}">${icon("person")}${esc(t("action.person"))}${people.length > 1 ? ` · ${esc(L(p.name))}` : ""}</button>`);
     }
-    if (place) actions.push(`<button type="button" class="action" data-place="${esc(a.place)}">${icon("pin")}${esc(t("action.place"))}</button>`);
-    actions.push(mapAction(a, place));
+    // Excursions with sight cards keep their links on the cards themselves.
+    if (place && !a.sights?.length) {
+      actions.push(`<button type="button" class="action" data-place="${esc(a.place)}">${icon("pin")}${esc(t("action.place"))}</button>`);
+      actions.push(mapAction(a, place));
+    }
 
     return `
       <article class="activity type-${esc(a.type)}" id="activity-${esc(a.id)}" tabindex="-1" aria-labelledby="activity-${esc(a.id)}-title">
@@ -256,6 +274,7 @@
           ${a.summary ? `<p class="activity-summary">${esc(L(a.summary))}</p>` : ""}
           ${rows.length ? `<dl class="facts">${rows.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${v}</dd></div>`).join("")}</dl>` : ""}
           ${flags.length ? `<ul class="flag-lines">${flags.join("")}</ul>` : ""}
+          ${sightGrid(a)}
           ${actions.join("") ? `<div class="actions">${actions.join("")}</div>` : ""}
         </div>
       </article>`;
@@ -783,8 +802,10 @@
       `${t("place.kicker")} · ${region(p.region)}`,
       name,
       `
-      ${p.photo ? `<div class="detail-photo detail-photo-place"><img src="${esc(p.photo)}" alt="${esc(name)}" /></div>` : ""}
-      ${p.status ? `<div class="detail-row">${statusChip(p.status)}</div>` : ""}
+      ${p.photo ? `<figure class="detail-photo detail-photo-place"><img src="${esc(p.photo)}" alt="${esc(name)}" />
+        ${p.photoCredit ? `<figcaption class="photo-credit">${esc(t("place.photo"))}: <a href="${esc(p.photoCredit.source)}" target="_blank" rel="noopener noreferrer">${esc(p.photoCredit.author)}</a> · <a href="${esc(p.photoCredit.licenseUrl)}" target="_blank" rel="noopener noreferrer">${esc(p.photoCredit.license)}</a> · Wikimedia Commons · ${esc(t(p.photoCredit.cropped ? "place.photoCropped" : "place.photoResized"))}</figcaption>` : ""}
+      </figure>` : ""}
+      ${p.status && !p.sight ? `<div class="detail-row">${statusChip(p.status)}</div>` : ""}
       <p class="detail-text">${esc(L(p.description))}</p>
       <dl class="facts detail-facts">
         <div><dt>${esc(t("place.region"))}</dt><dd>${esc(region(p.region))}</dd></div>
@@ -882,10 +903,12 @@
     return el;
   }
 
+  // Route stops stay above the smaller sight dots that cluster around them.
+  const baseZ = (placeId) => (DATA.places[placeId]?.sight ? -500 : 0);
   function highlightPin(placeId) {
     for (const [id, marker] of markers) {
       marker.getElement()?.classList.toggle("is-active", id === placeId);
-      marker.setZIndexOffset(id === placeId ? 1000 : 0);
+      marker.setZIndexOffset(id === placeId ? 1000 : baseZ(id));
     }
   }
 
@@ -922,7 +945,8 @@
     setView("map");
     if (narrow.matches) $("#map-pane").scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
     if (!ensureMapSized()) return;
-    map.flyTo(DATA.places[placeId].coord, 10, { duration: prefersReducedMotion() ? 0 : 0.6 });
+    // Sights inside a city sit close together, so they need a closer view than a route stop.
+    map.flyTo(DATA.places[placeId].coord, DATA.places[placeId].sight ? 14 : 10, { duration: prefersReducedMotion() ? 0 : 0.6 });
     highlightPin(placeId);
     markers.get(placeId)?.openPopup();
   }
@@ -979,19 +1003,25 @@
     if (!map) return;
     for (const marker of markers.values()) marker.remove();
     markers.clear();
-    for (const id of mappedPlaces) {
+    const placeIds = [...new Set([...mappedPlaces, ...activities.flatMap((a) => a.sights || [])])]
+      .filter((id) => DATA.places[id]?.coord);
+    for (const id of placeIds) {
       const place = DATA.places[id];
       const marker = L_.marker(place.coord, {
         title: `${L(place.name)} (${t("map.approxShort")})`,
         alt: L(place.name),
         keyboard: true,
-        icon: L_.divIcon({
-          className: "pin",
-          html: `<span class="pin-dot">${esc(daysLabel(id))}</span>`,
-          iconSize: [28, 28],
-          iconAnchor: [14, 14],
-          popupAnchor: [0, -14],
-        }),
+        // Route stops carry their day numbers; sights are smaller secondary dots.
+        icon: place.sight
+          ? L_.divIcon({ className: "pin pin-sight", html: '<span class="pin-dot"></span>', iconSize: [16, 16], iconAnchor: [8, 8], popupAnchor: [0, -8] })
+          : L_.divIcon({
+            className: "pin",
+            html: `<span class="pin-dot">${esc(daysLabel(id))}</span>`,
+            iconSize: [28, 28],
+            iconAnchor: [14, 14],
+            popupAnchor: [0, -14],
+          }),
+        zIndexOffset: baseZ(id),
       }).addTo(map);
       marker.bindPopup(() => popupFor(id), { maxWidth: 260 });
       marker.on("click", () => onPin(id));

@@ -194,7 +194,7 @@ async function tapPin(page, placeName) {
 
   await check("2. Western Georgia by day and activity", async () => {
     assert.equal(await page.locator(".day").count(), 6);
-    assert.equal(await page.locator(".activity").count(), 15);
+    assert.equal(await page.locator(".activity").count(), 21);
     const day3 = page.locator("#day-3 .day-toggle");
     assert.equal(await day3.getAttribute("aria-expanded"), "false");
     await day3.click();
@@ -215,6 +215,40 @@ async function tapPin(page, placeName) {
     assert.equal(styles.radius, "0px");
     assert.equal(styles.shadow, "none");
     assert.equal(styles.borderLeft, "0px");
+  });
+
+  await check("2c. sight photo cards: in the day, open About the place, lead to the map", async () => {
+    const perDay = { 1: 4, 2: 5, 3: 4, 4: 1, 5: 5, 6: 1 };
+    for (const [n, count] of Object.entries(perDay)) {
+      assert.equal(await page.locator(`#day-${n} .sight-card`).count(), count, `day ${n} sight cards`);
+    }
+    assert.equal(await page.locator(".sight-card img").count(), 20, "every sight has a photo");
+    assert.equal(await page.locator('.sight-card[data-place="gelati"]').count(), 0);
+    await page.locator("#day-3 .day-toggle").click();
+    assert.equal(await page.locator("#activity-d3-martvili .sight-note").innerText(), "Depending on the weather");
+    const card = page.locator('#activity-d3-martvili .sight-card[data-place="martvili-canyon"]');
+    const look = await card.evaluate((el) => {
+      const photo = el.querySelector(".sight-photo");
+      const css = getComputedStyle(photo);
+      return { shadow: getComputedStyle(el).boxShadow, radius: parseFloat(css.borderRadius), cols: getComputedStyle(el.closest(".sight-grid")).gridTemplateColumns.split(" ").length };
+    });
+    assert.equal(look.shadow, "none");
+    assert.ok(look.radius <= 2, `radius ${look.radius}`);
+    assert.ok(look.cols >= 2, `desktop shows sights side by side (${look.cols} columns)`);
+    await card.click();
+    assert.equal(await page.locator("#detail .detail-title").innerText(), "Martvili Canyon");
+    assert.ok(await page.locator("#detail .detail-photo-place img").isVisible());
+    assert.match(await page.locator("#detail .photo-credit").innerText(), /CC BY-SA 4\.0/);
+    const words = (await page.locator("#detail .detail-text").innerText()).split(/\s+/).length;
+    assert.ok(words >= 60 && words <= 100, `${words} words`);
+    await page.locator("#detail [data-map-place]").click();
+    await settle(page);
+    const [lat, lng] = await mapCenter(page);
+    assert.ok(near(lat, 42.456, 0.01) && near(lng, 42.376, 0.01), `map at ${lat},${lng}`);
+    assert.ok(await page.locator('.pin-sight.is-active').count() === 1);
+    await page.locator("#day-3 .day-toggle").click();
+    await page.locator("#fullRoute").click();
+    await settle(page);
   });
 
   await check("3a. person modal opens, Escape closes, focus returns", async () => {
@@ -249,8 +283,10 @@ async function tapPin(page, placeName) {
     assert.equal(await sarishvili.locator("img").count(), 1, "founder-supplied logo");
     await sarishvili.click();
     const winePhoto = page.locator("#detail .profile-gallery-wine");
-    assert.equal(await page.locator("#detail [data-profile-photo]").count(), 3);
-    assert.equal(await page.locator("#detail .profile-gallery-slot").count(), 0);
+    // The last gallery image showed Germany, not Guria; it was removed on 27 November.
+    assert.equal(await page.locator("#detail [data-profile-photo]").count(), 2);
+    assert.equal(await page.locator('#detail img[src*="sarishvili-landscape"]').count(), 0);
+    assert.equal(await page.locator("#detail .profile-gallery-slot").count(), 1, "the missing winery photo stays visibly pending");
     assert.equal(await page.locator("#detail .profile-links a").count(), 3);
     await winePhoto.click();
     assert.ok(await page.locator("#profile-photo-view").isVisible());
@@ -341,7 +377,7 @@ async function tapPin(page, placeName) {
 
   await check("map works without tiles (tiles blocked)", async () => {
     assert.ok(await page.locator("#mapNotice").isVisible());
-    assert.equal(await page.locator(".pin").count(), 8);
+    assert.equal(await page.locator(".pin").count(), 28, "8 route stops and 20 sights");
   });
 
   await check("no script errors (desktop)", async () => assert.deepEqual(errors, []));
@@ -351,10 +387,10 @@ async function tapPin(page, placeName) {
 // ---------- wine links appear only for valid URLs ----------
 {
   const patch = `
-    const days = window.WIWI_DATA.tours[0].days;
-    const a = days[1].activities[0];
-    a.links = { uvamoWine: "https://uvamo.example/tasting/snap_01/wine/2", uvamoSet: "https://uvamo.example/tasting/snap_01" };
-    days[1].activities[1].links = { uvamoWine: "https://uvamo.example/somewhere-else", uvamoSet: "javascript:alert(1)" };`;
+    const day2 = window.WIWI_DATA.tours[0].days[1].activities;
+    const byId = (id) => day2.find((x) => x.id === id);
+    byId("d2-chkhavalley").links = { uvamoWine: "https://uvamo.example/tasting/snap_01/wine/2", uvamoSet: "https://uvamo.example/tasting/snap_01" };
+    byId("d2-sarishvili").links = { uvamoWine: "https://uvamo.example/somewhere-else", uvamoSet: "javascript:alert(1)" };`;
   const { page, context } = await open(1440, 900, { patchData: patch, query: "?tour=west" });
   await check("5b. a valid UVAMO! URL shows the wine card from UVAMO!, an invalid one is dropped", async () => {
     await page.route(/uvamo\.example/, (route) => route.fulfill({ contentType: "text/html", body: "<h1>UVAMO wine card</h1>" }));
@@ -510,8 +546,8 @@ for (const [w, h] of [[1440, 900], [390, 844]]) {
     await settle(page);
     await page.locator(".tour-west [data-tour]").click();
     await settle(page);
-    assert.equal(await page.locator(".activity").count(), 15);
-    assert.equal(await page.locator(".pin").count(), 8);
+    assert.equal(await page.locator(".activity").count(), 21);
+    assert.equal(await page.locator(".pin").count(), 28, "8 route stops and 20 sights");
     assert.deepEqual(errors, []);
   });
   await context.close();
@@ -560,7 +596,7 @@ for (const [w, h] of [[390, 844], [320, 640]]) {
   const { page, context } = await open(1440, 900, { blockLeaflet: true, query: "?tour=west" });
   await check("map library missing: itinerary and stops still work", async () => {
     assert.ok(await page.locator("#mapNotice").isVisible());
-    assert.equal(await page.locator(".activity").count(), 15);
+    assert.equal(await page.locator(".activity").count(), 21);
     await page.locator('.stop[data-stop="mtskheta"]').click();
     await settle(page);
     assert.ok(await page.locator("#activity-d5-mtskheta").evaluate((el) => el.classList.contains("is-active")));

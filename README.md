@@ -27,12 +27,14 @@ The language switch keeps the selected tour, open days, selected activity, map p
 
 ## Current Western route
 
-1. Batumi — arrival, rest, optional easy walk.
-2. Adjara → Guria → Kutaisi — Maka Tedoradze at ChkhaValley; Sarishvili family winery; the October–November mandarin version replaces Sarishvili and goes directly to Kutaisi.
-3. Samegrelo → Kutaisi — Khatia Jakhua at Family Winery Argvani; one possible nearby sight; suggested Sisters / Three Sisters dinner.
-4. Imereti → Tbilisi — Simonica in Meore Obcha with the Nini / Nino public-name question kept visible.
-5. Tbilisi + Mtskheta — cultural time and a proposed Exponati visit with host/operator still pending.
-6. Tbilisi — free time and departure logistics to confirm.
+Updated with Manana's comments and the founder's decisions of 27 November 2026. Sights appear as photo cards inside the day's Excursion events; each card opens About the place.
+
+1. Batumi — arrival, rest and an optional walk: Old Batumi, Europe Square, Piazza, Batumi Boulevard (length depends on arrival time).
+2. Adjara, Guria and Kutaisi — Makhuntseti Waterfall and Queen Tamar’s Bridge; Maka Tedoradze at ChkhaValley with the November mandarin harvest; Shekvetili; Sarishvili family winery; Kutaisi historic centre and White Bridge. In November the harvest comes first and may replace Sarishvili; the order of the other stops is still to be set.
+3. Samegrelo and Imereti — Khatia Jakhua at Family Winery Argvani; Martvili Canyon or Martvili Monastery (Chkondidi), depending on the weather; Okatse Canyon and Prometheus Cave, both in the programme, with their split between Days 3 and 4 still to be checked; suggested Sisters / Three Sisters dinner.
+4. Imereti → Tbilisi — Simonica / Chkheidze Wines in Meore Obcha; Ubisi Monastery on the road. Gelati is not part of this edition.
+5. Tbilisi + Mtskheta — Metekhi, Abanotubani and Leghvtakhevi; Svetitskhoveli and Jvari; a proposed Exponati visit.
+6. Tbilisi — Dry Bridge Market, free time and departure logistics to confirm.
 
 Racha, Lechkhumi, Miranda, Khvanchkara and Tariel Lomtadze are not part of this base route. The July–August highland idea is deferred editorially and is not a third tour screen.
 
@@ -45,6 +47,7 @@ Racha, Lechkhumi, Miranda, Khvanchkara and Tariel Lomtadze are not part of this 
 | `index.html`, `styles.css`, `app.js` | Static structure, visual system and interactions |
 | `hero-regions.js` | Pre-generated Natural Earth region shapes for the hero map |
 | `assets/hosts/` | Founder-provided preview assets; see `ASSET_LEDGER.md` |
+| `assets/places/` | Sight photos from Wikimedia Commons with recorded licences; see `ASSET_LEDGER.md` |
 | `tests/` | Content, browser, locale and navigation checks |
 | `VERIFICATION.md` | Latest test record |
 
@@ -67,6 +70,8 @@ Profiles reuse the existing `people` and `places` objects and dialog. A particip
 ```
 
 Missing imagery and channels stay visibly pending. Do not add generic stock images, fabricated portraits or guessed URLs.
+
+A sight is a place with `sight: true`, a one-line `summary` for its photo card, a 60–100-word `description`, site-level `coord`, a local `photo` and a `photoCredit` (`author`, `license`, `licenseUrl`, Commons `source`, optional `cropped`). An Excursion lists its sights in `sights`; `sightNote` adds one short line above the cards and `sightChoice: true` marks alternatives such as the weather-dependent Martvili choice.
 
 ## Maps and integrations
 

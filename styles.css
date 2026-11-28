@@ -256,6 +256,31 @@ h1, h2, h3, h4 { margin: 0; }
 .activity h4 { font-size: 16px; line-height: 1.3; }
 .type-wine h4 { font: 600 19px/1.25 var(--serif); }
 .activity-summary { margin: 0; font-size: 15px; color: var(--ink); }
+/* Sight cards: small editorial illustrations inside the day — photo, name, one line.
+   Two or three per row by available width; a compact photo-and-text row when narrow. */
+.sights { container-type: inline-size; display: grid; gap: 8px; padding-top: 6px; }
+.sight-note { margin: 0; font-size: 13px; font-weight: 600; color: var(--accent); }
+.sight-note.is-choice::before { content: "◐ "; font-weight: 400; }
+.sight-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(max(150px, calc((100% - 24px) / 3)), 1fr)); gap: 14px 12px; }
+.sight-card { display: grid; gap: 7px; align-content: start; width: 100%; height: 100%; padding: 0; border: 0; border-radius: 0; background: transparent; color: var(--ink); text-align: left; font: inherit; cursor: pointer; }
+.sight-photo { display: grid; place-items: center; aspect-ratio: 3 / 2; overflow: hidden; border-radius: 2px; background: var(--tint); color: var(--accent); }
+.sight-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.35s ease; }
+.sight-photo .icon { width: 22px; height: 22px; }
+.sight-text { display: grid; gap: 2px; min-width: 0; }
+.sight-name { color: var(--deep); font-size: 14px; font-weight: 650; line-height: 1.25; }
+.sight-line { font-size: 12.5px; line-height: 1.4; color: var(--muted); }
+.sight-card:hover .sight-name { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.sight-card:hover .sight-photo img { transform: scale(1.03); }
+.sight-card:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+@container (max-width: 330px) {
+  .sight-grid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .sight-card { grid-template-columns: 92px minmax(0, 1fr); align-items: center; gap: 11px; }
+}
+@media (prefers-reduced-motion: reduce) { .sight-photo img { transition: none; } }
+.pin-sight .pin-dot { width: 16px; height: 16px; border-width: 2px; background: var(--type-excursion); }
+.pin-sight.is-active .pin-dot { background: var(--wine); }
+.photo-credit { margin-top: 5px; font-size: 11px; line-height: 1.4; color: var(--muted); }
+.photo-credit a { color: inherit; }
 .category-chip { font-size: 12px; font-weight: 650; padding: 1px 6px; background: var(--tint); color: var(--accent); }
 .facts { margin: 2px 0 0; display: grid; gap: 3px; font-size: 13px; }
 .facts div { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 8px; align-items: baseline; }
@@ -411,6 +436,7 @@ button.activity-tile:hover .icon { transform: scale(1.08); }
 #detail-body { display: grid; gap: 12px; padding: 14px 22px 22px; }
 .detail-photo { margin: 0; }
 .detail-photo img { width: 100%; max-height: 260px; object-fit: cover; border-radius: 1px; }
+.detail-photo-place img { aspect-ratio: 3 / 2; max-height: 340px; }
 .detail-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 14px; }
 .detail-facts div { grid-template-columns: 76px minmax(0, 1fr); }
 .detail-text { margin: 0; font-size: 15px; color: #3f3b35; }

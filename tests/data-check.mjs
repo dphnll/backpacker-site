@@ -34,6 +34,8 @@ const dictKey = (where, kind, key) => {
 // Names that stay the same in every language may be plain strings.
 const UNTRANSLATED = new Set(["ChkhaValley Winery", "WIWI Tours", "UVAMO!", "Clavelo", "Exponati"]);
 const BRAND_WORDS = /Grenoble École de Management|WSET Level 3|MBA|WIWI|UVAMO!?|ChkhaValley(?: Winery)?|Clavelo|Simonica|Simonika|Argvani|Exponati|Sisters|Three Sisters|Baia.?s Wine|Sarishvili|Sarajishvili|Facebook|Instagram|A 7-Day Boutique Wine & Culinary Journey/g;
+// Centuries are written as Roman numerals (XIII, XVII) in KA and RU.
+const ROMAN = /\b[IVXLC]+\b/g;
 function text(where, value, { optional = false } = {}) {
   if (value == null) {
     if (!optional) problems.push(`${where}: missing text`);
@@ -45,10 +47,10 @@ function text(where, value, { optional = false } = {}) {
   }
   for (const code of LANGS) if (!value[code]?.trim()) problems.push(`${where}: no ${code.toUpperCase()} text`);
   for (const code of Object.keys(value)) if (!LANGS.includes(code)) problems.push(`${where}: unknown language "${code}"`);
-  if (value.ka && /[A-Za-z]{4,}/.test(value.ka.replace(BRAND_WORDS, ""))) {
+  if (value.ka && /[A-Za-z]{4,}/.test(value.ka.replace(BRAND_WORDS, "").replace(ROMAN, ""))) {
     problems.push(`${where}: KA text contains Latin words: "${value.ka.slice(0, 40)}"`);
   }
-  if (value.ru && /[A-Za-z]{4,}/.test(value.ru.replace(BRAND_WORDS, ""))) {
+  if (value.ru && /[A-Za-z]{4,}/.test(value.ru.replace(BRAND_WORDS, "").replace(ROMAN, ""))) {
     problems.push(`${where}: RU text contains Latin words: "${value.ru.slice(0, 40)}"`);
   }
 }
@@ -56,6 +58,7 @@ const term = (where, kind, value) => (typeof value === "string" ? dictKey(where,
 
 // ---------- tours, days, activities ----------
 const ids = new Set();
+const sightUse = new Map();
 const tourIds = new Set();
 let dayCount = 0;
 for (const tour of D.tours) {
@@ -103,6 +106,12 @@ for (const tour of D.tours) {
       if (a.place && !D.places[a.place]) problems.push(`${where}: unknown place "${a.place}"`);
       if (!a.place && !a.route) problems.push(`${where}: needs a place or a route`);
       for (const p of a.people || []) if (!D.people[p]) problems.push(`${where}: unknown person "${p}"`);
+      text(`${where} sightNote`, a.sightNote, { optional: true });
+      if (a.sights && a.type !== "excursion") problems.push(`${where}: sight cards belong to excursion activities`);
+      for (const sid of a.sights || []) {
+        if (!D.places[sid]?.sight) problems.push(`${where}: "${sid}" is not a sight place`);
+        sightUse.set(sid, (sightUse.get(sid) || 0) + 1);
+      }
       const links = a.links || {};
       if (links.uvamoWine && !UVAMO_WINE.test(links.uvamoWine)) problems.push(`${where}: uvamoWine is not a …/tasting/<id>/wine/<n> URL`);
       if (links.uvamoSet && !UVAMO_SET.test(links.uvamoSet)) problems.push(`${where}: uvamoSet is not a …/tasting/<id> URL`);
@@ -118,6 +127,19 @@ for (const [id, p] of Object.entries(D.places)) {
   text(`${where} locationLabel`, p.locationLabel);
   dictKey(where, "region", p.region);
   if (p.coord && !(Array.isArray(p.coord) && p.coord.length === 2 && p.coord.every(Number.isFinite))) problems.push(`${where}: coord must be [lat, lng]`);
+  if (p.sight) {
+    text(`${where} summary`, p.summary);
+    if (/[.!]$/.test(p.summary?.en || "")) problems.push(`${where}: card summary should not end with a full stop`);
+    const words = (p.description?.en || "").split(/\s+/).filter(Boolean).length;
+    if (words < 60 || words > 100) problems.push(`${where}: EN description has ${words} words (expected 60–100)`);
+    if (!p.coord) problems.push(`${where}: a sight needs map coordinates`);
+    if (!/^\.\/assets\/places\/[a-z0-9-]+\.webp$/.test(p.photo || "")) problems.push(`${where}: sight photo must be a local ./assets/places/*.webp file`);
+    const c = p.photoCredit || {};
+    if (!c.author || !c.license || !/^https:\/\/commons\.wikimedia\.org\/wiki\/File:/.test(c.source || "") || !/^https:\/\//.test(c.licenseUrl || "")) {
+      problems.push(`${where}: photoCredit needs author, license, licenseUrl and a Wikimedia Commons source`);
+    }
+    if (!/^(CC BY(-SA)? [0-9.]+|CC0|Public domain)$/.test(c.license || "")) problems.push(`${where}: unexpected photo licence "${c.license}"`);
+  }
   if (p.coord && (p.coord[0] < 41 || p.coord[0] > 43.6 || p.coord[1] < 40 || p.coord[1] > 46.8)) problems.push(`${where}: coord is outside Georgia`);
 }
 for (const [id, p] of Object.entries(D.people)) {
@@ -167,6 +189,25 @@ for (const stale of ["Miranda", "Миранда", "მირანდა", "Lomt
 for (const id of ["d2-chkhavalley", "d2-sarishvili", "d3-argvani", "d4-simonica", "d5-exponati"]) {
   if (!ids.has(id)) problems.push(`west route: missing required activity "${id}"`);
 }
+// 27 November cultural programme: every approved sight is shown on its day; Gelati is out of this edition.
+const APPROVED_SIGHTS = {
+  1: ["old-batumi", "europe-square", "piazza", "batumi-boulevard"],
+  2: ["makhuntseti", "tamar-bridge", "shekvetili", "kutaisi-centre", "white-bridge"],
+  3: ["martvili-canyon", "martvili-monastery", "okatse", "prometheus"],
+  4: ["ubisi"],
+  5: ["metekhi", "abanotubani", "leghvtakhevi", "svetitskhoveli", "jvari"],
+  6: ["dry-bridge"],
+};
+for (const [n, sights] of Object.entries(APPROVED_SIGHTS)) {
+  const day = west?.days?.find((d) => d.n === Number(n));
+  const shown = (day?.activities || []).flatMap((a) => a.sights || []);
+  for (const sid of sights) if (!shown.includes(sid)) problems.push(`west route: approved sight "${sid}" missing from day ${n}`);
+}
+const martvili = west?.days?.[2]?.activities.find((a) => (a.sights || []).includes("martvili-canyon"));
+if (!martvili?.sightChoice || !/weather/i.test(martvili?.sightNote?.en || "")) problems.push("west route: Martvili canyon / monastery must be shown as a weather-dependent choice");
+for (const [sid, count] of sightUse) if (count > 1) problems.push(`sight "${sid}" appears in ${count} activities`);
+if (/gelati|გელათ|гелати/i.test(westText) || D.places.gelati) problems.push("west route: Gelati is not part of the current programme");
+if (JSON.stringify(D).includes("Жахуа")) problems.push('spelling: Khatia Jakhua is "Хатия Джахуа" in Russian');
 if (west?.days?.length !== 6) problems.push("west route: must remain a six-day working route");
 if (!/^https:\/\/app\.clavelo\.cc\/\?share=[a-f0-9]{64}$/.test(west?.clavelo?.url || "")) {
   problems.push("west route: expected the verified public Clavelo share URL");

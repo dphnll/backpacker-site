@@ -162,7 +162,7 @@ for (const [code, e] of Object.entries(EXPECT)) {
       assert.ok(logo.width >= (w >= 1000 ? 110 : 56) && Math.abs(logo.width - logo.height) < 1);
       assert.ok(await dialog.locator(".profile-portrait").isVisible());
       assert.equal(await dialog.locator(".profile-gallery > *").count(), 3);
-      assert.equal(await dialog.locator(".profile-story").count(), 4, "the full Maka story has four distinct paragraphs");
+      assert.equal(await dialog.locator(".profile-story").count(), 5, "the full Maka story has five paragraphs, the last one about the November mandarin harvest");
       assert.ok((await dialog.locator(".profile-story").allInnerTexts()).join(" ").length > 800, "the detailed story is separate from its teaser");
       assert.ok(await dialog.evaluate((el) => el.scrollWidth <= el.clientWidth));
       if (SHOTS) await page.screenshot({ path: `${SHOTS}/${code}-${vp}-profile.png` });
@@ -198,6 +198,29 @@ for (const [code, e] of Object.entries(EXPECT)) {
       await dialog.locator("[data-map-place]").click();
       assert.ok(await dialog.isHidden());
       assert.ok(await page.locator("#map-pane").isVisible());
+    });
+
+    await check(`${label}: sight photo cards fit the day`, async () => {
+      if (w < 1000) await page.locator("#tab-itinerary").click();
+      if (await page.locator("#day-5-body").isHidden()) await page.locator("#day-5 .day-toggle").click();
+      const grid = page.locator("#activity-d5-tbilisi .sight-grid");
+      await grid.scrollIntoViewIfNeeded();
+      const info = await grid.evaluate((el) => ({
+        cols: getComputedStyle(el).gridTemplateColumns.split(" ").length,
+        overflow: el.scrollWidth - el.clientWidth,
+        page: document.documentElement.scrollWidth - innerWidth,
+        photos: [...el.querySelectorAll(".sight-photo img")].every((img) => img.getBoundingClientRect().width > 60),
+      }));
+      assert.equal(info.overflow, 0, "no horizontal scroll inside the cards");
+      assert.equal(info.page, 0, "no horizontal page scroll");
+      assert.ok(info.photos, "every card shows its photo");
+      if (w >= 1000) assert.ok(info.cols >= 2 && info.cols <= 3, `desktop: ${info.cols} cards per row`);
+      if (code !== "en") {
+        const texts = await page.locator(".sight-card").allInnerTexts();
+        assert.deepEqual(texts.flatMap(latinWords), [], "sight cards are fully localized");
+      }
+      if (SHOTS) await page.locator("#day-5").screenshot({ path: `${SHOTS}/${code}-${vp}-day5-sights.png` });
+      await page.locator("#day-5 .day-toggle").click();
     });
 
     await check(`${label}: wine, person and place dialogs`, async () => {
