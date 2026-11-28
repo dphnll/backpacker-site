@@ -47,3 +47,7 @@ All 20 sight photos are real photographs from Wikimedia Commons under CC BY, CC 
 | Dry Bridge Market | `assets/places/dry-bridge.webp` | Alexkom000 | CC BY 4.0 | [2025-03-30 Dry Bridge Market, Tbilisi 5.jpg](https://commons.wikimedia.org/wiki/File:2025-03-30_Dry_Bridge_Market,_Tbilisi_5.jpg) | Resized to WebP |
 
 The Sarishvili gallery no longer includes `sarishvili-landscape.webp`: Manana confirmed the photo was taken in Germany, not Guria. The file has been removed from the repository and is not referenced anywhere.
+
+## ChkhaValley mandarin orchard (28 November 2026)
+
+`assets/hosts/chkhavalley-mandarins.webp` was made from the founder-provided `мандарины.jpg` in the private `ФОТО НА ЛЕНД` folder. The founder confirmed on 28 November 2026 that the image shows the ChkhaValley orchard and that WIWI has the right to publish it. The photographer was not identified; no author or licence is claimed. The image was resized from 1636 × 1033 to 1200 × 758 pixels and encoded as WebP without changing its composition. The same asset appears in the Day 2 seasonal note and the ChkhaValley profile story.

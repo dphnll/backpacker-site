@@ -1,5 +1,13 @@
 # WIWI Tours — verification
 
+## 28 November 2026 · ChkhaValley mandarin orchard photograph
+
+The founder confirmed that `мандарины.jpg` shows the ChkhaValley orchard and may be published by WIWI. One resized WebP asset is used in the Day 2 seasonal note and the ChkhaValley story. The original stays in the private founder folder; no photographer or licence was invented. Provenance is recorded in `ASSET_LEDGER.md`.
+
+Tested from a local static server in installed Chrome. `data-check` and syntax checks passed; `smoke` **39/39**, `navigation` **24/24**, and `i18n` **114/114** passed on EN/KA/RU at 1920, 1440, 1280, 390 and 320 px. Day 2 screenshots were reviewed at desktop and phone widths. The test suite confirms that both placements load the same image file.
+
+---
+
 ## 28 November 2026 · cultural, nature and heritage programme
 
 Tested from a local static server (`python -m http.server 4300`) in installed Chrome through Playwright, with map tiles blocked.

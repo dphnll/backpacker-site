@@ -4,7 +4,7 @@
 // Besides links between activities, places and people, it checks that every
 // visitor-facing text exists in all three languages, so a new activity or tour
 // cannot go live in English only.
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import vm from "node:vm";
 
 const sandbox = { window: {} };
@@ -154,8 +154,13 @@ for (const [id, p] of Object.entries(D.people)) {
   text(`${where} location`, p.location, { optional: true });
   text(`${where} wines`, p.wines, { optional: true });
   dictKey(where, "region", p.region);
-  for (const field of ["photo", "logo"]) {
+  for (const field of ["photo", "logo", "seasonalPhoto"]) {
     if (p[field] && !/^\.\/assets\/[A-Za-z0-9_./-]+\.(?:jpg|jpeg|png|webp|svg)$/i.test(p[field])) problems.push(`${where}: ${field} must be a local asset`);
+    if (p[field] && !existsSync(new URL(`../${p[field].slice(2)}`, import.meta.url))) problems.push(`${where}: ${field} asset is missing`);
+  }
+  if (p.seasonalPhoto) {
+    text(`${where} seasonal photo alt`, p.seasonalPhotoAlt);
+    text(`${where} seasonal photo caption`, p.seasonalPhotoCaption);
   }
   for (const [i, item] of (p.gallery || []).entries()) {
     if (!/^\.\/assets\/[A-Za-z0-9_./-]+\.(?:jpg|jpeg|png|webp|svg)$/i.test(item.src || "")) problems.push(`${where}: gallery ${i + 1} must be a local asset`);
