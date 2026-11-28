@@ -127,6 +127,7 @@ for (const [id, p] of Object.entries(D.places)) {
   text(`${where} locationLabel`, p.locationLabel);
   dictKey(where, "region", p.region);
   if (p.coord && !(Array.isArray(p.coord) && p.coord.length === 2 && p.coord.every(Number.isFinite))) problems.push(`${where}: coord must be [lat, lng]`);
+  if (p.mapPlace && !D.places[p.mapPlace]?.coord) problems.push(`${where}: mapPlace must refer to a mapped place`);
   if (p.sight) {
     text(`${where} summary`, p.summary);
     if (/[.!]$/.test(p.summary?.en || "")) problems.push(`${where}: card summary should not end with a full stop`);

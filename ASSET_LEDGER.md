@@ -48,6 +48,8 @@ All 20 sight photos are real photographs from Wikimedia Commons under CC BY, CC 
 
 The Sarishvili gallery no longer includes `sarishvili-landscape.webp`: Manana confirmed the photo was taken in Germany, not Guria. The file has been removed from the repository and is not referenced anywhere.
 
+The founder later supplied `пейзаж.jpg` in the private `2 Sarishvili Winery` folder for the empty third gallery slot. `assets/hosts/sarishvili-vineyard.webp` is a resized copy of that vineyard photograph (960 px wide). It is distinct from the removed Germany photo. The source folder associates it with Sarishvili; the photographer and exact vineyard location were not supplied.
+
 ## ChkhaValley mandarin orchard (28 November 2026)
 
-`assets/hosts/chkhavalley-mandarins.webp` was made from the founder-provided `мандарины.jpg` in the private `ФОТО НА ЛЕНД` folder. The founder confirmed on 28 November 2026 that the image shows the ChkhaValley orchard and that WIWI has the right to publish it. The photographer was not identified; no author or licence is claimed. The image was resized from 1636 × 1033 to 1200 × 758 pixels and encoded as WebP without changing its composition. The same asset appears in the Day 2 seasonal note and the ChkhaValley profile story.
+`assets/hosts/chkhavalley-mandarins.webp` was made from the founder-provided `мандарины.jpg` in the private `ФОТО НА ЛЕНД` folder. The founder confirmed on 28 November 2026 that the image shows the ChkhaValley orchard and that WIWI has the right to publish it. The photographer was not identified; no author or licence is claimed. The image was resized from 1636 × 1033 to 1200 × 758 pixels and encoded as WebP without changing its composition. The same asset appears in the Day 2 seasonal place card and detail, and in the ChkhaValley profile story.

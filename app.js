@@ -385,6 +385,13 @@
 
   function seasonalFigure(p, className = "") {
     if (!p?.seasonalPhoto) return "";
+    if (className === "seasonal-figure-route" && p.seasonalPlace) {
+      const place = DATA.places[p.seasonalPlace];
+      return `<div class="sights"><ul class="sight-grid" data-count="1"><li><button type="button" class="sight-card" data-place="${esc(p.seasonalPlace)}">
+        <span class="sight-photo"><img src="${esc(p.seasonalPhoto)}" alt="" loading="lazy" decoding="async" /></span>
+        <span class="sight-text"><span class="sight-name">${esc(L(place.name))}</span><span class="sight-line">${esc(L(place.summary))}</span></span>
+      </button></li></ul></div>`;
+    }
     return `<figure class="seasonal-figure ${esc(className)}">
       <img src="${esc(p.seasonalPhoto)}" alt="${esc(L(p.seasonalPhotoAlt))}" loading="lazy" />
       <figcaption>${esc(L(p.seasonalPhotoCaption))}</figcaption>
@@ -808,6 +815,7 @@
     if (!p) return;
     const here = activitiesAt(id);
     const name = L(p.name);
+    const mapPlace = p.mapPlace || id;
     showDialog(
       `${t("place.kicker")} · ${region(p.region)}`,
       name,
@@ -821,7 +829,7 @@
         <div><dt>${esc(t("place.region"))}</dt><dd>${esc(region(p.region))}</dd></div>
         <div><dt>${esc(t("place.location"))}</dt><dd>${esc(L(p.locationLabel))}${p.coord ? ` <span class="approx-tag">≈ ${esc(t("map.approxShort"))}</span>` : ""}</dd></div>
       </dl>
-      ${p.coord ? `<div class="actions"><button type="button" class="action action-strong" data-map-place="${esc(id)}">${icon("map")}${esc(t("action.map"))}</button></div>` : `<p class="detail-note">${esc(t("place.noCoord"))}</p>`}
+      ${p.coord ? `<div class="actions"><button type="button" class="action action-strong" data-map-place="${esc(mapPlace)}">${icon("map")}${esc(t("action.map"))}</button></div>` : `<p class="detail-note">${esc(t("place.noCoord"))}</p>`}
       ${here.length ? `<h4 class="detail-sub">${esc(t("place.activities"))}</h4>${activityLinks(here)}` : ""}
       `,
       opener,
