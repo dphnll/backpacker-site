@@ -195,6 +195,10 @@ for (const stale of ["Miranda", "Миранда", "მირანდა", "Lomt
 for (const id of ["d2-chkhavalley", "d2-sarishvili", "d3-argvani", "d4-simonica", "d5-exponati"]) {
   if (!ids.has(id)) problems.push(`west route: missing required activity "${id}"`);
 }
+const dinner = west?.days?.[2]?.activities.find((a) => a.id === "d3-dinner");
+if (!dinner || dinner.title?.en !== "Return to Kutaisi · Sisters" || !dinner.title?.ru?.includes("Сёстры") || /Three Sisters/.test(JSON.stringify(dinner))) {
+  problems.push("Day 3: the proposed Kutaisi restaurant must be named Sisters without the old ambiguity");
+}
 // 27 November cultural programme: every approved sight is shown on its day; Gelati is out of this edition.
 const APPROVED_SIGHTS = {
   1: ["old-batumi", "europe-square", "piazza", "batumi-boulevard"],

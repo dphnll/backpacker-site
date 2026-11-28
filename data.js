@@ -37,7 +37,7 @@ window.WIWI_DATA = {
         ka: "მანანასთან შეთანხმებული სამუშაო მარშრუტი · განახლდა 2026 წლის 27 ნოემბერს",
         ru: "Рабочий маршрут согласован с Мананой · обновлён 27 ноября 2026",
       },
-      // The existing share still contains the superseded Racha–Lechkhumi route.
+      // The existing share was verified against the current six-day route on 28 November.
       clavelo: { url: "https://app.clavelo.cc/?share=ff358b0d2fbd9340c235238236a7857b04956a460f3f5ab0ab89d682cb22db9c" },
 
       openQuestions: [
@@ -213,8 +213,8 @@ window.WIWI_DATA = {
             },
             {
               id: "d3-dinner", time: { en: "Evening", ka: "საღამო", ru: "Вечер" }, type: "food",
-              title: { en: "Return to Kutaisi · Sisters / Three Sisters", ka: "დაბრუნება ქუთაისში · Sisters / Three Sisters", ru: "Возвращение в Кутаиси · Sisters / Three Sisters" },
-              summary: { en: "The exact restaurant is still to be identified", ka: "ჯერ დასაზუსტებელია, რომელ რესტორანში იქნება ვახშამი", ru: "Ещё нужно уточнить, о каком именно ресторане речь" },
+              title: { en: "Return to Kutaisi · Sisters", ka: "დაბრუნება ქუთაისში · Sisters", ru: "Возвращение в Кутаиси · «Сёстры»" },
+              summary: { en: "Dinner at Sisters is proposed", ka: "ვახშამი რესტორან Sisters-ში შემოთავაზებულია", ru: "Предлагается ужин в ресторане «Сёстры»" },
               topics: ["food"], place: "kutaisi", flags: ["restaurant"], status: "to-confirm",
             },
           ],

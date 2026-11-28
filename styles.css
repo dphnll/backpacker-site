@@ -283,8 +283,8 @@ h1, h2, h3, h4 { margin: 0; }
 .photo-credit a { color: inherit; }
 .category-chip { font-size: 12px; font-weight: 650; padding: 1px 6px; background: var(--tint); color: var(--accent); }
 .facts { margin: 2px 0 0; display: grid; gap: 3px; font-size: 13px; }
-.facts div { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 8px; align-items: baseline; }
-.facts dt { color: var(--muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.facts div { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 10px; align-items: baseline; }
+.facts dt { color: var(--muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
 .facts dd { margin: 0; overflow-wrap: anywhere; }
 .facts .status { margin-left: 4px; vertical-align: 1px; }
 .flag-lines { list-style: none; padding: 0; margin: 2px 0 0; display: grid; gap: 4px; }
@@ -442,7 +442,7 @@ button.activity-tile:hover .icon { transform: scale(1.08); }
 .detail-photo img { width: 100%; max-height: 260px; object-fit: cover; border-radius: 1px; }
 .detail-photo-place img { aspect-ratio: 3 / 2; max-height: 340px; }
 .detail-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 14px; }
-.detail-facts div { grid-template-columns: 76px minmax(0, 1fr); }
+.detail-facts div { grid-template-columns: max-content minmax(0, 1fr); }
 .detail-text { margin: 0; font-size: 15px; color: #3f3b35; }
 .detail-note { margin: 0; padding: 8px 0; border-block: 1px solid var(--line); color: var(--ink); font-size: 13px; }
 .detail-sub { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
@@ -479,9 +479,7 @@ button.activity-tile:hover .icon { transform: scale(1.08); }
 :lang(ka) .section h2, :lang(ka) .route h2 { line-height: 1.25; }
 :lang(ka) body, :lang(ka) .activity-summary, :lang(ka) .detail-text { line-height: 1.6; }
 :lang(ka) .status { white-space: normal; text-align: left; }
-:lang(ka) .facts div { grid-template-columns: 82px minmax(0, 1fr); }
 :lang(ka) .activity-tile small { font-size: 9.5px; text-align: center; line-height: 1.15; padding: 0 2px; }
-:lang(ru) .facts div { grid-template-columns: 72px minmax(0, 1fr); }
 .activity-body, .tour-body, .detail, .question { overflow-wrap: break-word; }
 
 /* ---------- responsive ---------- */
