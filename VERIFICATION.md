@@ -1,4 +1,26 @@
-# WIWI Tours v0.4 — verification
+# WIWI Tours — verification
+
+## 28 November 2026 · cultural, nature and heritage programme
+
+Tested from a local static server (`python -m http.server 4300`) in installed Chrome through Playwright, with map tiles blocked.
+
+| Suite | Result |
+|---|---|
+| `node tests/data-check.mjs` | **PASS** — 2 tours, 6 days, 21 activities, 29 places (20 sights), 5 people; 125 keys × 3 languages |
+| `node tests/smoke.mjs` | **39 / 39 passed** |
+| `node tests/navigation.mjs` | **24 / 24 passed** |
+| `node tests/i18n.mjs` | **114 / 114 passed** — EN / KA / RU × 1920 / 1440 / 1280 / 390 / 320 px |
+| `node --check app.js`, `git diff --check` | **PASS** |
+
+Checked by hand in the browser: RU desktop Days 2 and 3 (cards, About the place dialog with photo credit, Show on map to the sight), KA 320 px Day 5 (compact card rows, no horizontal scroll).
+
+New coverage: every approved sight appears on its day; Martvili is a weather-dependent choice; Gelati is absent; card lines have no full stop; EN stories are 60–100 words; every sight has map coordinates, a local WebP photo and a complete Wikimedia Commons credit; sight cards open the place dialog and lead to the map; cards fit every tested width in all three languages.
+
+Known boundaries: Georgian copy is a working translation pending native review; sight coordinates are site-level approximations; opening hours, tickets and seasonal access are not shown and are listed for the inspection trip.
+
+---
+
+## 25 November 2026 · v0.4
 
 Date: 25 November 2026. Tested from a local static server in installed Chrome through Playwright. Map tiles were deliberately blocked during the automated suites so the route remains usable when the tile network is unavailable.
 

@@ -18,3 +18,32 @@ Updated 25 November 2026. This ledger records what is actually shown in the prev
 - Exponati: the supplied third-party listing was used only to preserve the “candidate” status; it is not shown as an official link.
 
 No stock photography, AI-generated likenesses, copied gallery images or recreated winery logos were added.
+
+## Cultural, nature and heritage sights — photos (27 November 2026)
+
+All 20 sight photos are real photographs from Wikimedia Commons under CC BY, CC BY-SA or public-domain terms; none is generated. Licence and author were read from the Commons file metadata at download time. The dialog for each place shows the author, licence, source link and the change made, as the licences require. CC BY-SA files keep their CC BY-SA licence in this preview.
+
+| Sight | File | Author | Licence | Commons source | Change |
+|---|---|---|---|---|---|
+| Old Batumi | `assets/places/old-batumi.webp` | Jelger Groeneveld | CC BY 2.0 | [Old town of Batumi.jpg](https://commons.wikimedia.org/wiki/File:Old_town_of_Batumi.jpg) | Resized to WebP |
+| Europe Square | `assets/places/europe-square.webp` | Andrzej Wójtowicz from Poznań, Poland | CC BY-SA 2.0 | [Batumi (9461089636).jpg](https://commons.wikimedia.org/wiki/File:Batumi_(9461089636).jpg) | Resized to WebP |
+| Piazza | `assets/places/piazza.webp` | Kober | CC BY-SA 4.0 | [Piazza, Batumi. Aug 2016 (1).jpg](https://commons.wikimedia.org/wiki/File:Piazza,_Batumi._Aug_2016_(1).jpg) | Resized to WebP |
+| Batumi Boulevard | `assets/places/batumi-boulevard.webp` | polinakoshkadelik | CC BY 2.0 | [Batumi littoral boulevard aerial view.jpg](https://commons.wikimedia.org/wiki/File:Batumi_littoral_boulevard_aerial_view.jpg) | Resized to WebP |
+| Makhuntseti Waterfall | `assets/places/makhuntseti.webp` | Wojciech Biegun | CC BY-SA 3.0 | [Makhuntseti Waterfall - მახუნცეთის ჩანჩქერი - panoramio.jpg](https://commons.wikimedia.org/wiki/File:Makhuntseti_Waterfall_-_%E1%83%9B%E1%83%90%E1%83%AE%E1%83%A3%E1%83%9C%E1%83%AA%E1%83%94%E1%83%97%E1%83%98%E1%83%A1_%E1%83%A9%E1%83%90%E1%83%9C%E1%83%A9%E1%83%A5%E1%83%94%E1%83%A0%E1%83%98_-_panoramio.jpg) | Resized to WebP |
+| Queen Tamar’s Bridge | `assets/places/tamar-bridge.webp` | Yasuhiro Kojima | CC BY-SA 4.0 | [Makhuntseti Bridge 1.jpg](https://commons.wikimedia.org/wiki/File:Makhuntseti_Bridge_1.jpg) | Resized to WebP |
+| Shekvetili | `assets/places/shekvetili.webp` | Iscream icecream | CC BY-SA 4.0 | [Shekvetili Praia.jpg](https://commons.wikimedia.org/wiki/File:Shekvetili_Praia.jpg) | Cropped to the shoreline (hotel roof removed), resized |
+| Kutaisi Historic Centre | `assets/places/kutaisi-centre.webp` | Alexkom000 | CC BY 4.0 | [2025-06-21 Colchis Fountain, Kutaisi.jpg](https://commons.wikimedia.org/wiki/File:2025-06-21_Colchis_Fountain,_Kutaisi.jpg) | Resized to WebP |
+| White Bridge | `assets/places/white-bridge.webp` | Kober | CC BY-SA 3.0 | [Kutaisi White Bridge (August 2011).jpg](https://commons.wikimedia.org/wiki/File:Kutaisi_White_Bridge_(August_2011).jpg) | Resized to WebP |
+| Martvili Canyon | `assets/places/martvili-canyon.webp` | Jami430 | CC BY-SA 4.0 | [Martvili Canyon Natural Monument June 2017.jpg](https://commons.wikimedia.org/wiki/File:Martvili_Canyon_Natural_Monument_June_2017.jpg) | Resized to WebP |
+| Martvili Monastery (Chkondidi) | `assets/places/martvili-monastery.webp` | Lika (ლიკა) | Public domain | [Martvili monastery2.jpg](https://commons.wikimedia.org/wiki/File:Martvili_monastery2.jpg) | Resized to WebP |
+| Okatse Canyon | `assets/places/okatse.webp` | United States Embassy Tbilisi | Public domain | [Okatse Canyon Nature Reserve, Georgia 04.jpg](https://commons.wikimedia.org/wiki/File:Okatse_Canyon_Nature_Reserve,_Georgia_04.jpg) | Resized to WebP |
+| Prometheus Cave | `assets/places/prometheus.webp` | Dmitrij Rodionov | CC BY-SA 3.0 | [Kumistavi Cave - uphill view.jpg](https://commons.wikimedia.org/wiki/File:Kumistavi_Cave_-_uphill_view.jpg) | Resized to WebP |
+| Ubisi Monastery | `assets/places/ubisi.webp` | Aleksey Muhranoff | CC BY-SA 3.0 | [Ubisi monastery. A fresco (Photo A. Muhranoff, 2011)-2.jpg](https://commons.wikimedia.org/wiki/File:Ubisi_monastery._A_fresco_(Photo_A._Muhranoff,_2011)-2.jpg) | Resized to WebP |
+| Metekhi Church | `assets/places/metekhi.webp` | Alexxx1979 | CC BY-SA 4.0 | [Tbilisi The Metekhi Church of Assumption IMG 8842 1920.jpg](https://commons.wikimedia.org/wiki/File:Tbilisi_The_Metekhi_Church_of_Assumption_IMG_8842_1920.jpg) | Resized to WebP |
+| Abanotubani | `assets/places/abanotubani.webp` | Wowan1978 | CC BY-SA 4.0 | [Roofs of the sulfur baths in Tbilisi.jpg](https://commons.wikimedia.org/wiki/File:Roofs_of_the_sulfur_baths_in_Tbilisi.jpg) | Resized to WebP |
+| Leghvtakhevi Gorge | `assets/places/leghvtakhevi.webp` | Valen1988 | CC BY-SA 4.0 | [Ջրվեժը.jpg](https://commons.wikimedia.org/wiki/File:%D5%8B%D6%80%D5%BE%D5%A5%D5%AA%D5%A8.jpg) | Resized to WebP |
+| Svetitskhoveli Cathedral | `assets/places/svetitskhoveli.webp` | Dmitry A. Mottl | CC BY-SA 4.0 | [Mtskheta and Svetitskhoveli Cathedral 3x2.jpg](https://commons.wikimedia.org/wiki/File:Mtskheta_and_Svetitskhoveli_Cathedral_3x2.jpg) | Resized to WebP |
+| Jvari Monastery | `assets/places/jvari.webp` | Alexxx1979 | CC BY-SA 4.0 | [Georgia Jvari monastery IMG 9345 2070.jpg](https://commons.wikimedia.org/wiki/File:Georgia_Jvari_monastery_IMG_9345_2070.jpg) | Resized to WebP |
+| Dry Bridge Market | `assets/places/dry-bridge.webp` | Alexkom000 | CC BY 4.0 | [2025-03-30 Dry Bridge Market, Tbilisi 5.jpg](https://commons.wikimedia.org/wiki/File:2025-03-30_Dry_Bridge_Market,_Tbilisi_5.jpg) | Resized to WebP |
+
+The Sarishvili gallery no longer includes `sarishvili-landscape.webp`: Manana confirmed the photo was taken in Germany, not Guria. The file has been removed from the repository and is not referenced anywhere.
